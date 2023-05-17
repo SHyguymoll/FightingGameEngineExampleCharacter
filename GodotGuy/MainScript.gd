@@ -35,6 +35,8 @@ const BUTTONCOUNT = 4
 #		"extra": ... This one is up to whatever
 #	}
 
+# Animations are handled manually and controlled by the game engine during the physics_process step.
+# Therefore, all animations top out at 60 FPS, which is a small constraint for now.
 # animation format:
 #"<Name>":
 #	{
@@ -99,6 +101,50 @@ var attack = {
 }
 
 #TODO: animations
+var animations = {
+	"idle":
+		{
+			"animation_start_frame": [0,0],
+			"animation_length": 1,
+			"animation": {}
+		},
+	"crouch":
+		{
+			"animation_start_frame": [1,0],
+			"animation_length": 1,
+			"animation": {}
+		},
+	"walk_right":
+		{
+			"animation_start_frame": [2,0],
+			"animation_length": 7,
+			"animation":
+				{
+					1: [3,0],
+					2: [4,0],
+					3: [5,0],
+					4: [6,0],
+					5: [7,0],
+					6: [8,0],
+					7: [9,0]
+				}
+		},
+	"walk_left":
+		{
+			"animation_start_frame": [9,0],
+			"animation_length": 7,
+			"animation":
+				{
+					1: [8,0],
+					2: [7,0],
+					3: [6,0],
+					4: [5,0],
+					5: [4,0],
+					6: [3,0],
+					7: [2,0]
+				}
+		}
+}
 
 #TODO: hitboxes
 
