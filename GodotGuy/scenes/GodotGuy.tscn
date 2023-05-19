@@ -13,7 +13,14 @@ script = ExtResource("53")
 texture = ExtResource("2_86yo0")
 hframes = 9
 vframes = 6
+frame = 10
 
 [node name="GroundCollision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.20723, 0)
 shape = SubResource("BoxShape3D_38jcs")
+
+[node name="Hurtboxes" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 0
+
+[node name="Hitboxes" type="Area3D" parent="."]
