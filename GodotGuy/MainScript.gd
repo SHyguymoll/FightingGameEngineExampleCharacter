@@ -291,18 +291,49 @@ func anim() -> void:
 #		"extra": ... This one is up to whatever
 #	}
 
-#TODO: hitboxes
-var hitboxes = {
-	"basic": {
-		"boxes": [],
-	}
+var hitboxes : Dictionary = {
+	"stand_a": {
+		"boxes": ["StandA"],
+	},
+	"stand_b": {
+		"boxes": ["StandB"],
+	},
+	"stand_c": {
+		"boxes": ["StandC"],
+	},
+	"crouch_a": {
+		"boxes": ["CrouchA"],
+	},
+	"crouch_b": {
+		"boxes": ["CrouchB"],
+	},
+	"crouch_c": {
+		"boxes": ["CrouchC"],
+	},
+	"jump_a": {
+		"boxes": ["JumpA"],
+	},
+	"jump_b": {
+		"boxes": ["JumpB"],
+	},
+	"jump_c": {
+		"boxes": ["JumpC"],
+	},
 }
 
-#TODO: hurtboxes
-var hurtboxes = {
-	"basic": {
-		"boxes": [],
-	}
+var hurtboxes : Dictionary = {
+	"base": {
+		"boxes": ["Base"],
+	},
+	"low": {
+		"boxes": ["Low"],
+	},
+	"pull_back": {
+		"boxes": ["StandBPullBack"],
+	},
+	"pop_up": {
+		"boxes": ["JumpCPopUp"],
+	},
 }
 
 enum actions {set, add, remove}
@@ -315,11 +346,41 @@ func initialize_boxes(player: bool) -> void:
 		$Hurtboxes.collision_layer = 4
 		$Hitboxes.collision_mask = 2
 
-func update_hitboxes(hitboxes: Array[String], action: actions) -> void:
+func update_hitboxes(new_hitboxes: Array[String], action: actions) -> void:
 	match action:
 		actions.set:
-			pass
-	pass
+			for hitbox in hitboxes:
+				for box in hitboxes[hitbox]["boxes"]:
+					(get_node("Hitboxes/{0}".format([box])) as CollisionShape3D).disabled = true
+			for new_hitbox in new_hitboxes:
+				for box in hitboxes[new_hitbox]["boxes"]:
+					(get_node("Hitboxes/{0}".format([box])) as CollisionShape3D).disabled = false
+		actions.add:
+			for new_hitbox in new_hitboxes:
+				for box in hitboxes[new_hitbox]["boxes"]:
+					(get_node("Hitboxes/{0}".format([box])) as CollisionShape3D).disabled = false
+		actions.remove:
+			for new_hitbox in new_hitboxes:
+				for box in hitboxes[new_hitbox]["boxes"]:
+					(get_node("Hitboxes/{0}".format([box])) as CollisionShape3D).disabled = true
+
+func update_hurtboxes(new_hurtboxes: Array[String], action: actions) -> void:
+	match action:
+		actions.set:
+			for hurtbox in hurtboxes:
+				for box in hurtboxes[hurtbox]["boxes"]:
+					(get_node("hurtboxes/{0}".format([box])) as CollisionShape3D).disabled = true
+			for new_hurtbox in new_hurtboxes:
+				for box in hurtboxes[new_hurtbox]["boxes"]:
+					(get_node("hurtboxes/{0}".format([box])) as CollisionShape3D).disabled = false
+		actions.add:
+			for new_hurtbox in new_hurtboxes:
+				for box in hurtboxes[new_hurtbox]["boxes"]:
+					(get_node("hurtboxes/{0}".format([box])) as CollisionShape3D).disabled = false
+		actions.remove:
+			for new_hurtbox in new_hurtboxes:
+				for box in hurtboxes[new_hurtbox]["boxes"]:
+					(get_node("hurtboxes/{0}".format([box])) as CollisionShape3D).disabled = true
 
 var too_close : bool = false
 
@@ -371,7 +432,7 @@ func walk_check(inputs: Array) -> int: #returns -1 (trying to walk away), 0 (no 
 
 func handle_input(buffer: Array) -> void:
 	var input = decode_hash(buffer[-1][0]) #end of buffer is newest button, first element is input hash
-	var heldTime = buffer[-1][1]
+	var held_time = buffer[-1][1]
 	var walk = walk_check(input)
 	match state_current:
 		states.idle:

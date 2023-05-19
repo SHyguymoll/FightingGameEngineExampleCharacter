@@ -84,47 +84,47 @@ disabled = true
 
 [node name="Hitboxes" type="Area3D" parent="."]
 
-[node name="Stand_A" type="CollisionShape3D" parent="Hitboxes"]
+[node name="StandA" type="CollisionShape3D" parent="Hitboxes"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.136681, -0.533908, 0)
 shape = SubResource("BoxShape3D_2i5jm")
 disabled = true
 
-[node name="Stand_B" type="CollisionShape3D" parent="Hitboxes"]
+[node name="StandB" type="CollisionShape3D" parent="Hitboxes"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.709029, -0.704758, 0)
 shape = SubResource("BoxShape3D_vt53a")
 disabled = true
 
-[node name="Stand_C" type="CollisionShape3D" parent="Hitboxes"]
+[node name="StandC" type="CollisionShape3D" parent="Hitboxes"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.704758, -0.345972, 0)
 shape = SubResource("BoxShape3D_up4rr")
 disabled = true
 
-[node name="Crouch_A" type="CollisionShape3D" parent="Hitboxes"]
+[node name="CrouchA" type="CollisionShape3D" parent="Hitboxes"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.713301, -1.01229, 0)
 shape = SubResource("BoxShape3D_ims07")
 disabled = true
 
-[node name="Crouch_B" type="CollisionShape3D" parent="Hitboxes"]
+[node name="CrouchB" type="CollisionShape3D" parent="Hitboxes"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.226377, -0.298988, 0)
 shape = SubResource("BoxShape3D_bms8f")
 disabled = true
 
-[node name="Crouch_C" type="CollisionShape3D" parent="Hitboxes"]
+[node name="CrouchC" type="CollisionShape3D" parent="Hitboxes"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.931135, 0.0128139, 0)
 shape = SubResource("BoxShape3D_h62lo")
 disabled = true
 
-[node name="Jump_A" type="CollisionShape3D" parent="Hitboxes"]
+[node name="JumpA" type="CollisionShape3D" parent="Hitboxes"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.529636, -1.05073, 0)
 shape = SubResource("BoxShape3D_rgq7h")
 disabled = true
 
-[node name="Jump_B" type="CollisionShape3D" parent="Hitboxes"]
+[node name="JumpB" type="CollisionShape3D" parent="Hitboxes"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.363057, -1.04646, 0)
 shape = SubResource("BoxShape3D_vwb8r")
 disabled = true
 
-[node name="Jump_C" type="CollisionShape3D" parent="Hitboxes"]
+[node name="JumpC" type="CollisionShape3D" parent="Hitboxes"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.276386, -0.703919, 0)
 shape = SubResource("BoxShape3D_ol1jt")
 disabled = true
