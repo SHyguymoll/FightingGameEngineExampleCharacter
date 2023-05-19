@@ -1,10 +1,49 @@
-[gd_scene load_steps=4 format=3 uid="uid://kquoyj34deus"]
+[gd_scene load_steps=17 format=3 uid="uid://kquoyj34deus"]
 
 [ext_resource type="Texture2D" uid="uid://bh8asn38oyfgq" path="res://GodotGuy/SpriteSheet.png" id="2_86yo0"]
 [ext_resource type="Script" path="res://GodotGuy/MainScript.gd" id="53"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_38jcs"]
 size = Vector3(1.25158, 0.162607, 0.270464)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_w8654"]
+size = Vector3(1.298, 1.303, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sc512"]
+size = Vector3(1.298, 1.303, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ca78n"]
+size = Vector3(1.298, 1.303, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qfdv8"]
+size = Vector3(1.35, 0.491, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2i5jm"]
+size = Vector3(1.70423, 0.397227, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vt53a"]
+size = Vector3(0.943949, 0.585163, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_up4rr"]
+size = Vector3(1.49067, 2.01176, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ims07"]
+size = Vector3(1.19168, 0.57662, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bms8f"]
+size = Vector3(1.9178, 2.08865, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_h62lo"]
+size = Vector3(0.670588, 2.59266, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rgq7h"]
+size = Vector3(0.593706, 0.559535, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vwb8r"]
+size = Vector3(1.72986, 0.644961, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ol1jt"]
+size = Vector3(1.46398, 1.48125, 1)
 
 [node name="GodotGuy" type="CharacterBody3D"]
 script = ExtResource("53")
@@ -13,7 +52,7 @@ script = ExtResource("53")
 texture = ExtResource("2_86yo0")
 hframes = 9
 vframes = 6
-frame = 10
+frame = 47
 
 [node name="GroundCollision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.20723, 0)
@@ -23,4 +62,69 @@ shape = SubResource("BoxShape3D_38jcs")
 collision_layer = 0
 collision_mask = 0
 
+[node name="Base" type="CollisionShape3D" parent="Hurtboxes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.640689, 0)
+shape = SubResource("BoxShape3D_w8654")
+disabled = true
+
+[node name="JumpCPopUp" type="CollisionShape3D" parent="Hurtboxes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0854251, -0.111053, 0)
+shape = SubResource("BoxShape3D_sc512")
+disabled = true
+
+[node name="StandBPullBack" type="CollisionShape3D" parent="Hurtboxes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.608612, -0.640689, 0)
+shape = SubResource("BoxShape3D_ca78n")
+disabled = true
+
+[node name="Low" type="CollisionShape3D" parent="Hurtboxes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.04219, 0)
+shape = SubResource("BoxShape3D_qfdv8")
+disabled = true
+
 [node name="Hitboxes" type="Area3D" parent="."]
+
+[node name="Stand_A" type="CollisionShape3D" parent="Hitboxes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.136681, -0.533908, 0)
+shape = SubResource("BoxShape3D_2i5jm")
+disabled = true
+
+[node name="Stand_B" type="CollisionShape3D" parent="Hitboxes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.709029, -0.704758, 0)
+shape = SubResource("BoxShape3D_vt53a")
+disabled = true
+
+[node name="Stand_C" type="CollisionShape3D" parent="Hitboxes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.704758, -0.345972, 0)
+shape = SubResource("BoxShape3D_up4rr")
+disabled = true
+
+[node name="Crouch_A" type="CollisionShape3D" parent="Hitboxes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.713301, -1.01229, 0)
+shape = SubResource("BoxShape3D_ims07")
+disabled = true
+
+[node name="Crouch_B" type="CollisionShape3D" parent="Hitboxes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.226377, -0.298988, 0)
+shape = SubResource("BoxShape3D_bms8f")
+disabled = true
+
+[node name="Crouch_C" type="CollisionShape3D" parent="Hitboxes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.931135, 0.0128139, 0)
+shape = SubResource("BoxShape3D_h62lo")
+disabled = true
+
+[node name="Jump_A" type="CollisionShape3D" parent="Hitboxes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.529636, -1.05073, 0)
+shape = SubResource("BoxShape3D_rgq7h")
+disabled = true
+
+[node name="Jump_B" type="CollisionShape3D" parent="Hitboxes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.363057, -1.04646, 0)
+shape = SubResource("BoxShape3D_vwb8r")
+disabled = true
+
+[node name="Jump_C" type="CollisionShape3D" parent="Hitboxes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.276386, -0.703919, 0)
+shape = SubResource("BoxShape3D_ol1jt")
+disabled = true

@@ -310,10 +310,10 @@ enum actions {set, add, remove}
 func initialize_boxes(player: bool) -> void:
 	if player:
 		$Hurtboxes.collision_layer = 2
-		$Hurtboxes.collision_mask = 4
+		$Hitboxes.collision_mask = 4
 	else:
 		$Hurtboxes.collision_layer = 4
-		$Hurtboxes.collision_mask = 2
+		$Hitboxes.collision_mask = 2
 
 func update_hitboxes(hitboxes: Array[String], action: actions) -> void:
 	match action:
