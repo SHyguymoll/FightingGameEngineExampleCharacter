@@ -342,8 +342,8 @@ func initialize_boxes(player: bool) -> void:
 		$Hurtboxes.collision_layer = 4
 		$Hitboxes.collision_mask = 2
 
-func update_hitboxes(new_hitboxes: Array[String], action: actions) -> void:
-	match action:
+func update_hitboxes(new_hitboxes: Array[String], choice: actions) -> void:
+	match choice:
 		actions.set:
 			for hitbox in hitboxes:
 				for box in hitboxes[hitbox]["boxes"]:
@@ -360,8 +360,8 @@ func update_hitboxes(new_hitboxes: Array[String], action: actions) -> void:
 				for box in hitboxes[new_hitbox]["boxes"]:
 					(get_node("Hitboxes/{0}".format([box])) as CollisionShape3D).disabled = true
 
-func update_hurtboxes(new_hurtboxes: Array[String], action: actions) -> void:
-	match action:
+func update_hurtboxes(new_hurtboxes: Array[String], choice: actions) -> void:
+	match choice:
 		actions.set:
 			for hurtbox in hurtboxes:
 				for box in hurtboxes[hurtbox]["boxes"]:
@@ -380,11 +380,11 @@ func update_hurtboxes(new_hurtboxes: Array[String], action: actions) -> void:
 
 var too_close : bool = false
 
-enum inputs {Up = 1, Down = 2, Left = 4, Right = 8, A = 16, B = 32, C = 64}
+enum buttons {Up = 1, Down = 2, Left = 4, Right = 8, A = 16, B = 32, C = 64}
 
 func decode_hash(inputHash: int) -> Array:
 	var decodedHash = [false, false, false, false, false, false, false, false]
-	var inpVal = inputs.values()
+	var inpVal = buttons.values()
 	for i in range(BUTTONCOUNT + 3,-1,-1): #arrays start at 0, so everything is subtracted by 1 (4 directions -> 3)
 		if inputHash >= inpVal[i]:
 			inputHash -= inpVal[i]
@@ -392,6 +392,8 @@ func decode_hash(inputHash: int) -> Array:
 	return decodedHash
 
 func handle_attack(buffer: Array) -> void:
+	if buffer[-1][0] < buttons.Up + buttons.Down + buttons.Left + buttons.Right:
+		return
 	var decoded_buffer = []
 	for input in buffer:
 		decoded_buffer.append([decode_hash(input[0]), input[1]])
@@ -449,9 +451,7 @@ func handle_input(buffer: Array) -> void:
 						update_state(states.jump_neutral, 0)
 					-1:
 						update_state(states.jump_back, 0)
-			if buffer[-1][0] >= inputs.Up + inputs.Down + inputs.Left + inputs.Right: #if any attack input is found in hash, do this block
-				pass
-				handle_attack(buffer)
+			handle_attack(buffer)
 		states.walk_forward:
 			if walk != 1:
 				match walk:
@@ -469,9 +469,7 @@ func handle_input(buffer: Array) -> void:
 						update_state(states.jump_neutral, 0)
 					-1:
 						update_state(states.jump_back, 0)
-			if buffer[-1][0] >= inputs.Up + inputs.Down + inputs.Left + inputs.Right: #ditto
-				pass
-				handle_attack(buffer)
+			handle_attack(buffer)
 		states.walk_back:
 			if walk != -1:
 				match walk:
@@ -489,9 +487,7 @@ func handle_input(buffer: Array) -> void:
 						update_state(states.jump_neutral, 0)
 					-1:
 						update_state(states.jump_back, 0)
-			if buffer[-1][0] >= inputs.Up + inputs.Down + inputs.Left + inputs.Right: #ditto
-				pass
-				handle_attack(buffer)
+			handle_attack(buffer)
 		states.attack:
 			if attack_ended():
 				match current_attack:
