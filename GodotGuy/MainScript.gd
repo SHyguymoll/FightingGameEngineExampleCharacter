@@ -31,7 +31,8 @@ enum states {
 	hurt_high, hurt_low, hurt_crouch, #not handling getting attacked well
 	hurt_fall, hurt_lie, hurt_bounce, #REALLY not handling getting attacked well
 	}
-var state_current: states = states.idle
+var state_start := states.idle
+var state_current: states
 
 func update_state(new_state: states, new_animation_timer: int):
 	state_current = new_state
