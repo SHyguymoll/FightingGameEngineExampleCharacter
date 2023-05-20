@@ -3,6 +3,7 @@ extends CharacterBody3D
 
 var input_buffer_len = 10
 
+@export var char_name = "Godot Guy"
 @export var health = 100
 @export var walk_speed = 1
 
