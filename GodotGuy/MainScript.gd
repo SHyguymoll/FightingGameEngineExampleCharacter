@@ -1,10 +1,6 @@
 class_name Fighter
 extends CharacterBody3D
 
-var fighter_name = "Godot Guy"
-var tscn_file = "res://GodotGuy/scenes/GodotGuy.tscn"
-var char_select_icon = "res://GodotGuy/Icon.png"
-
 var input_buffer_len = 10
 
 @export var health = 100
