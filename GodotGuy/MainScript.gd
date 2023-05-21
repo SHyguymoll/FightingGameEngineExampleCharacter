@@ -18,7 +18,7 @@ var kback_hori = 0.0
 var kback_vert = 0.0
 
 var start_x_offset = 2
-const BUTTONCOUNT = 4
+const BUTTONCOUNT = 3
 
 #State transitions are handled by a FSM implemented as match statements
 enum states {
@@ -278,8 +278,11 @@ var current_animation: String
 var step_timer = 0
 
 func anim() -> void:
-	if animations[current_animation][step_timer] != null:
-		$Sprite.frame_coords = animations[current_animation][step_timer]
+	if animations[current_animation][step_timer] is Array:
+		$Sprite.frame_coords = Vector2(
+			animations[current_animation][step_timer][0],
+			animations[current_animation][step_timer][1]
+		)
 
 # Hitboxes and Hurtboxes are handled through a dictionary for easy reuse.
 # box format:
@@ -506,7 +509,9 @@ func action(inputs) -> void:
 	handle_input(inputs)
 	match state_current:
 		states.idle:
-			pass
+			current_animation = "idle"
+		states.crouch:
+			current_animation = "crouch"
 #	match state_current:
 #		states.Idle, states.Crouch:
 #			velocity.x = 0

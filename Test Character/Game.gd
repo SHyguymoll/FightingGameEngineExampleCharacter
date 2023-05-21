@@ -105,14 +105,14 @@ func build_inputs_tracked() -> void:
 	for input in latestInputs:
 		if input[0] < 0:
 			return
-		$HUD/P1Inputs.text += directionDictionary[input[0] % 16] + attack_value(input[0] >> 4) + String(input[1]) + "\n"
+		$HUD/P1Inputs.text += directionDictionary[input[0] % 16] + attack_value(input[0] >> 4) + str(input[1]) + "\n"
 	
 	latestInputs = p2_inputs.slice(max(0,p2_input_index - p2.input_buffer_len), p2_input_index)
 	$HUD/P2Inputs.text = ""
 	for input in latestInputs:
 		if input[0] < 0:
 			return
-		$HUD/P2Inputs.text += String(input[1]) + attack_value(input[0] >> 4) + directionDictionary[input[0] % 16] + "\n"
+		$HUD/P2Inputs.text += str(input[1]) + attack_value(input[0] >> 4) + directionDictionary[input[0] % 16] + "\n"
 
 func get_input_hashes() -> Array: return [ #convert to hash to send less data (a single int compared to an array)
 	(int(p1_buttons[0]) * 1) + \
@@ -167,7 +167,6 @@ func handle_inputs():
 	var calcHashes = get_input_hashes()
 	if len(p1_inputs) == 0:
 		p1_inputs.append([calcHashes[0], 1])
-		p1_input_index += 1
 	elif p1_inputs[p1_input_index][0] != calcHashes[0]:
 		p1_inputs.append([calcHashes[0], 1])
 		p1_input_index += 1
@@ -176,7 +175,6 @@ func handle_inputs():
 	
 	if len(p2_inputs) == 0:
 		p2_inputs.append([calcHashes[1], 1])
-		p2_input_index += 1
 	elif p2_inputs[p2_input_index][0] != calcHashes[1]:
 		p2_inputs.append([calcHashes[1], 1])
 		p2_input_index += 1
@@ -184,9 +182,18 @@ func handle_inputs():
 		p2_inputs[p2_input_index][1] += 1
 	
 	build_inputs_tracked()
-	
-	var p1_buf = p1_inputs.slice(max(0, p1_input_index - p1.input_buffer_len), p1_input_index)
-	var p2_buf = p2_inputs.slice(max(0, p2_input_index - p2.input_buffer_len), p1_input_index)
+	var max_p1_ind = max(0, p1_input_index - p1.input_buffer_len)
+	var p1_buf
+	var p2_buf
+	if p1_input_index - max_p1_ind == 0:
+		p1_buf = p1_inputs.slice(max_p1_ind, p1_input_index + 1)
+	else:
+		p1_buf = p1_inputs.slice(max_p1_ind, p1_input_index)
+	var max_p2_ind = max(0, p2_input_index - p2.input_buffer_len)
+	if p2_input_index - max_p2_ind == 0:
+		p2_buf = p2_inputs.slice(max_p2_ind, p1_input_index + 1)
+	else:
+		p2_buf = p2_inputs.slice(max_p2_ind, p1_input_index)
 	
 	p1.step(p1_buf)
 	p2.step(p2_buf)
