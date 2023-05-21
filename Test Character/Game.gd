@@ -196,7 +196,7 @@ func handle_inputs():
 	)
 	p2_buf = p2_inputs.slice(
 		max(0, p2_input_index - p2.input_buffer_len),
-		p1_input_index + 1
+		p2_input_index + 1
 	)
 	
 	p1.step(p1_buf)

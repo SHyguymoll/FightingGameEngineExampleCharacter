@@ -5,7 +5,7 @@ extends CharacterBody3D
 @export var health : float = 100
 @export var walk_speed : float = 1
 @export var jump_total : int = 1
-@export var jump_height : float = 3
+@export var jump_height : float = 10
 @export var gravity : float = -0.5
 @export var min_fall_vel : float = -6.5
 
@@ -458,12 +458,12 @@ func walk_check(input : Array, exclude: walk_directions) -> Array:
 	if walk == exclude:
 		return [current_state, step_timer]
 	match walk:
-		walk_directions.back:
+		walk_directions.forward:
 			if !too_close:
 				return [states.walk_forward, 0]
 		walk_directions.neutral:
 			return [states.idle, 0]
-		walk_directions.forward:
+		walk_directions.back:
 			if distance < 5:
 				return [states.walk_back, 0]
 	return [current_state, step_timer]
@@ -616,13 +616,11 @@ func action(inputs) -> void:
 	if velocity.y < 0 and is_on_floor():
 		velocity.y = 0
 	move_and_slide()
-	
 	match current_state:
 		states.jump_forward, states.jump_back, states.jump_neutral:
 			if is_on_floor():
-				match walk_value(decode_hash(inputs[-1][0])):
-					-1:
-						pass
+				var new_walk = walk_check(decode_hash(inputs[-1][0]), walk_directions.none)
+				update_state(new_walk[0], new_walk[1])
 
 func distance_check_enter(_area):
 	too_close = true
