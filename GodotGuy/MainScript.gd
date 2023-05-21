@@ -64,7 +64,7 @@ var attacks = {
 			"kbVert": 0.0,
 			"total_frame_length": 4,
 			"cancelable_after_frame": 3,
-			"hitboxes": "" #TODO
+			"hitboxes": "stand_a"
 		},
 	"stand_b":
 		{
@@ -74,7 +74,7 @@ var attacks = {
 			"kbVert": 0.0,
 			"total_frame_length": 6,
 			"cancelable_after_frame": 5,
-			"hitboxes": "" #TODO
+			"hitboxes": "stand_b"
 		},
 	"stand_c":
 		{
@@ -84,7 +84,7 @@ var attacks = {
 			"kbVert": 0.0,
 			"total_frame_length": 11,
 			"cancelable_after_frame": 8,
-			"hitboxes": "" #TODO
+			"hitboxes": "stand_c"
 		},
 	"crouch_a": #TODO
 		{
@@ -92,7 +92,7 @@ var attacks = {
 			"type": "mid",
 			"kbHori": 0.2,
 			"kbVert": 0.0,
-			"hitboxes": ""
+			"hitboxes": "crouch_a"
 		},
 	"crouch_b": #TODO
 		{
@@ -100,7 +100,7 @@ var attacks = {
 			"type": "mid",
 			"kbHori": 0.6,
 			"kbVert": 0.0,
-			"hitboxes": ""
+			"hitboxes": "crouch_b"
 		},
 	"crouch_c": #TODO
 		{
@@ -108,7 +108,7 @@ var attacks = {
 			"type": "mid",
 			"kbHori": 0.6,
 			"kbVert": 0.0,
-			"hitboxes": ""
+			"hitboxes": "crouch_c"
 		},
 	"jump_a": #TODO
 		{
@@ -116,7 +116,7 @@ var attacks = {
 			"type": "mid",
 			"kbHori": 0.2,
 			"kbVert": 0.0,
-			"hitboxes": ""
+			"hitboxes": "jump_a"
 		},
 	"jump_b": #TODO
 		{
@@ -124,7 +124,7 @@ var attacks = {
 			"type": "mid",
 			"kbHori": 0.6,
 			"kbVert": 0.0,
-			"hitboxes": ""
+			"hitboxes": "jump_b"
 		},
 	"jump_c": #TODO
 		{
@@ -132,7 +132,7 @@ var attacks = {
 			"type": "mid",
 			"kbHori": 0.6,
 			"kbVert": 0.0,
-			"hitboxes": ""
+			"hitboxes": "jump_c"
 		},
 }
 
@@ -278,6 +278,9 @@ var animations : Dictionary = {
 
 var current_animation: String
 var step_timer : int = 0
+
+func animation_ended() -> bool:
+	return step_timer >= animations[current_animation]["animation_length"]
 
 func anim() -> void:
 	$Sprite.frame_coords = animations[current_animation].get(step_timer, $Sprite.frame_coords)
@@ -546,6 +549,8 @@ func handle_input(buffer: Array) -> void:
 					"jump_c":
 						decision = states.jump_neutral
 						decision_timer = 0
+	if decision != state_current:
+		print(decision)
 	update_state(decision, decision_timer)
 
 func action(inputs) -> void:
