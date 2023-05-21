@@ -172,17 +172,17 @@ func handle_inputs():
 	
 	var calcHashes = get_input_hashes()
 	if len(p1_inputs) == 0:
-		p1_inputs.append([calcHashes[0], 1])
+		p1_inputs.append([calcHashes[0], 1, p1_input_index])
 	elif p1_inputs[p1_input_index][0] != calcHashes[0]:
-		p1_inputs.append([calcHashes[0], 1])
+		p1_inputs.append([calcHashes[0], 1, p1_input_index])
 		p1_input_index += 1
 	else:
 		p1_inputs[p1_input_index][1] += 1
 	
 	if len(p2_inputs) == 0:
-		p2_inputs.append([calcHashes[1], 1])
+		p2_inputs.append([calcHashes[1], 1, p2_input_index])
 	elif p2_inputs[p2_input_index][0] != calcHashes[1]:
-		p2_inputs.append([calcHashes[1], 1])
+		p2_inputs.append([calcHashes[1], 1, p2_input_index])
 		p2_input_index += 1
 	else:
 		p2_inputs[p2_input_index][1] += 1
