@@ -1,24 +1,26 @@
 class_name Fighter
 extends CharacterBody3D
 
-var input_buffer_len = 10
+@export var char_name : String = "Godot Guy"
+@export var health : float = 100
+@export var walk_speed : float = 1
+@export var jump_total : int = 1
+@export var gravity : float = -0.5
+@export var min_fall_vel : float = -6.5
 
-@export var char_name = "Godot Guy"
-@export var health = 100
-@export var walk_speed = 1
+var input_buffer_len : int = 10
 
-@export var gravity = -0.5
-@export var min_fall_vel = -6.5
+var distance : float = 0.0
+var right_facing : bool = true
+var damage_mult : float = 1.0
+var defense_mult : float = 1.0
+var kback_hori : float = 0.0
+var kback_vert : float = 0.0
+var jump_count : int = 0
 
-var distance = 0.0
-var right_facing = true
-var damage_mult = 1.0
-var defense_mult = 1.0
-var kback_hori = 0.0
-var kback_vert = 0.0
 
-var start_x_offset = 2
-const BUTTONCOUNT = 3
+var start_x_offset : float = 2
+const BUTTONCOUNT : int = 3
 
 #State transitions are handled by a FSM implemented as match statements
 enum states {
@@ -27,7 +29,7 @@ enum states {
 	walk_forward, walk_back, #lateral movement
 	jump_forward, jump_neutral, jump_back, #aerial movement
 	attack, post_attack, #handling attacks
-	block_high, block_low, get_up, #handling getting attacked well
+	block_high, block_low, block_air, get_up, #handling getting attacked well
 	hurt_high, hurt_low, hurt_crouch, #not handling getting attacked well
 	hurt_fall, hurt_lie, hurt_bounce, #REALLY not handling getting attacked well
 	}
@@ -134,7 +136,7 @@ var attacks = {
 		},
 }
 
-var current_attack
+var current_attack : String
 
 func attack_ended() -> bool:
 	return step_timer >= attacks[current_attack]["total_frame_length"]
@@ -156,7 +158,7 @@ func update_attack(new_attack: String) -> void:
 #	}
 
 #TODO: animations proper
-var animations = {
+var animations : Dictionary = {
 	"idle":
 		{
 			"animation_length": 1,
@@ -275,7 +277,7 @@ var animations = {
 }
 
 var current_animation: String
-var step_timer = 0
+var step_timer : int = 0
 
 func anim() -> void:
 	$Sprite.frame_coords = animations[current_animation].get(step_timer, $Sprite.frame_coords)
@@ -392,35 +394,45 @@ func decode_hash(inputHash: int) -> Array:
 			decodedHash[i] = true
 	return decodedHash
 
-func handle_attack(buffer: Array) -> void:
+func handle_attack(buffer: Array) -> Array:
 	if buffer[-1][0] < buttons.Up + buttons.Down + buttons.Left + buttons.Right:
-		return
+		return [state_current, step_timer]
 	var decoded_buffer = []
 	for input in buffer:
 		decoded_buffer.append([decode_hash(input[0]), input[1]])
+	var decision_timer = step_timer
 	match state_current:
 		states.idle, states.walk_back, states.walk_forward:
 			if decoded_buffer[-1][0][4]:
 				update_attack("stand_a")
+				decision_timer = 0
 			if decoded_buffer[-1][0][5]:
 				update_attack("stand_b")
+				decision_timer = 0
 			if decoded_buffer[-1][0][6]:
 				update_attack("stand_c")
+				decision_timer = 0
 		states.crouch:
 			if decoded_buffer[-1][0][4]:
 				update_attack("crouch_a")
+				decision_timer = 0
 			if decoded_buffer[-1][0][5]:
 				update_attack("crouch_b")
+				decision_timer = 0
 			if decoded_buffer[-1][0][6]:
 				update_attack("crouch_c")
+				decision_timer = 0
 		states.jump_neutral, states.jump_back, states.jump_forward:
 			if decoded_buffer[-1][0][4]:
 				update_attack("jump_a")
+				decision_timer = 0
 			if decoded_buffer[-1][0][5]:
 				update_attack("jump_b")
+				decision_timer = 0
 			if decoded_buffer[-1][0][6]:
 				update_attack("jump_c")
-	update_state(states.attack, 0)
+				decision_timer = 0
+	return [states.attack, decision_timer]
 
 func walk_check(inputs: Array) -> int: #returns -1 (trying to walk away), 0 (no walking inputs), and 1 (trying to walk towards)
 	return int(
@@ -433,73 +445,108 @@ func handle_input(buffer: Array) -> void:
 	var input = decode_hash(buffer[-1][0]) #end of buffer is newest button, first element is input hash
 	var held_time = buffer[-1][1]
 	var walk = walk_check(input)
+	var decision := state_current
+	var decision_timer := step_timer
 	match state_current:
 		states.idle:
 			match walk:
 				1:
 					if !too_close:
-						update_state(states.walk_forward, 0)
+						decision = states.walk_forward
+						decision_timer = 0
 				-1:
 					if distance < 5:
-						update_state(states.walk_back, 0)
+						decision = states.walk_back
+						decision_timer = 0
 			if (input[1]):
-				update_state(states.crouch, 0)
+				decision = states.crouch
+				decision_timer = 0
 			if (input[0]):
 				match walk:
 					1:
-						update_state(states.jump_forward, 0)
+						decision = states.jump_forward
+						decision_timer = 0
 					0:
-						update_state(states.jump_neutral, 0)
+						decision = states.jump_neutral
+						decision_timer = 0
 					-1:
-						update_state(states.jump_back, 0)
-			handle_attack(buffer)
+						decision = states.jump_back
+						decision_timer = 0
+			var attack_decision : Array = handle_attack(buffer)
+			if attack_decision != [state_current, step_timer]:
+				decision = attack_decision[0]
+				decision_timer = attack_decision[1]
 		states.walk_forward:
 			if walk != 1:
 				match walk:
 					0:
-						update_state(states.idle, 0)
+						decision = states.idle
+						decision_timer = 0
 					-1:
-						update_state(states.walk_back, 0)
+						decision = states.walk_back
+						decision_timer = 0
 			if (input[1]):
-				update_state(states.crouch, 0)
+				decision = states.crouch
+				decision_timer = 0
 			if (input[0]):
 				match walk:
 					1:
-						update_state(states.jump_forward, 0)
+						decision = states.jump_forward
+						decision_timer = 0
 					0:
-						update_state(states.jump_neutral, 0)
+						decision = states.jump_neutral
+						decision_timer = 0
 					-1:
-						update_state(states.jump_back, 0)
-			handle_attack(buffer)
+						decision = states.jump_back
+						decision_timer = 0
+			var attack_decision : Array = handle_attack(buffer)
+			if attack_decision != [state_current, step_timer]:
+				decision = attack_decision[0]
+				decision_timer = attack_decision[1]
 		states.walk_back:
 			if walk != -1:
 				match walk:
 					1:
-						update_state(states.walk_forward, 0)
+						if !too_close:
+							decision = states.walk_forward
+							decision_timer = 0
 					0:
-						update_state(states.idle, 0)
+						decision = states.idle
+						decision_timer = 0
 			if (input[1]):
-				update_state(states.crouch, 0)
+				decision = states.crouch
+				decision_timer = 0
 			if (input[0]):
 				match walk:
 					1:
-						update_state(states.jump_forward, 0)
+						decision = states.jump_forward
+						decision_timer = 0
 					0:
-						update_state(states.jump_neutral, 0)
+						decision = states.jump_neutral
+						decision_timer = 0
 					-1:
-						update_state(states.jump_back, 0)
-			handle_attack(buffer)
+						decision = states.jump_back
+						decision_timer = 0
+			var attack_decision : Array = handle_attack(buffer)
+			if attack_decision != [state_current, step_timer]:
+				decision = attack_decision[0]
+				decision_timer = attack_decision[1]
 		states.attack:
 			if attack_ended():
 				match current_attack:
 					"stand_a", "stand_b", "stand_c":
-						update_state(states.idle, 0)
+						decision = states.idle
+						decision_timer = 0
 					"crouch_a", "crouch_b", "crouch_c":
-						update_state(states.crouch, 0)
+						decision = states.crouch
+						decision_timer = 0
 					"jump_a", "jump_b":
-						update_state(states.idle, 0)
+						decision = states.idle
+						decision_timer = 0
 					"jump_c":
-						update_state(states.jump_neutral, 0)
+						decision = states.jump_neutral
+						decision_timer = 0
+	update_state(decision, decision_timer)
 
 func action(inputs) -> void:
 	handle_input(inputs)
@@ -508,30 +555,24 @@ func action(inputs) -> void:
 			current_animation = "idle"
 		states.crouch:
 			current_animation = "crouch"
-#	match state_current:
-#		states.Idle, states.Crouch:
-#			velocity.x = 0
-#		states.Walk_Forward:
-#			velocity.x = (1 if rightFacing else -1) * walkSpeed
-#		states.Walk_Back:
-#			velocity.x = (-1 if rightFacing else 1) * walkSpeed
-#			if tooClose:
-#				velocity.x += (-1 if rightFacing else 1) * walkSpeed
+		states.walk_forward:
+			velocity.x = (1 if right_facing else -1) * walk_speed
+		states.walk_back:
+			velocity.x = (-1 if right_facing else 1) * walk_speed
+			if too_close:
+				velocity.x += (-1 if right_facing else 1) * walk_speed
 #		states.Hurt_High, states.Hurt_Low, states.Hurt_Crouch, states.Block_High, states.Block_Low:
-#			velocity.x += (-1 if rightFacing else 1) * knockbackHorizontal
+#			velocity.x += (-1 if right_facing else 1) * knockbackHorizontal
 #		states.Hurt_Fall:
-#			velocity.x += (-1 if rightFacing else 1) * knockbackHorizontal
+#			velocity.x += (-1 if right_facing else 1) * knockbackHorizontal
 #			if animStep == 0:
 #				velocity.y += knockbackVertical
-#
-#	velocity.y += GRAVITY
-#	velocity.y = max(MIN_VEL, velocity.y)
-#	if velocity.y < 0 and is_on_floor():
-#		velocity.y = 0
-#
-#	set_velocity(velocity)
-#	set_up_direction(Vector3.UP)
-#	move_and_slide()
+		states.hurt_fall, states.jump_forward, states.jump_neutral, states.jump_back, states.block_air:
+			velocity.y += gravity
+			velocity.y = max(min_fall_vel, velocity.y)
+	if velocity.y < 0 and is_on_floor():
+		velocity.y = 0
+	move_and_slide()
 
 func distance_check_enter(_area):
 	too_close = true

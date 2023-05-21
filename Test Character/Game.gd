@@ -1,5 +1,20 @@
 extends Node3D
 
+#required variables from Content.gd
+var p1
+var p2
+var stage
+
+#required variables from InputHandle.gd
+var p1_buttons = [false, false, false, false, false, false, false, false, false, false]
+var p2_buttons = [false, false, false, false, false, false, false, false, false, false]
+
+var p1_inputs : Array = []
+var p2_inputs : Array = []
+var p1_input_index : int = 0
+var p2_input_index : int = 0
+
+
 enum statesBase {
 	Idle = 3,
 	WalkForward,
@@ -14,17 +29,6 @@ const MOVEMENTBOUNDX = 8
 
 @export var player_to_test : PackedScene
 @export var scene_to_test : PackedScene
-var p1
-var p2
-var stage
-
-var p1_buttons = [false, false, false, false, false, false, false, false, false, false]
-var p2_buttons = [false, false, false, false, false, false, false, false, false, false]
-
-var p1_inputs : Array = []
-var p2_inputs : Array = []
-var p1_input_index : int = 0
-var p2_input_index : int = 0
 
 func make_hud():
 	$HUD/P1Health.max_value = p1.health
