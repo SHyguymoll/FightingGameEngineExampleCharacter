@@ -14,6 +14,11 @@ config/name="Example Character"
 run/main_scene="res://Test Character/TestCharacter.tscn"
 config/features=PackedStringArray("4.0")
 
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true

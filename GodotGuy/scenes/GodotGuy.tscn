@@ -49,15 +49,17 @@ size = Vector3(1.46398, 1.48125, 1)
 script = ExtResource("53")
 
 [node name="Sprite" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.30447, 0)
 texture = ExtResource("2_86yo0")
 hframes = 9
 vframes = 6
 
 [node name="GroundCollision" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.20723, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0972432, 0)
 shape = SubResource("BoxShape3D_38jcs")
 
 [node name="Hurtboxes" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.30447, 0)
 collision_layer = 0
 collision_mask = 0
 
@@ -82,6 +84,7 @@ shape = SubResource("BoxShape3D_qfdv8")
 disabled = true
 
 [node name="Hitboxes" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.30447, 0)
 
 [node name="StandA" type="CollisionShape3D" parent="Hitboxes"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.136681, -0.533908, 0)
