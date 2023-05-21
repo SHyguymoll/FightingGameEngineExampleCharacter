@@ -86,8 +86,7 @@ func camera_control(mode: int):
 			$Camera3D.position.x = p2.position.x
 			$Camera3D.position.y = p2.position.y + 1
 			$Camera3D.position.z = 1.5
-	$Camera3D.position = clamp(
-		$Camera3D.position,
+	$Camera3D.position.clamp(
 		Vector3(-CAMERAMAXX, 0, $Camera3D.position.z),
 		Vector3(CAMERAMAXX, CAMERAMAXY, $Camera3D.position.z)
 	)
