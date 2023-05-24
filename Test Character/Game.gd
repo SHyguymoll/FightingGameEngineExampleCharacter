@@ -243,9 +243,6 @@ func handle_inputs():
 	p1.step(p1_buf, p1_input_index)
 	p2.step(p2_buf, p2_input_index)
 
-const HALFPI = 180
-const TURNAROUND_ANIMSTEP = 3
-
 func character_positioning():
 	p1.position.x = clamp(p1.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
 	p2.position.x = clamp(p2.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)

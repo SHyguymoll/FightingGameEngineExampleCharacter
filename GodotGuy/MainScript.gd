@@ -4,7 +4,7 @@ extends CharacterBody3D
 @export var char_name : String = "Godot Guy"
 @export var health : float = 100
 @export var walk_speed : float = 1
-@export var jump_total : int = 1
+@export var jump_total : int = 2
 @export var jump_height : float = 10
 @export var gravity : float = -0.5
 @export var min_fall_vel : float = -6.5
@@ -231,6 +231,11 @@ var animations : Dictionary = {
 			24: Vector2i(4,0),
 			29: Vector2i(3,0),
 			34: Vector2i(2,0)
+		},
+	"jump":
+		{
+			"animation_length": 1,
+			0: Vector2i(0,0),
 		},
 	"stand_a":
 		{
@@ -468,7 +473,7 @@ func button_pressed(inputs: Dictionary, input: String):
 	return inputs[input][-1][1]
 
 func button_held(inputs: Dictionary, input: String, length: int):
-	return inputs[input][-1][0] >= length
+	return inputs[input][-1][0] >= length and inputs[input][-1][1]
 
 func handle_attack(buffer: Dictionary) -> Array:
 	if (
@@ -552,9 +557,12 @@ func walk_check(input : Dictionary, exclude: walk_directions) -> Array:
 				return [states.walk_back, 0]
 	return [current_state, step_timer]
 
-func jump_check(input: Dictionary) -> Array:
-	if button_pressed(input, "up"):
-		match walk_value(input):
+func jump_check(input: Dictionary, exclude: walk_directions) -> Array:
+	if button_held(input, "up", 4):
+		var dir = walk_value(input)
+		if dir == exclude:
+			return [current_state, step_timer]
+		match dir:
 			walk_directions.forward:
 				return [states.jump_forward, 0]
 			walk_directions.neutral:
@@ -594,7 +602,7 @@ func handle_input(buffer: Dictionary) -> void:
 			if button_pressed(input, "down"):
 				decision = states.crouch
 				decision_timer = 0
-			jump_decision = jump_check(input)
+			jump_decision = jump_check(input, walk_directions.none)
 			if jump_decision != [current_state, step_timer]:
 				decision = jump_decision[0]
 				decision_timer = jump_decision[1]
@@ -615,7 +623,7 @@ func handle_input(buffer: Dictionary) -> void:
 			if button_pressed(input, "down"):
 				decision = states.crouch
 				decision_timer = 0
-			jump_decision = jump_check(input)
+			jump_decision = jump_check(input, walk_directions.none)
 			if jump_decision != [current_state, step_timer]:
 				decision = jump_decision[0]
 				decision_timer = jump_decision[1]
@@ -631,7 +639,7 @@ func handle_input(buffer: Dictionary) -> void:
 			if button_pressed(input, "down"):
 				decision = states.crouch
 				decision_timer = 0
-			jump_decision = jump_check(input)
+			jump_decision = jump_check(input, walk_directions.none)
 			if jump_decision != [current_state, step_timer]:
 				decision = jump_decision[0]
 				decision_timer = jump_decision[1]
@@ -639,7 +647,29 @@ func handle_input(buffer: Dictionary) -> void:
 			if attack_decision != [current_state, step_timer]:
 				decision = attack_decision[0]
 				decision_timer = attack_decision[1]
-		states.jump_forward, states.jump_neutral, states.jump_back:
+		states.jump_forward:
+			jump_decision = jump_check(input, walk_directions.forward)
+			if jump_decision != [current_state, step_timer]:
+				decision = jump_decision[0]
+				decision_timer = jump_decision[1]
+			attack_decision = handle_jump_attack(buffer)
+			if attack_decision != [current_state, step_timer]:
+				decision = attack_decision[0]
+				decision_timer = attack_decision[1]
+		states.jump_neutral:
+			jump_decision = jump_check(input, walk_directions.neutral)
+			if jump_decision != [current_state, step_timer]:
+				decision = jump_decision[0]
+				decision_timer = jump_decision[1]
+			attack_decision = handle_jump_attack(buffer)
+			if attack_decision != [current_state, step_timer]:
+				decision = attack_decision[0]
+				decision_timer = attack_decision[1]
+		states.jump_back:
+			jump_decision = jump_check(input, walk_directions.back)
+			if jump_decision != [current_state, step_timer]:
+				decision = jump_decision[0]
+				decision_timer = jump_decision[1]
 			attack_decision = handle_jump_attack(buffer)
 			if attack_decision != [current_state, step_timer]:
 				decision = attack_decision[0]
@@ -704,10 +734,23 @@ func action(buffer : Dictionary, cur_index: int) -> void:
 			attempt_animation_reset()
 			velocity.x = (-1 if right_facing else 1) * walk_speed
 		states.jump_forward, states.jump_back, states.jump_neutral:
-			if jump_count > 0 and last_used_upward_index != current_index:
-				jump_count -= 1
-				last_used_upward_index = current_index
-				velocity.y += jump_height
+			current_animation = "jump"
+			if (jump_count > 0 and
+				last_used_upward_index != current_index and
+				buffer.up[-2][1] != buffer.up[-1][1] and
+				buffer.up[-1][1]):
+					jump_count -= 1
+					last_used_upward_index = current_index
+					velocity.y = jump_height
+					var jump = jump_check(buffer, walk_directions.none)
+					current_state = jump[0]
+					step_timer = jump[1]
+		states.jump_forward:
+			velocity.x = (1 if right_facing else -1) * walk_speed
+		states.jump_back:
+			velocity.x = (1 if right_facing else -1) * walk_speed
+		states.jump_neutral:
+			velocity.x = 0
 		states.attack, states.jump_attack:
 			current_animation = current_attack
 		states.hurt_high:
@@ -743,11 +786,18 @@ func action(buffer : Dictionary, cur_index: int) -> void:
 	match current_state:
 		states.jump_forward, states.jump_back, states.jump_neutral, states.jump_attack:
 			if is_on_floor():
+				last_used_upward_index = -1
 				var new_walk = walk_check(
 					slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up)),
 					walk_directions.none
 				)
 				update_state(new_walk[0], new_walk[1])
+		states.block_high, states.block_low, states.block_air:
+			stun_time -= 1
+		states.hurt_high, states.hurt_low, states.hurt_crouch:
+			stun_time -= 1
+		states.hurt_fall, states.hurt_lie:
+			stun_time -= 1
 
 func reset_facing():
 	if distance < 0:
