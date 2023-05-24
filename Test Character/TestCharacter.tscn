@@ -24,7 +24,6 @@ size = 3.5
 layer = 10
 
 [node name="P1Char" type="Label" parent="HUD"]
-anchors_preset = -1
 offset_top = 192.0
 offset_right = 495.0
 offset_bottom = 272.0
@@ -33,16 +32,15 @@ theme_override_font_sizes/font_size = 64
 text = "Player 1 Character"
 
 [node name="P1Inputs" type="Label" parent="HUD"]
-anchors_preset = -1
 offset_top = 272.0
 offset_right = 495.0
 offset_bottom = 336.0
 theme_override_fonts/font = ExtResource("2_jjmwk")
-theme_override_font_sizes/font_size = 48
+theme_override_font_sizes/font_size = 24
 text = "0"
 
 [node name="P2Char" type="Label" parent="HUD"]
-anchors_preset = -1
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -495.0
@@ -55,7 +53,7 @@ text = "Player 2 Character"
 horizontal_alignment = 2
 
 [node name="P2Inputs" type="Label" parent="HUD"]
-anchors_preset = -1
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -490.0
@@ -63,7 +61,7 @@ offset_top = 274.0
 offset_bottom = 338.0
 grow_horizontal = 0
 theme_override_fonts/font = ExtResource("2_jjmwk")
-theme_override_font_sizes/font_size = 48
+theme_override_font_sizes/font_size = 24
 text = "0"
 horizontal_alignment = 2
 

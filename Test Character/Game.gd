@@ -9,18 +9,22 @@ var stage
 var p1_buttons = [false, false, false, false, false, false, false, false, false, false]
 var p2_buttons = [false, false, false, false, false, false, false, false, false, false]
 
-var p1_inputs : Array = []
-var p2_inputs : Array = []
+var p1_inputs : Dictionary = {
+	up=[[0, false]],
+	down=[[0, false]],
+	left=[[0, false]],
+	right=[[0, false]],
+}
+
+var p2_inputs : Dictionary = {
+	up=[[0, false]],
+	down=[[0, false]],
+	left=[[0, false]],
+	right=[[0, false]],
+}
+
 var p1_input_index : int = 0
 var p2_input_index : int = 0
-
-
-enum statesBase {
-	Idle = 3,
-	WalkForward,
-	WalkBack,
-	Crouch,
-}
 
 @export var cameraMode = 0
 const CAMERAMAXX = 6
@@ -39,15 +43,21 @@ func make_hud():
 	$HUD/P2Char.text = p2.char_name
 
 func init_fighters():
+	for i in range(p1.BUTTONCOUNT):
+		p1_inputs["button" + str(i)] = [[0, false]]
 	p1.position = Vector3(p1.start_x_offset * -1,0,0)
 	p1.right_facing = true
 	p1.update_state(p1.state_start, 0)
 	p1.initialize_boxes(true)
+	p1.char_name += " p1"
 	
+	for i in range(p2.BUTTONCOUNT):
+		p2_inputs["button" + str(i)] = [[0, false]]
 	p2.position = Vector3(p2.start_x_offset,0,0)
 	p2.right_facing = false
 	p2.update_state(p2.state_start, 0)
 	p2.initialize_boxes(false)
+	p2.char_name += " p2"
 
 func _ready():
 	add_child(scene_to_test.instantiate())
@@ -105,22 +115,35 @@ func attack_value(attackHash: int) -> String:
 	("Ø" if bool((attackHash >> 4) % 2) else "0") + \
 	("Ø " if bool((attackHash >> 5) % 2) else "0 ")
 
-func build_inputs_tracked() -> void:
-	var latestInputs = p1_inputs.slice(max(0,p1_input_index - p1.input_buffer_len), p1_input_index + 1)
-	$HUD/P1Inputs.text = ""
-	for input in latestInputs:
-		if input[0] < 0:
-			return
-		$HUD/P1Inputs.text += directionDictionary[input[0] % 16] + attack_value(input[0] >> 4) + str(input[1]) + "\n"
-	
-	latestInputs = p2_inputs.slice(max(0,p2_input_index - p2.input_buffer_len), p2_input_index + 1)
-	$HUD/P2Inputs.text = ""
-	for input in latestInputs:
-		if input[0] < 0:
-			return
-		$HUD/P2Inputs.text += str(input[1]) + attack_value(input[0] >> 4) + directionDictionary[input[0] % 16] + "\n"
+func slice_input_dictionary(input_dict: Dictionary, from: int, to: int):
+	var ret_dict = {
+		up=input_dict["up"].slice(from, to),
+		down=input_dict["down"].slice(from, to),
+		left=input_dict["left"].slice(from, to),
+		right=input_dict["right"].slice(from, to),
+	}
+	var ret_dict_button_count = len(input_dict) - 4
+	for i in range(ret_dict_button_count):
+		ret_dict["button" + str(i)] = input_dict["button" + str(i)].slice(from, to)
+	return ret_dict
 
-func get_input_hashes() -> Array: return [ #convert to hash to send less data (a single int compared to an array)
+func build_inputs_tracked() -> void:
+	var latest_input_set = slice_input_dictionary(p1_inputs, max(0,p1_input_index - p1.input_buffer_len), p1_input_index + 1)
+	$HUD/P1Inputs.text = ""
+	for i in range(len(latest_input_set.up)):
+		for button in latest_input_set:
+			$HUD/P1Inputs.text += str(latest_input_set[button][i])
+		$HUD/P1Inputs.text += "\n"
+	
+	latest_input_set = slice_input_dictionary(p2_inputs, max(0,p2_input_index - p2.input_buffer_len), p2_input_index + 1)
+	$HUD/P2Inputs.text = ""
+	for i in range(len(latest_input_set.up)):
+		for button in latest_input_set:
+			$HUD/P2Inputs.text += str(latest_input_set[button][i])
+		$HUD/P2Inputs.text += "\n"
+
+#convert to hash to simplify comparisons
+func get_current_input_hashes() -> Array: return [
 	(int(p1_buttons[0]) * 1) + \
 	(int(p1_buttons[1]) * 2) + \
 	(int(p1_buttons[2]) * 4) + \
@@ -142,6 +165,28 @@ func get_input_hashes() -> Array: return [ #convert to hash to send less data (a
 	max(0, ((int(p2_buttons[8]) - int(p2.BUTTONCOUNT < 5)) * 256)) + \
 	max(0, ((int(p2_buttons[9]) - int(p2.BUTTONCOUNT < 6)) * 512))
 ]
+
+func generate_prior_input_hash(player_inputs: Dictionary):
+	var val = 0
+	var multiplier = 1
+	for inp in player_inputs:
+		if player_inputs[inp][-1][1]:
+			val += multiplier
+		multiplier *= 2
+	return val
+
+func increment_inputs(player_inputs: Dictionary):
+	for inp in player_inputs:
+		player_inputs[inp][-1][0] += 1
+
+func create_new_input_set(player_inputs: Dictionary, new_inputs: Array):
+	var ind = 0
+	for inp in player_inputs:
+		if new_inputs[ind] == player_inputs[inp][-1][1]: #if the same input is the same here
+			player_inputs[inp].append(player_inputs[inp][-1].duplicate()) #copy it over
+		else: #otherwise, this is a new input, so make a new entry
+			player_inputs[inp].append([1, new_inputs[ind]])
+		ind += 1
 
 func handle_inputs():
 	p1_buttons[0] = Input.is_action_pressed("first_up")
@@ -170,81 +215,46 @@ func handle_inputs():
 	for button in range(p2.BUTTONCOUNT):
 		p2_buttons[button + 4] = Input.is_action_pressed("second_button" + str(button))
 	
-	var calcHashes = get_input_hashes()
-	if len(p1_inputs) == 0:
-		p1_inputs.append([calcHashes[0], 1, p1_input_index])
-	elif p1_inputs[p1_input_index][0] != calcHashes[0]:
-		p1_inputs.append([calcHashes[0], 1, p1_input_index])
+	var calcHashes = get_current_input_hashes()
+	
+	if generate_prior_input_hash(p1_inputs) != calcHashes[0]:
+		create_new_input_set(p1_inputs, p1_buttons)
 		p1_input_index += 1
 	else:
-		p1_inputs[p1_input_index][1] += 1
+		increment_inputs(p1_inputs)
 	
-	if len(p2_inputs) == 0:
-		p2_inputs.append([calcHashes[1], 1, p2_input_index])
-	elif p2_inputs[p2_input_index][0] != calcHashes[1]:
-		p2_inputs.append([calcHashes[1], 1, p2_input_index])
+	if generate_prior_input_hash(p2_inputs) != calcHashes[1]:
+		create_new_input_set(p2_inputs, p2_buttons)
 		p2_input_index += 1
 	else:
-		p2_inputs[p2_input_index][1] += 1
+		increment_inputs(p2_inputs)
 	
 	build_inputs_tracked()
-	var p1_buf
-	var p2_buf
-	p1_buf = p1_inputs.slice(
-		max(0, p1_input_index - p1.input_buffer_len),
+	var p1_buf = slice_input_dictionary(
+		p1_inputs, max(0, p1_input_index - p1.input_buffer_len),
 		p1_input_index + 1
 	)
-	p2_buf = p2_inputs.slice(
+	var p2_buf = slice_input_dictionary(
+		p2_inputs,
 		max(0, p2_input_index - p2.input_buffer_len),
 		p2_input_index + 1
 	)
 	
-	p1.step(p1_buf)
-	p2.step(p2_buf)
+	p1.step(p1_buf, p1_input_index)
+	p2.step(p2_buf, p2_input_index)
 
 const HALFPI = 180
 const TURNAROUND_ANIMSTEP = 3
 
-#func characterActBasic():
-#	if player1.stateCurrent in statesBase:
-#		if player1.position < player2.position:
-#			if player1.rightFacing != true:
-#				player1.rightFacing = true
-#				if player1.stateCurrent == statesBase.Idle:
-#					player1.animStep = TURNAROUND_ANIMSTEP
-#				if player1.stateCurrent == statesBase.Crouch:
-#					player1.animStep = TURNAROUND_ANIMSTEP
-#		else:
-#			if player1.rightFacing != false:
-#				player1.rightFacing = false
-#				if player1.stateCurrent == statesBase.Idle:
-#					player1.animStep = TURNAROUND_ANIMSTEP
-#				if player1.stateCurrent == statesBase.Crouch:
-#					player1.animStep = TURNAROUND_ANIMSTEP
-#		player1.rotation_degrees.y = HALFPI * int(player1.rightFacing)
-#	if player2.stateCurrent in statesBase:
-#		if player2.position < player1.position:
-#			if player2.rightFacing != true:
-#				player2.rightFacing = true
-#				if player2.stateCurrent == statesBase.Idle:
-#					player2.animStep = TURNAROUND_ANIMSTEP
-#				if player2.stateCurrent == statesBase.Crouch:
-#					player2.animStep = TURNAROUND_ANIMSTEP
-#		else:
-#			if player2.rightFacing != false:
-#				player2.rightFacing = false
-#				if player2.stateCurrent == statesBase.Idle:
-#					player2.animStep = TURNAROUND_ANIMSTEP
-#				if player2.stateCurrent == statesBase.Crouch:
-#					player2.animStep = TURNAROUND_ANIMSTEP
-#		player2.rotation_degrees.y = HALFPI * int(player2.rightFacing)
-#	player1.position.x = clamp(player1.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
-#	player2.position.x = clamp(player2.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
-#	player1.distance = abs(player1.position.x - player2.position.x)
-#	player2.distance = abs(player1.position.x - player2.position.x)
-	
+func character_positioning():
+	p1.position.x = clamp(p1.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
+	p2.position.x = clamp(p2.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
+	p1.distance = p1.position.x - p2.position.x
+	p2.distance = p2.position.x - p1.position.x
+	p1.reset_facing()
+	p2.reset_facing()
 
 func _physics_process(_delta):
 	camera_control(cameraMode)
 	handle_inputs()
-#	characterActBasic()
+	character_positioning()
