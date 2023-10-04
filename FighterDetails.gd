@@ -1,4 +1,8 @@
 extends Resource
+
+# This script holds the details for the game to read when loading this character.
+# It should never run under any circumstances.
+
 var folder = "GodotGuy"
 
 var fighter_name = "Godot Guy"

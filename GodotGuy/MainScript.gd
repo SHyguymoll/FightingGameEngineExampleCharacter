@@ -1,6 +1,10 @@
 class_name Fighter
 extends CharacterBody3D
 
+# This script holds the main components of a Fighter, namely the attacks and state machine.
+# A Fighter has a step(...) function which is called by the game every physics frame.
+# step() is called with a buffer of inputs and the current index
+
 @export var char_name : String = "Godot Guy"
 @export var health : float = 100
 @export var walk_speed : float = 1

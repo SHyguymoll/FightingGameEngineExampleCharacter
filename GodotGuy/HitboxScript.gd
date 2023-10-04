@@ -1,5 +1,8 @@
 extends Area3D
 
+# This script controls hitboxes.
+# It is functionally similar to HurtboxScript.gd, but the separation makes it easier to parse.
+
 # Hitboxes and Hurtboxes are handled through a dictionary for easy reuse.
 # box format:
 #"<Name>":

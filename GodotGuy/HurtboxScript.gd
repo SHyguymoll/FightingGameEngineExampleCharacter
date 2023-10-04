@@ -1,6 +1,16 @@
 extends Area3D
 
-enum actions {set, add, remove}
+# This script controls hurtboxes.
+# It is functionally similar to HitboxScript.gd, but the separation makes it easier to parse.
+
+
+# Hitboxes and Hurtboxes are handled through a dictionary for easy reuse.
+# box format:
+#"<Name>":
+#	{
+#		"boxes": [<path>, ...],
+#		"extra": ... This one is up to whatever
+#	}
 
 var hurtboxes : Dictionary = {
 	"base": {
@@ -16,6 +26,8 @@ var hurtboxes : Dictionary = {
 		"boxes": ["JumpCPopUp"],
 	},
 }
+
+enum actions {set, add, remove}
 
 func update_hurtboxes(new_hurtboxes: Array[String], choice: actions) -> void:
 	match choice:
