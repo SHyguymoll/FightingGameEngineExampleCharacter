@@ -5,7 +5,7 @@ extends CharacterBody3D
 @export var health : float = 100
 @export var walk_speed : float = 1
 @export var jump_total : int = 2
-@export var jump_height : float = 10
+@export var jump_height : float = 11
 @export var gravity : float = -0.5
 @export var min_fall_vel : float = -6.5
 
@@ -680,6 +680,10 @@ func handle_input(buffer: Dictionary) -> void:
 					"stand_a", "stand_b", "stand_c":
 						decision = states.idle
 						decision_timer = 0
+				current_attack = ""
+		states.command_attack:
+			if basic_attack_ended(): #Lasts as long as its animation
+				match current_attack:
 					"crouch_a", "crouch_b", "crouch_c":
 						decision = states.crouch
 						decision_timer = 0
@@ -702,6 +706,18 @@ func handle_input(buffer: Dictionary) -> void:
 func attempt_animation_reset():
 	if animation_ended():
 		step_timer = 0
+
+func standable_stun_check(buffer):
+	if stun_time == 0:
+		var new_walk = walk_check(
+				slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up)),
+				walk_directions.none
+			)
+		update_state(new_walk[0], new_walk[1])
+
+func aerial_stun_check(buffer):
+	if is_on_floor():
+		standable_stun_check(buffer)
 
 func action(buffer : Dictionary, cur_index: int) -> void:
 	current_index = cur_index
@@ -792,12 +808,20 @@ func action(buffer : Dictionary, cur_index: int) -> void:
 					walk_directions.none
 				)
 				update_state(new_walk[0], new_walk[1])
-		states.block_high, states.block_low, states.block_air:
+		states.block_high, states.block_low:
 			stun_time -= 1
+			standable_stun_check(buffer)
+		states.block_air:
+			stun_time -= 1
+			if is_on_floor():
+				stun_time = 0
+			aerial_stun_check(buffer)
 		states.hurt_high, states.hurt_low, states.hurt_crouch:
 			stun_time -= 1
+			standable_stun_check(buffer)
 		states.hurt_fall, states.hurt_lie:
 			stun_time -= 1
+			aerial_stun_check(buffer)
 
 func reset_facing():
 	if distance < 0:
