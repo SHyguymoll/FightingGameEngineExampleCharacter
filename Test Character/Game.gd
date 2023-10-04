@@ -39,9 +39,22 @@ func make_hud():
 	$HUD/P1Health.max_value = p1.health
 	$HUD/P1Health.value = p1.health
 	$HUD/P1Char.text = p1.char_name
+	$HUD/P1State.text = p1.states.keys()[p1.current_state]
 	$HUD/P2Health.max_value = p2.health
 	$HUD/P2Health.value = p2.health
 	$HUD/P2Char.text = p2.char_name
+	$HUD/P2State.text = p2.states.keys()[p2.current_state]
+	
+
+func update_hud():
+	$HUD/P1Health.value = p1.health
+	$HUD/P1State.text = p1.states.keys()[p1.current_state]
+	if "attack" in $HUD/P1State.text:
+		$HUD/P1State.text += " : " + p1.current_attack
+	$HUD/P2Health.value = p2.health
+	$HUD/P2State.text = p2.states.keys()[p2.current_state]
+	if "attack" in $HUD/P2State.text:
+		$HUD/P2State.text += " : " + p2.current_attack
 
 func init_fighters():
 	for i in range(p1.BUTTONCOUNT):
@@ -70,9 +83,11 @@ func _ready():
 	add_child(p2)
 
 const ORTH_DIST = 1.328125
+const CAMERA_PERSPECTIVE = 0
+const CAMERA_ORTH = 1
 
 func camera_control(mode: int):
-	$Camera3D.projection = 1 if mode < 3 else 0 #0 = Perspective, 1 = Orthagonal
+	$Camera3D.projection = CAMERA_ORTH if mode < 3 else CAMERA_PERSPECTIVE
 	match mode:
 		#2d modes
 		0: #default
@@ -256,3 +271,4 @@ func _physics_process(_delta):
 	camera_control(cameraMode)
 	handle_inputs()
 	character_positioning()
+	update_hud()
