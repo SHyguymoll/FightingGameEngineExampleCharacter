@@ -32,7 +32,7 @@ enum states {
 	idle, crouch, #basic basics
 	walk_forward, walk_back, #lateral movement
 	jump_forward, jump_neutral, jump_back, #aerial movement
-	attack, jump_attack, #handling attacks
+	attack, command_attack, jump_attack, special_attack, #handling attacks
 	block_high, block_low, block_air, get_up, #handling getting attacked well
 	hurt_high, hurt_low, hurt_crouch, #not handling getting attacked well
 	hurt_fall, hurt_lie, hurt_bounce, #REALLY not handling getting attacked well
