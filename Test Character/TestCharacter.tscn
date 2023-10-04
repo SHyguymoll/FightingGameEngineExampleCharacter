@@ -11,7 +11,8 @@
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_a16kr")
-player_to_test = ExtResource("2_qa73f")
+player_test_one = ExtResource("2_qa73f")
+player_test_two = ExtResource("2_qa73f")
 scene_to_test = ExtResource("3_21y52")
 
 [node name="Camera3D" type="Camera3D" parent="."]

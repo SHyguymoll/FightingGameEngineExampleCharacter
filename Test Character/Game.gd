@@ -31,7 +31,8 @@ const CAMERAMAXX = 6
 const CAMERAMAXY = 10
 const MOVEMENTBOUNDX = 8
 
-@export var player_to_test : PackedScene
+@export var player_test_one : PackedScene
+@export var player_test_two : PackedScene
 @export var scene_to_test : PackedScene
 
 func make_hud():
@@ -61,8 +62,8 @@ func init_fighters():
 
 func _ready():
 	add_child(scene_to_test.instantiate())
-	p1 = player_to_test.instantiate()
-	p2 = player_to_test.instantiate()
+	p1 = player_test_one.instantiate()
+	p2 = player_test_two.instantiate()
 	make_hud()
 	init_fighters()
 	add_child(p1)
