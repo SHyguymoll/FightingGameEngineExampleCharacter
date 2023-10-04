@@ -19,6 +19,7 @@ var kback_hori : float = 0.0
 var kback_vert : float = 0.0
 var jump_count : int = 0
 var stun_time : int = 0
+var step_timer : int = 0
 
 var last_used_upward_index : int = -1
 var current_index : int = -1
@@ -40,7 +41,7 @@ enum states {
 var state_start := states.idle
 var current_state: states
 
-func update_state(new_state: states, new_animation_timer: int):
+func update_state(new_state: states, new_animation_timer: int = -1):
 	current_state = new_state
 	if new_animation_timer != -1:
 		step_timer = new_animation_timer
@@ -186,241 +187,6 @@ func ground_cancelled_attack_ended() -> bool:
 func update_attack(new_attack: String) -> void:
 	current_attack = new_attack
 
-# Animations are handled manually and controlled by the game engine during the physics_process step.
-# Therefore, all animations top out at 60 FPS, which is a small constraint for now.
-# animation format:
-#"<Name>":
-#	{
-#		"animation_length": <value>,
-#		<frame_number>: [<animation frame x>, <animation frame y>], ...,
-#		"extra": ... This one is up to whatever
-#	}
-
-#TODO: animations proper
-var animations : Dictionary = {
-	"idle":
-		{
-			"animation_length": 1,
-			0: Vector2i(0,0),
-		},
-	"crouch":
-		{
-			"animation_length": 1,
-			0: Vector2i(1,0),
-		},
-	"walk_right":
-		{
-			"animation_length": 39,
-			0: Vector2i(2,0),
-			4: Vector2i(3,0),
-			9: Vector2i(4,0),
-			14: Vector2i(5,0),
-			19: Vector2i(6,0),
-			24: Vector2i(7,0),
-			29: Vector2i(8,0),
-			34: Vector2i(0,0)
-		},
-	"walk_left":
-		{
-			"animation_length": 39,
-			0: Vector2i(0,0),
-			4: Vector2i(8,0),
-			9: Vector2i(7,0),
-			14: Vector2i(6,0),
-			19: Vector2i(5,0),
-			24: Vector2i(4,0),
-			29: Vector2i(3,0),
-			34: Vector2i(2,0)
-		},
-	"jump":
-		{
-			"animation_length": 1,
-			0: Vector2i(0,0),
-		},
-	"stand_a":
-		{
-			"animation_length": 4,
-			0: Vector2i(6,1),
-			2: Vector2i(7,1),
-			3: Vector2i(8,1),
-		},
-	"stand_b":
-		{
-			"animation_length": 6,
-			0: Vector2i(4,2),
-			2: Vector2i(5,2),
-			3: Vector2i(6,2),
-			4: Vector2i(7,2),
-			5: Vector2i(8,2),
-		},
-	"stand_c":
-		{
-			"animation_length": 11,
-			0: Vector2i(0,4),
-			2: Vector2i(1,4),
-			4: Vector2i(2,4),
-			5: Vector2i(3,4),
-			6: Vector2i(4,4),
-			9: Vector2i(5,4),
-			10: Vector2i(6,4),
-		},
-	"crouch_a":
-		{
-			"animation_length": 5,
-			0: Vector2i(0,1),
-			2: Vector2i(1,1),
-			3: Vector2i(2,1),
-		},
-	"crouch_b":
-		{
-			"animation_length": 7,
-			0: Vector2i(0,2),
-			2: Vector2i(1,2),
-			4: Vector2i(2,2),
-			5: Vector2i(3,2),
-		},
-	"crouch_c":
-		{
-			"animation_length": 10,
-			0: Vector2i(0,3),
-			1: Vector2i(1,3),
-			2: Vector2i(2,3),
-			5: Vector2i(3,3),
-			6: Vector2i(4,3),
-			7: Vector2i(5,3),
-			8: Vector2i(6,3),
-		},
-	"jump_a":
-		{
-			"animation_length": 1,
-			0: Vector2i(3,1),
-		},
-	"jump_b":
-		{
-			"animation_length": 8,
-			0: Vector2i(4,1),
-			3: Vector2i(5,1),
-		},
-	"jump_c":
-		{
-			"animation_length": 15,
-			0: Vector2i(0,5),
-			3: Vector2i(1,5),
-			7: Vector2i(2,5),
-			8: Vector2i(3,5),
-			12: Vector2i(0,0),
-		},
-	"block_high":
-		{
-			"animation_length": 1,
-			0: Vector2i(7,3),
-		},
-	"block_low":
-		{
-			"animation_length": 1,
-			0: Vector2i(8,3),
-		},
-	"block_air":
-		{
-			"animation_length": 1,
-			0: Vector2i(7,3),
-		},
-	"hurt_high":
-		{
-			"animation_length": 1,
-			0: Vector2i(7,4),
-		},
-	"hurt_low":
-		{
-			"animation_length": 1,
-			0: Vector2i(8,4),
-		},
-	"hurt_crouch":
-		{
-			"animation_length": 1,
-			0: Vector2i(7,5),
-		},
-	"hurt_fall":
-		{
-			"animation_length": 1,
-			0: Vector2i(5,5),
-		},
-	"hurt_lie":
-		{
-			"animation_length": 1,
-			0: Vector2i(6,5),
-		},
-	"get_up":
-		{
-			"animation_length": 15,
-			0: Vector2i(5,5),
-			7: Vector2i(8,0),
-			14: Vector2i(0,0),
-		},
-}
-
-var current_animation: String
-var step_timer : int = 0
-
-func animation_ended() -> bool:
-	return step_timer >= animations[current_animation]["animation_length"]
-
-func anim() -> void:
-	$Sprite.frame_coords = animations[current_animation].get(step_timer, $Sprite.frame_coords)
-
-# Hitboxes and Hurtboxes are handled through a dictionary for easy reuse.
-# box format:
-#"<Name>":
-#	{
-#		"boxes": [<path>, ...],
-#		"extra": ... This one is up to whatever
-#	}
-
-var hitboxes : Dictionary = {
-	"stand_a": {
-		"boxes": ["StandA"],
-	},
-	"stand_b": {
-		"boxes": ["StandB"],
-	},
-	"stand_c": {
-		"boxes": ["StandC"],
-	},
-	"crouch_a": {
-		"boxes": ["CrouchA"],
-	},
-	"crouch_b": {
-		"boxes": ["CrouchB"],
-	},
-	"crouch_c": {
-		"boxes": ["CrouchC"],
-	},
-	"jump_a": {
-		"boxes": ["JumpA"],
-	},
-	"jump_b": {
-		"boxes": ["JumpB"],
-	},
-	"jump_c": {
-		"boxes": ["JumpC"],
-	},
-}
-
-var hurtboxes : Dictionary = {
-	"base": {
-		"boxes": ["Base"],
-	},
-	"low": {
-		"boxes": ["Low"],
-	},
-	"pull_back": {
-		"boxes": ["StandBPullBack"],
-	},
-	"pop_up": {
-		"boxes": ["JumpCPopUp"],
-	},
-}
-
 enum actions {set, add, remove}
 
 func initialize_boxes(player: bool) -> void:
@@ -430,42 +196,6 @@ func initialize_boxes(player: bool) -> void:
 	else:
 		$Hurtboxes.collision_layer = 4
 		$Hitboxes.collision_mask = 2
-
-func update_hitboxes(new_hitboxes: Array[String], choice: actions) -> void:
-	match choice:
-		actions.set:
-			for hitbox in hitboxes:
-				for box in hitboxes[hitbox]["boxes"]:
-					(get_node("Hitboxes/{0}".format([box])) as CollisionShape3D).disabled = true
-			for new_hitbox in new_hitboxes:
-				for box in hitboxes[new_hitbox]["boxes"]:
-					(get_node("Hitboxes/{0}".format([box])) as CollisionShape3D).disabled = false
-		actions.add:
-			for new_hitbox in new_hitboxes:
-				for box in hitboxes[new_hitbox]["boxes"]:
-					(get_node("Hitboxes/{0}".format([box])) as CollisionShape3D).disabled = false
-		actions.remove:
-			for new_hitbox in new_hitboxes:
-				for box in hitboxes[new_hitbox]["boxes"]:
-					(get_node("Hitboxes/{0}".format([box])) as CollisionShape3D).disabled = true
-
-func update_hurtboxes(new_hurtboxes: Array[String], choice: actions) -> void:
-	match choice:
-		actions.set:
-			for hurtbox in hurtboxes:
-				for box in hurtboxes[hurtbox]["boxes"]:
-					(get_node("hurtboxes/{0}".format([box])) as CollisionShape3D).disabled = true
-			for new_hurtbox in new_hurtboxes:
-				for box in hurtboxes[new_hurtbox]["boxes"]:
-					(get_node("hurtboxes/{0}".format([box])) as CollisionShape3D).disabled = false
-		actions.add:
-			for new_hurtbox in new_hurtboxes:
-				for box in hurtboxes[new_hurtbox]["boxes"]:
-					(get_node("hurtboxes/{0}".format([box])) as CollisionShape3D).disabled = false
-		actions.remove:
-			for new_hurtbox in new_hurtboxes:
-				for box in hurtboxes[new_hurtbox]["boxes"]:
-					(get_node("hurtboxes/{0}".format([box])) as CollisionShape3D).disabled = true
 
 enum buttons {Up = 1, Down = 2, Left = 4, Right = 8, A = 16, B = 32, C = 64}
 
@@ -648,7 +378,7 @@ func handle_input(buffer: Dictionary) -> void:
 				decision = attack_decision[0]
 				decision_timer = attack_decision[1]
 		states.jump_forward:
-			jump_decision = jump_check(input, walk_directions.forward)
+			jump_decision = jump_check(input, walk_directions.none)
 			if jump_decision != [current_state, step_timer]:
 				decision = jump_decision[0]
 				decision_timer = jump_decision[1]
@@ -657,7 +387,7 @@ func handle_input(buffer: Dictionary) -> void:
 				decision = attack_decision[0]
 				decision_timer = attack_decision[1]
 		states.jump_neutral:
-			jump_decision = jump_check(input, walk_directions.neutral)
+			jump_decision = jump_check(input, walk_directions.none)
 			if jump_decision != [current_state, step_timer]:
 				decision = jump_decision[0]
 				decision_timer = jump_decision[1]
@@ -666,7 +396,7 @@ func handle_input(buffer: Dictionary) -> void:
 				decision = attack_decision[0]
 				decision_timer = attack_decision[1]
 		states.jump_back:
-			jump_decision = jump_check(input, walk_directions.back)
+			jump_decision = jump_check(input, walk_directions.none)
 			if jump_decision != [current_state, step_timer]:
 				decision = jump_decision[0]
 				decision_timer = jump_decision[1]
@@ -704,7 +434,7 @@ func handle_input(buffer: Dictionary) -> void:
 	update_state(decision, decision_timer)
 
 func attempt_animation_reset():
-	if animation_ended():
+	if $Sprite.animation_ended(step_timer):
 		step_timer = 0
 
 func standable_stun_check(buffer):
@@ -724,33 +454,33 @@ func action(buffer : Dictionary, cur_index: int) -> void:
 	handle_input(buffer)
 	match current_state:
 		states.idle:
-			current_animation = "idle"
+			$Sprite.current_animation = "idle"
 			velocity.x = 0
 			jump_count = jump_total
 			attempt_animation_reset()
 		states.crouch:
-			current_animation = "crouch"
+			$Sprite.current_animation = "crouch"
 			velocity.x = 0
 			jump_count = jump_total
 			attempt_animation_reset()
 		states.walk_forward:
 			if right_facing:
-				current_animation = "walk_right"
+				$Sprite.current_animation = "walk_right"
 			else:
-				current_animation = "walk_left"
+				$Sprite.current_animation = "walk_left"
 			jump_count = jump_total
 			attempt_animation_reset()
 			velocity.x = (1 if right_facing else -1) * walk_speed
 		states.walk_back:
 			if right_facing:
-				current_animation = "walk_left"
+				$Sprite.current_animation = "walk_left"
 			else:
-				current_animation = "walk_right"
+				$Sprite.current_animation = "walk_right"
 			jump_count = jump_total
 			attempt_animation_reset()
 			velocity.x = (-1 if right_facing else 1) * walk_speed
 		states.jump_forward, states.jump_back, states.jump_neutral:
-			current_animation = "jump"
+			$Sprite.current_animation = "jump"
 			if (jump_count > 0 and
 				last_used_upward_index != current_index and
 				buffer.up[-2][1] != buffer.up[-1][1] and
@@ -768,25 +498,25 @@ func action(buffer : Dictionary, cur_index: int) -> void:
 		states.jump_neutral:
 			velocity.x = 0
 		states.attack, states.jump_attack:
-			current_animation = current_attack
+			$Sprite.current_animation = current_attack
 		states.hurt_high:
-			current_animation = "hurt_high"
+			$Sprite.current_animation = "hurt_high"
 		states.hurt_low:
-			current_animation = "hurt_low"
+			$Sprite.current_animation = "hurt_low"
 		states.hurt_crouch:
-			current_animation = "hurt_crouch"
+			$Sprite.current_animation = "hurt_crouch"
 		states.hurt_fall:
-			current_animation = "hurt_fall"
+			$Sprite.current_animation = "hurt_fall"
 		states.hurt_lie:
-			current_animation = "hurt_lie"
+			$Sprite.current_animation = "hurt_lie"
 		states.get_up:
-			current_animation = "get_up"
+			$Sprite.current_animation = "get_up"
 		states.block_high:
-			current_animation = "block_high"
+			$Sprite.current_animation = "block_high"
 		states.block_low:
-			current_animation = "block_low"
+			$Sprite.current_animation = "block_low"
 		states.block_air:
-			current_animation = "block_air"
+			$Sprite.current_animation = "block_air"
 #		states.hurt_high, states.hurt_low, states.hurt_crouch, states.block_high, states.block_low:
 #			velocity.x += (-1 if right_facing else 1) * knockbackHorizontal
 #		states.Hurt_Fall, states.block_air:
@@ -832,5 +562,5 @@ func reset_facing():
 
 func step(inputs : Dictionary, cur_index: int) -> void:
 	action(inputs, cur_index)
-	anim()
+	$Sprite.anim(step_timer)
 	step_timer += 1
