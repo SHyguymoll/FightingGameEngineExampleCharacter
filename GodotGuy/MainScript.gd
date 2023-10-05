@@ -8,7 +8,7 @@ extends CharacterBody3D
 
 @export var char_name : String = "Godot Guy"
 @export var health : float = 100
-@export var walk_speed : float = 1
+@export var walk_speed : float = 2
 @export var jump_total : int = 2
 @export var jump_height : float = 11
 @export var gravity : float = -0.5
