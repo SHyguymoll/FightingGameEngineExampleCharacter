@@ -3,7 +3,7 @@ extends CharacterBody3D
 
 # This script holds the main components of a Fighter, namely the attacks and state machine.
 # A Fighter has several variables and methods which are accessed and called by the game.
-# input_step() is called with a buffer of inputs and the current index
+# input_step() is called with the latest buffer of inputs
 # damage_step() is called with the details of the attack, if it happened
 
 @export var char_name : String = "Godot Guy"
