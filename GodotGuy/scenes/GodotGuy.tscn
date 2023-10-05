@@ -1,7 +1,7 @@
 [gd_scene load_steps=21 format=3 uid="uid://kquoyj34deus"]
 
 [ext_resource type="Texture2D" uid="uid://bh8asn38oyfgq" path="res://GodotGuy/SpriteSheet.png" id="2_86yo0"]
-[ext_resource type="Script" path="res://GodotGuy/AnimationScript.gd" id="3_wjjl3"]
+[ext_resource type="Script" path="res://GodotGuy/AnimationScript_Sprite.gd" id="3_mm4t4"]
 [ext_resource type="Script" path="res://GodotGuy/HurtboxScript.gd" id="4_5pucv"]
 [ext_resource type="Script" path="res://GodotGuy/HitboxScript.gd" id="5_b7x6q"]
 [ext_resource type="Script" path="res://GodotGuy/MainScript.gd" id="53"]
@@ -60,7 +60,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.30447, 0)
 texture = ExtResource("2_86yo0")
 hframes = 9
 vframes = 6
-script = ExtResource("3_wjjl3")
+script = ExtResource("3_mm4t4")
 
 [node name="GroundCollision1" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0972432, 0)

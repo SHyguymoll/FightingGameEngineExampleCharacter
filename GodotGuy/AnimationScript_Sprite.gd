@@ -1,5 +1,12 @@
 extends Sprite3D
 
+# This script is part of a set of scripts which provide the look of the Fighter.
+# All AnimationScripts must have the following variables and methods:
+# a "current_animation" variable which holds a string
+# an "animation_ended" method which returns a boolean value
+# and a "step" method which takes in an integer value and updates the visuals
+# In specific, this script is used if the visual aspects are handled \
+# by a Sprite node, be it Sprite2D or Sprite3D.
 # For Sprites, Animations are handled manually and controlled by the game engine
 # during the physics_process step.
 # Therefore, all animations top out at 60 FPS, which is a small constraint for now.
