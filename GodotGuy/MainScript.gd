@@ -12,6 +12,7 @@ extends CharacterBody3D
 @export var jump_height : float = 11
 @export var gravity : float = -0.5
 @export var min_fall_vel : float = -6.5
+@onready var ANIM_NODE : Node = $Sprite
 
 var input_buffer_len : int = 10
 
@@ -475,7 +476,7 @@ func handle_input(buffer: Dictionary) -> void:
 	update_state(decision, decision_timer)
 
 func attempt_animation_reset():
-	if $Sprite.animation_ended(step_timer):
+	if ANIM_NODE.animation_ended(step_timer):
 		step_timer = 0
 
 func standable_stun_check(buffer):
@@ -500,33 +501,33 @@ func action(buffer : Dictionary, cur_index: int) -> void:
 	handle_input(buffer)
 	match current_state:
 		states.idle:
-			$Sprite.current_animation = "idle"
+			ANIM_NODE.current_animation = "idle"
 			velocity.x = 0
 			jump_count = jump_total
 			attempt_animation_reset()
 		states.crouch:
-			$Sprite.current_animation = "crouch"
+			ANIM_NODE.current_animation = "crouch"
 			velocity.x = 0
 			jump_count = jump_total
 			attempt_animation_reset()
 		states.walk_forward:
 			if right_facing:
-				$Sprite.current_animation = "walk_right"
+				ANIM_NODE.current_animation = "walk_right"
 			else:
-				$Sprite.current_animation = "walk_left"
+				ANIM_NODE.current_animation = "walk_left"
 			jump_count = jump_total
 			attempt_animation_reset()
 			velocity.x = (1 if right_facing else -1) * walk_speed
 		states.walk_back:
 			if right_facing:
-				$Sprite.current_animation = "walk_left"
+				ANIM_NODE.current_animation = "walk_left"
 			else:
-				$Sprite.current_animation = "walk_right"
+				ANIM_NODE.current_animation = "walk_right"
 			jump_count = jump_total
 			attempt_animation_reset()
 			velocity.x = (-1 if right_facing else 1) * walk_speed
 		states.jump_forward, states.jump_back, states.jump_neutral:
-			$Sprite.current_animation = "jump"
+			ANIM_NODE.current_animation = "jump"
 			if (jump_count > 0 and button_just_pressed(buffer, "up")):
 					jump_count -= 1
 					velocity.y = jump_height
@@ -541,40 +542,40 @@ func action(buffer : Dictionary, cur_index: int) -> void:
 				states.jump_neutral:
 					velocity.x = 0
 		states.attack:
-			$Sprite.current_animation = current_attack
+			ANIM_NODE.current_animation = current_attack
 			velocity.x = 0
 		states.command_attack:
-			$Sprite.current_animation = current_attack
+			ANIM_NODE.current_animation = current_attack
 			velocity.x = 0
 		states.jump_attack:
-			$Sprite.current_animation = current_attack
+			ANIM_NODE.current_animation = current_attack
 		states.hurt_high:
-			$Sprite.current_animation = "hurt_high"
+			ANIM_NODE.current_animation = "hurt_high"
 			velocity.x += (-1 if right_facing else 1) * kback_hori
 		states.hurt_low:
-			$Sprite.current_animation = "hurt_low"
+			ANIM_NODE.current_animation = "hurt_low"
 			velocity.x += (-1 if right_facing else 1) * kback_hori
 		states.hurt_crouch:
-			$Sprite.current_animation = "hurt_crouch"
+			ANIM_NODE.current_animation = "hurt_crouch"
 			velocity.x += (-1 if right_facing else 1) * kback_hori
 		states.hurt_fall:
-			$Sprite.current_animation = "hurt_fall"
+			ANIM_NODE.current_animation = "hurt_fall"
 			velocity.x += (-1 if right_facing else 1) * kback_hori
 			if stun_time_current == stun_time_start:
 				velocity.y += kback_vert
 		states.hurt_lie:
-			$Sprite.current_animation = "hurt_lie"
+			ANIM_NODE.current_animation = "hurt_lie"
 			velocity.x += (-1 if right_facing else 1) * kback_hori
 		states.get_up:
-			$Sprite.current_animation = "get_up"
+			ANIM_NODE.current_animation = "get_up"
 		states.block_high:
-			$Sprite.current_animation = "block_high"
+			ANIM_NODE.current_animation = "block_high"
 			velocity.x += (-1 if right_facing else 1) * kback_hori
 		states.block_low:
-			$Sprite.current_animation = "block_low"
+			ANIM_NODE.current_animation = "block_low"
 			velocity.x += (-1 if right_facing else 1) * kback_hori
 		states.block_air:
-			$Sprite.current_animation = "block_air"
+			ANIM_NODE.current_animation = "block_air"
 			velocity.x += (-1 if right_facing else 1) * kback_hori
 			if stun_time_current == stun_time_start:
 				velocity.y += kback_vert
@@ -621,5 +622,5 @@ func reset_facing():
 
 func step(inputs : Dictionary, cur_index: int) -> void:
 	action(inputs, cur_index)
-	$Sprite.anim(step_timer)
+	ANIM_NODE.anim(step_timer)
 	step_timer += 1
