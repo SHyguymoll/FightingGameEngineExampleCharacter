@@ -656,7 +656,7 @@ const BLOCK_AWAY_LOW = [-1, 1, 1, -1]
 
 const DEPENDENT = "dependent"
 
-func handle_attacked(input : Dictionary, attack : Dictionary, ground_block_rules : Array, air_block_rules : Array, block_fail_state_ground, block_fail_state_air):
+func try_block(input : Dictionary, attack : Dictionary, ground_block_rules : Array, air_block_rules : Array, block_fail_state_ground, block_fail_state_air):
 	var directions = [button_pressed(input, "up"),button_pressed(input, "down"),button_pressed(input, "left"),button_pressed(input, "right")]
 	if not is_in_jump_state():
 		for check_input in range(len(directions)):
@@ -689,8 +689,8 @@ func damage_step(inputs : Dictionary, attack : Dictionary):
 	var input = slice_input_dictionary(inputs, len(inputs.up) - 1, len(inputs.up))
 	match attack["type"]:
 		"mid":
-			handle_attacked(input, attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, DEPENDENT, states.hurt_fall)
+			try_block(input, attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, DEPENDENT, states.hurt_fall)
 		"high":
-			handle_attacked(input, attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, DEPENDENT, states.hurt_bounce)
+			try_block(input, attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, DEPENDENT, states.hurt_bounce)
 		"low":
-			handle_attacked(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, DEPENDENT, states.hurt_fall)
+			try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, DEPENDENT, states.hurt_fall)
