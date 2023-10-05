@@ -455,7 +455,7 @@ func handle_input(buffer: Dictionary) -> void:
 		decision_timer = 0
 		kback_hori = 0.6
 		kback_vert = 0
-		stun_time_start = 5
+		stun_time_start = 15
 		stun_time_current = stun_time_start
 	if Input.is_action_just_pressed("debug_hurt_knockdown"):
 		decision = states.hurt_fall
@@ -465,11 +465,11 @@ func handle_input(buffer: Dictionary) -> void:
 		stun_time_start = 50
 		stun_time_current = stun_time_start
 	if Input.is_action_just_pressed("debug_hurt_bounce"):
-		decision = states.hurt_high
+		decision = states.hurt_bounce
 		decision_timer = 0
-		kback_hori = 0
-		kback_vert = 0
-		stun_time_start = 5
+		kback_hori = 0.25
+		kback_vert = -2
+		stun_time_start = 30
 		stun_time_current = stun_time_start
 	update_state(decision, decision_timer)
 
