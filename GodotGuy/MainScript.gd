@@ -548,21 +548,24 @@ func action(buffer : Dictionary) -> void:
 			ANIM_NODE.current_animation = current_attack
 		states.hurt_high:
 			ANIM_NODE.current_animation = "hurt_high"
-			velocity.x += (-1 if right_facing else 1) * kback_hori
+			if stun_time_current == stun_time_start:
+				velocity.x += (-1 if right_facing else 1) * kback_hori
 		states.hurt_low:
 			ANIM_NODE.current_animation = "hurt_low"
-			velocity.x += (-1 if right_facing else 1) * kback_hori
+			if stun_time_current == stun_time_start:
+				velocity.x += (-1 if right_facing else 1) * kback_hori
 		states.hurt_crouch:
 			ANIM_NODE.current_animation = "hurt_crouch"
-			velocity.x += (-1 if right_facing else 1) * kback_hori
-		states.hurt_fall:
-			ANIM_NODE.current_animation = "hurt_fall"
-			velocity.x += (-1 if right_facing else 1) * kback_hori
 			if stun_time_current == stun_time_start:
+				velocity.x += (-1 if right_facing else 1) * kback_hori
+		states.hurt_fall, states.hurt_bounce:
+			ANIM_NODE.current_animation = "hurt_fall"
+			if stun_time_current == stun_time_start:
+				velocity.x += (-1 if right_facing else 1) * kback_hori
 				velocity.y += kback_vert
 		states.hurt_lie:
 			ANIM_NODE.current_animation = "hurt_lie"
-			velocity.x += (-1 if right_facing else 1) * kback_hori
+			velocity.x = velocity.x * GROUND_SLIDE_FRICTION
 		states.get_up:
 			ANIM_NODE.current_animation = "get_up"
 		states.block_high:
