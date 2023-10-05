@@ -202,14 +202,6 @@ func create_new_input_set(player_inputs: Dictionary, new_inputs: Array):
 			player_inputs[inp].append([1, new_inputs[ind]])
 		ind += 1
 
-func handle_damage():
-	var p1_hit = p1.return_overlaps()
-	var p2_hit = p2.return_overlaps()
-	if p1_hit:
-		p1.damage_step(p2.attacks[p2.current_attack])
-	if p2_hit:
-		p2.damage_step(p1.attacks[p1.current_attack])
-
 func handle_inputs():
 	p1_buttons[0] = Input.is_action_pressed("first_up")
 	p1_buttons[1] = Input.is_action_pressed("first_down")
@@ -262,6 +254,13 @@ func handle_inputs():
 	)
 	build_inputs_tracked(p1_buf, p2_buf)
 	
+	var p1_hit = p1.return_overlaps()
+	var p2_hit = p2.return_overlaps()
+	if p1_hit:
+		p1.damage_step(p1_buf, p2.attacks[p2.current_attack])
+	if p2_hit:
+		p2.damage_step(p2_buf, p1.attacks[p1.current_attack])
+	
 	p1.input_step(p1_buf)
 	p2.input_step(p2_buf)
 
@@ -275,7 +274,6 @@ func character_positioning():
 
 func _physics_process(_delta):
 	camera_control(cameraMode)
-	handle_damage()
 	handle_inputs()
 	character_positioning()
 	update_hud()
