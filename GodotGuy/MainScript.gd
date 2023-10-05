@@ -648,6 +648,13 @@ func input_step(inputs : Dictionary) -> void:
 #			"hitboxes": "stand_a"
 #		}
 
+func take_damage(attack):
+	health -= attack["damage"]
+	stun_time_start = attack["stun_time"]
+	stun_time_current = stun_time_start
+	kback_hori = attack["kbHori"]
+	kback_vert = attack["kbVert"]
+
 # block rule arrays: [up, down, left, right], 1 means valid, 0 means ignored, -1 means invalid
 const BLOCK_ANY = [1, 1, 1, 1]
 const BLOCK_AWAY_ANY = [0, 1, 0, -1]
@@ -663,9 +670,11 @@ func try_block(input : Dictionary, attack : Dictionary, ground_block_rules : Arr
 			if (directions[check_input] == true and ground_block_rules[check_input] == -1) or (directions[check_input] == false and ground_block_rules[check_input] == 1):
 				if block_fail_state_ground == DEPENDENT:
 					if button_pressed(input, "down"):
+						take_damage(attack)
 						update_state(states.hurt_crouch, 0)
 						return
 					else:
+						take_damage(attack)
 						update_state(states.hurt_high, 0)
 						return
 				else:
@@ -680,6 +689,7 @@ func try_block(input : Dictionary, attack : Dictionary, ground_block_rules : Arr
 	else:
 		for check_input in range(len(directions)):
 			if (directions[check_input] == true and air_block_rules[check_input] == -1) or (directions[check_input] == false and air_block_rules[check_input] == 1):
+				take_damage(attack)
 				update_state(block_fail_state_air, 0)
 				return
 		update_state(states.block_air, 0)
