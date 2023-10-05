@@ -2,8 +2,9 @@ class_name Fighter
 extends CharacterBody3D
 
 # This script holds the main components of a Fighter, namely the attacks and state machine.
-# A Fighter has a step(...) function which is called by the game every physics frame.
-# step() is called with a buffer of inputs and the current index
+# A Fighter has several variables and methods which are accessed and called by the game.
+# input_step() is called with a buffer of inputs and the current index
+# damage_step() is called with the details of the attack, if it happened
 
 @export var char_name : String = "Godot Guy"
 @export var health : float = 100
@@ -26,9 +27,6 @@ var jump_count : int = 0
 var stun_time_start : int = 0
 var stun_time_current : int = 0
 var step_timer : int = 0
-
-var last_used_upward_index : int = -1
-var current_index : int = -1
 
 var start_x_offset : float = 2
 const BUTTONCOUNT : int = 3
@@ -496,8 +494,7 @@ func aerial_stun_check(buffer):
 			)
 		update_state(new_walk[0], new_walk[1])
 
-func action(buffer : Dictionary, cur_index: int) -> void:
-	current_index = cur_index
+func action(buffer : Dictionary) -> void:
 	handle_input(buffer)
 	match current_state:
 		states.idle:
@@ -592,7 +589,6 @@ func action(buffer : Dictionary, cur_index: int) -> void:
 	match current_state:
 		states.jump_forward, states.jump_back, states.jump_neutral, states.jump_attack:
 			if is_on_floor():
-				last_used_upward_index = -1
 				var new_walk = walk_check(
 					slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up)),
 					walk_directions.none
@@ -620,7 +616,13 @@ func reset_facing():
 		right_facing = false
 	rotation_degrees.y = 180 * int(!right_facing)
 
-func step(inputs : Dictionary, cur_index: int) -> void:
-	action(inputs, cur_index)
+func return_overlaps():
+	return $Hurtboxes.get_overlapping_areas()
+
+func input_step(inputs : Dictionary) -> void:
+	action(inputs)
 	ANIM_NODE.anim(step_timer)
 	step_timer += 1
+
+func damage_step():
+	pass

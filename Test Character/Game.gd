@@ -143,19 +143,17 @@ func slice_input_dictionary(input_dict: Dictionary, from: int, to: int):
 		ret_dict["button" + str(i)] = input_dict["button" + str(i)].slice(from, to)
 	return ret_dict
 
-func build_inputs_tracked() -> void:
-	var latest_input_set = slice_input_dictionary(p1_inputs, max(0,p1_input_index - p1.input_buffer_len), p1_input_index + 1)
+func build_inputs_tracked(p1_buf, p2_buf) -> void:
 	$HUD/P1Inputs.text = ""
-	for i in range(len(latest_input_set.up)):
-		for button in latest_input_set:
-			$HUD/P1Inputs.text += str(latest_input_set[button][i])
+	for i in range(len(p1_buf.up)):
+		for button in p1_buf:
+			$HUD/P1Inputs.text += str(p1_buf[button][i])
 		$HUD/P1Inputs.text += "\n"
 	
-	latest_input_set = slice_input_dictionary(p2_inputs, max(0,p2_input_index - p2.input_buffer_len), p2_input_index + 1)
 	$HUD/P2Inputs.text = ""
-	for i in range(len(latest_input_set.up)):
-		for button in latest_input_set:
-			$HUD/P2Inputs.text += str(latest_input_set[button][i])
+	for i in range(len(p2_buf.up)):
+		for button in p2_buf:
+			$HUD/P2Inputs.text += str(p2_buf[button][i])
 		$HUD/P2Inputs.text += "\n"
 
 #convert to hash to simplify comparisons
@@ -204,6 +202,14 @@ func create_new_input_set(player_inputs: Dictionary, new_inputs: Array):
 			player_inputs[inp].append([1, new_inputs[ind]])
 		ind += 1
 
+func handle_damage():
+	var p1_hit = p1.return_overlaps()
+	var p2_hit = p2.return_overlaps()
+	if p1_hit:
+		p1.damage_step(p2.attacks[p2.current_attack])
+	if p2_hit:
+		p2.damage_step(p1.attacks[p1.current_attack])
+
 func handle_inputs():
 	p1_buttons[0] = Input.is_action_pressed("first_up")
 	p1_buttons[1] = Input.is_action_pressed("first_down")
@@ -245,7 +251,6 @@ func handle_inputs():
 	else:
 		increment_inputs(p2_inputs)
 	
-	build_inputs_tracked()
 	var p1_buf = slice_input_dictionary(
 		p1_inputs, max(0, p1_input_index - p1.input_buffer_len),
 		p1_input_index + 1
@@ -255,9 +260,10 @@ func handle_inputs():
 		max(0, p2_input_index - p2.input_buffer_len),
 		p2_input_index + 1
 	)
+	build_inputs_tracked(p1_buf, p2_buf)
 	
-	p1.step(p1_buf, p1_input_index)
-	p2.step(p2_buf, p2_input_index)
+	p1.input_step(p1_buf)
+	p2.input_step(p2_buf)
 
 func character_positioning():
 	p1.position.x = clamp(p1.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
@@ -269,6 +275,7 @@ func character_positioning():
 
 func _physics_process(_delta):
 	camera_control(cameraMode)
+	handle_damage()
 	handle_inputs()
 	character_positioning()
 	update_hud()
