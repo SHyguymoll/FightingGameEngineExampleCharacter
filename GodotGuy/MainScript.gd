@@ -307,7 +307,7 @@ func walk_check(input : Dictionary, exclude: walk_directions) -> Array:
 	return [current_state, step_timer]
 
 func jump_check(input: Dictionary, exclude: walk_directions) -> Array:
-	if button_just_pressed(input, "up"):
+	if button_just_pressed(input, "up") and jump_count > 0:
 		var dir = walk_value(input)
 		if dir == exclude:
 			return [current_state, step_timer]
