@@ -22,7 +22,8 @@ var defense_mult : float = 1.0
 var kback_hori : float = 0.0
 var kback_vert : float = 0.0
 var jump_count : int = 0
-var stun_time : int = 0
+var stun_time_start : int = 0
+var stun_time_current : int = 0
 var step_timer : int = 0
 
 var last_used_upward_index : int = -1
@@ -450,6 +451,27 @@ func handle_input(buffer: Dictionary) -> void:
 						decision = states.idle
 						decision_timer = 0
 				current_attack = ""
+	if Input.is_action_just_pressed("debug_hurt_weak"):
+		decision = states.hurt_high
+		decision_timer = 0
+		kback_hori = 0.6
+		kback_vert = 0
+		stun_time_start = 5
+		stun_time_current = stun_time_start
+	if Input.is_action_just_pressed("debug_hurt_knockdown"):
+		decision = states.hurt_fall
+		decision_timer = 0
+		kback_hori = 0.2
+		kback_vert = 15
+		stun_time_start = 50
+		stun_time_current = stun_time_start
+	if Input.is_action_just_pressed("debug_hurt_bounce"):
+		decision = states.hurt_high
+		decision_timer = 0
+		kback_hori = 0
+		kback_vert = 0
+		stun_time_start = 5
+		stun_time_current = stun_time_start
 	update_state(decision, decision_timer)
 
 func attempt_animation_reset():
@@ -457,7 +479,7 @@ func attempt_animation_reset():
 		step_timer = 0
 
 func standable_stun_check(buffer):
-	if stun_time == 0:
+	if stun_time_current == 0:
 		var new_walk = walk_check(
 				slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up)),
 				walk_directions.none
@@ -466,7 +488,12 @@ func standable_stun_check(buffer):
 
 func aerial_stun_check(buffer):
 	if is_on_floor():
-		standable_stun_check(buffer)
+#		standable_stun_check(buffer)
+		var new_walk = walk_check(
+				slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up)),
+				walk_directions.none
+			)
+		update_state(new_walk[0], new_walk[1])
 
 func action(buffer : Dictionary, cur_index: int) -> void:
 	current_index = cur_index
@@ -523,24 +550,34 @@ func action(buffer : Dictionary, cur_index: int) -> void:
 			$Sprite.current_animation = current_attack
 		states.hurt_high:
 			$Sprite.current_animation = "hurt_high"
+			velocity.x += (-1 if right_facing else 1) * kback_hori
 		states.hurt_low:
 			$Sprite.current_animation = "hurt_low"
+			velocity.x += (-1 if right_facing else 1) * kback_hori
 		states.hurt_crouch:
 			$Sprite.current_animation = "hurt_crouch"
+			velocity.x += (-1 if right_facing else 1) * kback_hori
 		states.hurt_fall:
 			$Sprite.current_animation = "hurt_fall"
+			velocity.x += (-1 if right_facing else 1) * kback_hori
+			if stun_time_current == stun_time_start:
+				velocity.y += kback_vert
 		states.hurt_lie:
 			$Sprite.current_animation = "hurt_lie"
+			velocity.x += (-1 if right_facing else 1) * kback_hori
 		states.get_up:
 			$Sprite.current_animation = "get_up"
 		states.block_high:
 			$Sprite.current_animation = "block_high"
+			velocity.x += (-1 if right_facing else 1) * kback_hori
 		states.block_low:
 			$Sprite.current_animation = "block_low"
+			velocity.x += (-1 if right_facing else 1) * kback_hori
 		states.block_air:
 			$Sprite.current_animation = "block_air"
-#		states.hurt_high, states.hurt_low, states.hurt_crouch, states.block_high, states.block_low:
-#			velocity.x += (-1 if right_facing else 1) * knockbackHorizontal
+			velocity.x += (-1 if right_facing else 1) * kback_hori
+			if stun_time_current == stun_time_start:
+				velocity.y += kback_vert
 #		states.Hurt_Fall, states.block_air:
 #			velocity.x += (-1 if right_facing else 1) * knockbackHorizontal
 #			if animStep == 0:
@@ -561,18 +598,18 @@ func action(buffer : Dictionary, cur_index: int) -> void:
 				)
 				update_state(new_walk[0], new_walk[1])
 		states.block_high, states.block_low:
-			stun_time -= 1
+			stun_time_current -= 1
 			standable_stun_check(buffer)
 		states.block_air:
-			stun_time -= 1
+			stun_time_current -= 1
 			if is_on_floor():
-				stun_time = 0
+				stun_time_current = 0
 			aerial_stun_check(buffer)
 		states.hurt_high, states.hurt_low, states.hurt_crouch:
-			stun_time -= 1
+			stun_time_current -= 1
 			standable_stun_check(buffer)
 		states.hurt_fall, states.hurt_lie:
-			stun_time -= 1
+			stun_time_current -= 1
 			aerial_stun_check(buffer)
 
 func reset_facing():
