@@ -31,6 +31,7 @@ var step_timer : int = 0
 var start_x_offset : float = 2
 const BUTTONCOUNT : int = 3
 const JUST_PRESSED_BUFFER : int = 2
+const GROUND_SLIDE_FRICTION : float = 0.97
 
 #State transitions are handled by a FSM implemented as match statements
 enum states {
@@ -321,6 +322,9 @@ func jump_check(input: Dictionary, exclude: walk_directions) -> Array:
 		return [current_state, step_timer]
 	else:
 		return [current_state, step_timer]
+
+func is_in_jump_state() -> bool:
+	return current_state in [states.jump_attack, states.jump_back, states.jump_neutral, states.jump_forward]
 
 func slice_input_dictionary(input_dict: Dictionary, from: int, to: int):
 	var ret_dict = {
@@ -631,5 +635,62 @@ func input_step(inputs : Dictionary) -> void:
 	ANIM_NODE.anim(step_timer)
 	step_timer += 1
 
-func damage_step():
-	pass
+#"stand_a":
+#		{
+#			"damage": 3,
+#			"type": "mid",
+#			"stun_time": 4,
+#			"priority": 2,
+#			"kbHori": 0.2,
+#			"kbVert": 0.0,
+#			"total_frame_length": 8,
+#			"cancelable_after_frame": 3,
+#			"hitboxes": "stand_a"
+#		}
+
+# block rule arrays: [up, down, left, right], 1 means valid, 0 means ignored, -1 means invalid
+const BLOCK_ANY = [1, 1, 1, 1]
+const BLOCK_AWAY_ANY = [0, 1, 0, -1]
+const BLOCK_AWAY_HIGH = [0, -1, 1, -1]
+const BLOCK_AWAY_LOW = [-1, 1, 1, -1]
+
+const DEPENDENT = "dependent"
+
+func handle_attacked(input : Dictionary, attack : Dictionary, ground_block_rules : Array, air_block_rules : Array, block_fail_state_ground, block_fail_state_air):
+	var directions = [button_pressed(input, "up"),button_pressed(input, "down"),button_pressed(input, "left"),button_pressed(input, "right")]
+	if not is_in_jump_state():
+		for check_input in range(len(directions)):
+			if (directions[check_input] == true and ground_block_rules[check_input] == -1) or (directions[check_input] == false and ground_block_rules[check_input] == 1):
+				if block_fail_state_ground == DEPENDENT:
+					if button_pressed(input, "down"):
+						update_state(states.hurt_crouch, 0)
+						return
+					else:
+						update_state(states.hurt_high, 0)
+						return
+				else:
+					update_state(block_fail_state_ground, 0)
+					return
+		if button_pressed(input, "down"):
+			update_state(states.block_low, 0)
+			return
+		else:
+			update_state(states.block_high, 0)
+			return
+	else:
+		for check_input in range(len(directions)):
+			if (directions[check_input] == true and air_block_rules[check_input] == -1) or (directions[check_input] == false and air_block_rules[check_input] == 1):
+				update_state(block_fail_state_air, 0)
+				return
+		update_state(states.block_air, 0)
+		return
+
+func damage_step(inputs : Dictionary, attack : Dictionary):
+	var input = slice_input_dictionary(inputs, len(inputs.up) - 1, len(inputs.up))
+	match attack["type"]:
+		"mid":
+			handle_attacked(input, attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, DEPENDENT, states.hurt_fall)
+		"high":
+			handle_attacked(input, attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, DEPENDENT, states.hurt_bounce)
+		"low":
+			handle_attacked(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, DEPENDENT, states.hurt_fall)
