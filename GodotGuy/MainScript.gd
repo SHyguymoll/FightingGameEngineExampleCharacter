@@ -30,7 +30,7 @@ var current_index : int = -1
 
 var start_x_offset : float = 2
 const BUTTONCOUNT : int = 3
-const INPUT_TIME_BUFFER : int = 4
+const JUST_PRESSED_BUFFER : int = 2
 
 #State transitions are handled by a FSM implemented as match statements
 enum states {
@@ -208,7 +208,7 @@ func button_pressed(inputs: Dictionary, input: String):
 	return inputs[input][-1][1]
 
 func button_just_pressed(inputs: Dictionary, input: String):
-	return inputs[input][-1][0] < INPUT_TIME_BUFFER and inputs[input][-1][1]
+	return inputs[input][-1][0] < JUST_PRESSED_BUFFER and inputs[input][-1][1]
 
 func button_held(inputs: Dictionary, input: String, length: int):
 	return inputs[input][-1][0] >= length and inputs[input][-1][1]
@@ -268,12 +268,22 @@ func handle_jump_attack(buffer: Dictionary) -> Array:
 #returns -1 (walk away), 0 (neutral), and 1 (walk towards)
 func walk_value(input: Dictionary) -> int:
 	return int(
-		(button_pressed(input, "right") and right_facing) or
-		(button_pressed(input, "left") and !right_facing)
-		) + -1 * int(
-			(button_pressed(input, "left") and right_facing) or
-			(button_pressed(input, "right") and !right_facing)
+			(
+				button_pressed(input, "right") and
+				right_facing
+			) or (
+				button_pressed(input, "left") and
+				!right_facing
 			)
+		) + -1 * int(
+			(
+				button_pressed(input, "left") and
+				right_facing
+			) or (
+				button_pressed(input, "right") and
+				!right_facing
+			)
+		)
 
 enum walk_directions {
 	back = -1,
@@ -490,22 +500,19 @@ func action(buffer : Dictionary, cur_index: int) -> void:
 			velocity.x = (-1 if right_facing else 1) * walk_speed
 		states.jump_forward, states.jump_back, states.jump_neutral:
 			$Sprite.current_animation = "jump"
-			if (jump_count > 0 and
-				last_used_upward_index != current_index and
-				buffer.up[-2][1] != buffer.up[-1][1] and
-				buffer.up[-1][1]):
+			if (jump_count > 0 and button_just_pressed(buffer, "up")):
 					jump_count -= 1
-					last_used_upward_index = current_index
 					velocity.y = jump_height
 					var jump = jump_check(buffer, walk_directions.none)
 					current_state = jump[0]
 					step_timer = jump[1]
-		states.jump_forward:
-			velocity.x = (1 if right_facing else -1) * walk_speed
-		states.jump_back:
-			velocity.x = (1 if right_facing else -1) * walk_speed
-		states.jump_neutral:
-			velocity.x = 0
+			match current_state:
+				states.jump_forward:
+					velocity.x = (1 if right_facing else -1) * walk_speed
+				states.jump_back:
+					velocity.x = (1 if !right_facing else -1) * walk_speed
+				states.jump_neutral:
+					velocity.x = 0
 		states.attack:
 			$Sprite.current_animation = current_attack
 			velocity.x = 0
