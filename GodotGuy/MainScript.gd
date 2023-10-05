@@ -586,8 +586,6 @@ func action(buffer : Dictionary) -> void:
 #		states.hurt_fall, states.jump_forward, states.jump_neutral, states.jump_back, states.block_air:
 	velocity.y += gravity
 	velocity.y = max(min_fall_vel, velocity.y)
-	if velocity.y < 0 and is_on_floor():
-		velocity.y = 0
 	move_and_slide()
 	match current_state:
 		states.jump_forward, states.jump_back, states.jump_neutral, states.jump_attack:
@@ -611,6 +609,12 @@ func action(buffer : Dictionary) -> void:
 		states.hurt_fall, states.hurt_lie:
 			stun_time_current -= 1
 			aerial_stun_check(buffer)
+		states.hurt_bounce:
+			if is_on_floor():
+				update_state(states.hurt_fall,0)
+				velocity.y *= -1
+	if velocity.y < 0 and is_on_floor():
+		velocity.y = 0
 
 func reset_facing():
 	if distance < 0:
