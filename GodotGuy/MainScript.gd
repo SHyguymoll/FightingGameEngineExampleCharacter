@@ -72,11 +72,15 @@ var attacks = {
 	"stand_a":
 		{
 			"damage": 3,
+			"damage_block": 0,
 			"type": "mid",
-			"stun_time": 4,
+			"stun_time": 10,
+			"stun_time_block": 4,
 			"priority": 2,
 			"kbHori": 0.2,
 			"kbVert": 0.0,
+			"kbHori_block": 0.1,
+			"kbVert_block": 0.0,
 			"total_frame_length": 8,
 			"cancelable_after_frame": 3,
 			"hitboxes": "stand_a"
@@ -84,11 +88,15 @@ var attacks = {
 	"stand_b":
 		{
 			"damage": 4,
+			"damage_block": 0,
 			"type": "mid",
-			"stun_time": 4,
+			"stun_time": 7,
+			"stun_time_block": 7,
 			"priority": 1,
 			"kbHori": 0.6,
 			"kbVert": 0.0,
+			"kbHori_block": -0.15,
+			"kbVert_block": 0.0,
 			"total_frame_length": 14,
 			"cancelable_after_frame": 5,
 			"hitboxes": "stand_b"
@@ -96,83 +104,111 @@ var attacks = {
 	"stand_c":
 		{
 			"damage": 8,
+			"damage_block": 2,
 			"type": "mid",
-			"stun_time": 4,
+			"stun_time": 25,
+			"stun_time_block": 2,
 			"priority": 1,
 			"kbHori": 0.6,
 			"kbVert": 0.0,
+			"kbHori_block": 1,
+			"kbVert_block": 0.0,
 			"total_frame_length": 20,
 			"cancelable_after_frame": 15,
 			"hitboxes": "stand_c"
 		},
 	"crouch_a": #TODO
 		{
-			"damage": 2,
-			"type": "mid",
-			"stun_time": 4,
+			"damage": 3,
+			"damage_block": 0,
+			"type": "low",
+			"stun_time": 5,
+			"stun_time_block": 4,
 			"priority": 1,
-			"kbHori": 0.2,
+			"kbHori": 0.05,
 			"kbVert": 0.0,
+			"kbHori_block": 0.3,
+			"kbVert_block": 0.0,
 			"total_frame_length": 4,
 			"cancelable_after_frame": 3,
 			"hitboxes": "crouch_a"
 		},
 	"crouch_b": #TODO
 		{
-			"damage": 5,
+			"damage": 8,
+			"damage_block": 3,
 			"type": "mid",
-			"stun_time": 4,
-			"priority": 3,
+			"stun_time": 16,
+			"stun_time_block": 8,
+			"priority": 1,
 			"kbHori": 0.6,
 			"kbVert": 0.0,
+			"kbHori_block": 1,
+			"kbVert_block": 0.0,
 			"total_frame_length": 4,
 			"cancelable_after_frame": 3,
 			"hitboxes": "crouch_b"
 		},
 	"crouch_c": #TODO
 		{
-			"damage": 10,
+			"damage": 15,
+			"damage_block": 5,
 			"type": "mid",
-			"stun_time": 4,
+			"stun_time": 60,
+			"stun_time_block": 30,
 			"priority": 1,
-			"kbHori": 1.0,
-			"kbVert": 5.0,
+			"kbHori": 0.0,
+			"kbVert": 4,
+			"kbHori_block": 2,
+			"kbVert_block": 0.0,
 			"total_frame_length": 20,
 			"cancelable_after_frame": 15,
 			"hitboxes": "crouch_c"
 		},
 	"jump_a": #TODO
 		{
-			"damage": 2,
+			"damage": 15,
+			"damage_block": 5,
 			"type": "mid",
-			"stun_time": 4,
+			"stun_time": 60,
+			"stun_time_block": 30,
 			"priority": 1,
-			"kbHori": 0.2,
-			"kbVert": 0.0,
+			"kbHori": 0.0,
+			"kbVert": 4,
+			"kbHori_block": 2,
+			"kbVert_block": 0.0,
 			"total_frame_length": -1,
 			"cancelable_after_frame": 15,
 			"hitboxes": "jump_a"
 		},
 	"jump_b": #TODO
 		{
-			"damage": 4,
+			"damage": 15,
+			"damage_block": 5,
 			"type": "mid",
-			"stun_time": 4,
-			"priority": 2,
-			"kbHori": 0.6,
-			"kbVert": 0.0,
+			"stun_time": 60,
+			"stun_time_block": 30,
+			"priority": 1,
+			"kbHori": 0.0,
+			"kbVert": 4,
+			"kbHori_block": 2,
+			"kbVert_block": 0.0,
 			"total_frame_length": -1,
 			"cancelable_after_frame": 15,
 			"hitboxes": "jump_b"
 		},
 	"jump_c": #TODO
 		{
-			"damage": 6,
+			"damage": 15,
+			"damage_block": 5,
 			"type": "high",
-			"stun_time": 4,
+			"stun_time": 60,
+			"stun_time_block": 30,
 			"priority": 1,
-			"kbHori": 1.5,
-			"kbVert": 0.0,
+			"kbHori": 0.0,
+			"kbVert": 4,
+			"kbHori_block": 2,
+			"kbVert_block": 0.0,
 			"total_frame_length": 20,
 			"cancelable_after_frame": 15,
 			"hitboxes": "jump_c"
@@ -450,7 +486,7 @@ func handle_input(buffer: Dictionary) -> void:
 				current_attack = ""
 			if ground_cancelled_attack_ended(): #Ends when the character hits the ground
 				match current_attack:
-					"jump_a", "jump_b":
+					"jump_a", "jump_b", "jump_c":
 						decision = states.idle
 						decision_timer = 0
 				current_attack = ""
@@ -648,12 +684,19 @@ func input_step(inputs : Dictionary) -> void:
 #			"hitboxes": "stand_a"
 #		}
 
-func take_damage(attack):
-	health -= attack["damage"]
-	stun_time_start = attack["stun_time"]
-	stun_time_current = stun_time_start
-	kback_hori = attack["kbHori"]
-	kback_vert = attack["kbVert"]
+func take_damage(attack, blocked):
+	if not blocked:
+		health -= attack["damage"]
+		stun_time_start = attack["stun_time"]
+		stun_time_current = stun_time_start
+		kback_hori = attack["kbHori"]
+		kback_vert = attack["kbVert"]
+	else:
+		health -= attack["damage_block"]
+		stun_time_start = attack["stun_time_block"]
+		stun_time_current = stun_time_start
+		kback_hori = attack["kbHori_block"]
+		kback_vert = attack["kbVert_block"]
 
 # block rule arrays: [up, down, left, right], 1 means valid, 0 means ignored, -1 means invalid
 const BLOCK_ANY = [1, 1, 1, 1]
@@ -670,28 +713,32 @@ func try_block(input : Dictionary, attack : Dictionary, ground_block_rules : Arr
 			if (directions[check_input] == true and ground_block_rules[check_input] == -1) or (directions[check_input] == false and ground_block_rules[check_input] == 1):
 				if block_fail_state_ground == DEPENDENT:
 					if button_pressed(input, "down"):
-						take_damage(attack)
+						take_damage(attack, false)
 						update_state(states.hurt_crouch, 0)
 						return
 					else:
-						take_damage(attack)
+						take_damage(attack, false)
 						update_state(states.hurt_high, 0)
 						return
 				else:
+					take_damage(attack, false)
 					update_state(block_fail_state_ground, 0)
 					return
 		if button_pressed(input, "down"):
+			take_damage(attack, true)
 			update_state(states.block_low, 0)
 			return
 		else:
+			take_damage(attack, true)
 			update_state(states.block_high, 0)
 			return
 	else:
 		for check_input in range(len(directions)):
 			if (directions[check_input] == true and air_block_rules[check_input] == -1) or (directions[check_input] == false and air_block_rules[check_input] == 1):
-				take_damage(attack)
+				take_damage(attack, false)
 				update_state(block_fail_state_air, 0)
 				return
+		take_damage(attack, true)
 		update_state(states.block_air, 0)
 		return
 
