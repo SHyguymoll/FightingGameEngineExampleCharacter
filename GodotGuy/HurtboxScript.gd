@@ -3,46 +3,27 @@ extends Area3D
 # This script controls hurtboxes.
 # It is functionally similar to HitboxScript.gd, but the separation makes it easier to parse.
 
+var active_hurtboxes = []
 
-# Hitboxes and Hurtboxes are handled through a dictionary for easy reuse.
-# box format:
-#"<Name>":
-#	{
-#		"boxes": [<path>, ...],
-#		"extra": ... This one is up to whatever
-#	}
-
-var hurtboxes : Dictionary = {
-	"base": {
-		"boxes": ["Base"],
-	},
-	"low": {
-		"boxes": ["Low"],
-	},
-	"pull_back": {
-		"boxes": ["StandBPullBack"],
-	},
-	"pop_up": {
-		"boxes": ["JumpCPopUp"],
-	},
-}
-
-enum actions {set, add, remove}
+enum actions {set = 0, add = 1, remove = -1}
 
 func update_hurtboxes(new_hurtboxes: Array[String], choice: actions) -> void:
 	match choice:
 		actions.set:
-			for hurtbox in hurtboxes:
-				for box in hurtboxes[hurtbox]["boxes"]:
-					(get_node(box) as CollisionShape3D).disabled = true
+			for hurtbox in active_hurtboxes:
+				(get_node(hurtbox) as CollisionShape3D).disabled = true
+				get_node(hurtbox).visible = false
 			for new_hurtbox in new_hurtboxes:
-				for box in hurtboxes[new_hurtbox]["boxes"]:
-					(get_node(box) as CollisionShape3D).disabled = false
+				(get_node(new_hurtbox) as CollisionShape3D).disabled = false
+				active_hurtboxes.append(new_hurtbox)
+				get_node(new_hurtbox).visible = true
 		actions.add:
 			for new_hurtbox in new_hurtboxes:
-				for box in hurtboxes[new_hurtbox]["boxes"]:
-					(get_node(box) as CollisionShape3D).disabled = false
+				(get_node(new_hurtbox) as CollisionShape3D).disabled = false
+				active_hurtboxes.append(new_hurtbox)
+				get_node(new_hurtbox).visible = true
 		actions.remove:
 			for new_hurtbox in new_hurtboxes:
-				for box in hurtboxes[new_hurtbox]["boxes"]:
-					(get_node(box) as CollisionShape3D).disabled = true
+				(get_node(new_hurtbox) as CollisionShape3D).disabled = true
+				active_hurtboxes.erase(new_hurtbox)
+				get_node(new_hurtbox).visible = false

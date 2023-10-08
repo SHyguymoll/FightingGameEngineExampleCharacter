@@ -66,7 +66,7 @@ func init_fighters():
 		p1_inputs["button" + str(i)] = [[0, false]]
 	p1.position = Vector3(p1.start_x_offset * -1,0,0)
 	p1.right_facing = true
-	p1.update_state(p1.state_start, 0)
+	p1.update_state(p1.state_start)
 	p1.initialize_boxes(true)
 	p1.char_name += " p1"
 	
@@ -74,7 +74,7 @@ func init_fighters():
 		p2_inputs["button" + str(i)] = [[0, false]]
 	p2.position = Vector3(p2.start_x_offset,0,0)
 	p2.right_facing = false
-	p2.update_state(p2.state_start, 0)
+	p2.update_state(p2.state_start)
 	p2.initialize_boxes(false)
 	p2.char_name += " p2"
 
