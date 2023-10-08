@@ -40,21 +40,26 @@ func make_hud():
 	$HUD/P1Health.value = p1.health
 	$HUD/P1Char.text = p1.char_name
 	$HUD/P1State.text = p1.states.keys()[p1.current_state]
+	$HUD/P1PosVel.text = str(p1.position) + "\n" + str(p1.velocity)
+	
 	$HUD/P2Health.max_value = p2.health
 	$HUD/P2Health.value = p2.health
 	$HUD/P2Char.text = p2.char_name
 	$HUD/P2State.text = p2.states.keys()[p2.current_state]
-	
+	$HUD/P2PosVel.text = str(p2.position) + "\n" + str(p2.velocity)
 
 func update_hud():
 	$HUD/P1Health.value = p1.health
 	$HUD/P1State.text = p1.states.keys()[p1.current_state]
 	if "attack" in $HUD/P1State.text:
 		$HUD/P1State.text += " : " + p1.current_attack
+	$HUD/P1PosVel.text = str(p1.position) + "\n" + str(p1.velocity)
+	
 	$HUD/P2Health.value = p2.health
 	$HUD/P2State.text = p2.states.keys()[p2.current_state]
 	if "attack" in $HUD/P2State.text:
 		$HUD/P2State.text += " : " + p2.current_attack
+	$HUD/P2PosVel.text = str(p2.position) + "\n" + str(p2.velocity)
 
 func init_fighters():
 	for i in range(p1.BUTTONCOUNT):

@@ -304,23 +304,8 @@ func handle_jump_attack(buffer: Dictionary) -> Array:
 
 #returns -1 (walk away), 0 (neutral), and 1 (walk towards)
 func walk_value(input: Dictionary) -> int:
-	return int(
-			(
-				button_pressed(input, "right") and
-				right_facing
-			) or (
-				button_pressed(input, "left") and
-				!right_facing
-			)
-		) + -1 * int(
-			(
-				button_pressed(input, "left") and
-				right_facing
-			) or (
-				button_pressed(input, "right") and
-				!right_facing
-			)
-		)
+	return int((button_pressed(input, "right") and right_facing) or (button_pressed(input, "left") and !right_facing)) +\
+		-1 * int((button_pressed(input, "left") and right_facing) or (button_pressed(input, "right") and !right_facing))
 
 enum walk_directions {
 	back = -1,
@@ -359,8 +344,11 @@ func jump_check(input: Dictionary, exclude: walk_directions) -> Array:
 	else:
 		return [current_state, step_timer]
 
-func is_in_jump_state() -> bool:
-	return current_state in [states.jump_attack, states.jump_back, states.jump_neutral, states.jump_forward]
+func is_in_air_state() -> bool:
+	return current_state in [states.jump_attack, states.jump_back, states.jump_neutral, states.jump_forward, states.block_air, states.hurt_bounce, states.hurt_fall]
+
+func is_in_crouch_state() -> bool:
+	return current_state in [states.crouch, states.hurt_crouch, states.block_low]
 
 func slice_input_dictionary(input_dict: Dictionary, from: int, to: int):
 	var ret_dict = {
@@ -610,14 +598,16 @@ func action(buffer : Dictionary) -> void:
 			ANIM_NODE.current_animation = "get_up"
 		states.block_high:
 			ANIM_NODE.current_animation = "block_high"
-			velocity.x += (-1 if right_facing else 1) * kback_hori
+			if stun_time_current == stun_time_start:
+				velocity.x += (-1 if right_facing else 1) * kback_hori
 		states.block_low:
 			ANIM_NODE.current_animation = "block_low"
-			velocity.x += (-1 if right_facing else 1) * kback_hori
+			if stun_time_current == stun_time_start:
+				velocity.x += (-1 if right_facing else 1) * kback_hori
 		states.block_air:
 			ANIM_NODE.current_animation = "block_air"
-			velocity.x += (-1 if right_facing else 1) * kback_hori
 			if stun_time_current == stun_time_start:
+				velocity.x += (-1 if right_facing else 1) * kback_hori
 				velocity.y += kback_vert
 #		states.Hurt_Fall, states.block_air:
 #			velocity.x += (-1 if right_facing else 1) * knockbackHorizontal
@@ -626,7 +616,8 @@ func action(buffer : Dictionary) -> void:
 #		states.hurt_fall, states.jump_forward, states.jump_neutral, states.jump_back, states.block_air:
 	velocity.y += gravity
 	velocity.y = max(min_fall_vel, velocity.y)
-	move_and_slide()
+	var record_y = velocity.y
+	var check_true = move_and_slide()
 	match current_state:
 		states.jump_forward, states.jump_back, states.jump_neutral, states.jump_attack:
 			if is_on_floor():
@@ -650,9 +641,9 @@ func action(buffer : Dictionary) -> void:
 			stun_time_current -= 1
 			aerial_stun_check(buffer)
 		states.hurt_bounce:
-			if is_on_floor():
+			if check_true:
 				update_state(states.hurt_fall,0)
-				velocity.y *= -1
+				velocity.y = record_y * -1
 	if velocity.y < 0 and is_on_floor():
 		velocity.y = 0
 
@@ -708,11 +699,11 @@ const DEPENDENT = "dependent"
 
 func try_block(input : Dictionary, attack : Dictionary, ground_block_rules : Array, air_block_rules : Array, block_fail_state_ground, block_fail_state_air):
 	var directions = [button_pressed(input, "up"),button_pressed(input, "down"),button_pressed(input, "left"),button_pressed(input, "right")]
-	if not is_in_jump_state():
+	if not is_in_air_state():
 		for check_input in range(len(directions)):
 			if (directions[check_input] == true and ground_block_rules[check_input] == -1) or (directions[check_input] == false and ground_block_rules[check_input] == 1):
 				if block_fail_state_ground == DEPENDENT:
-					if button_pressed(input, "down"):
+					if is_in_crouch_state():
 						take_damage(attack, false)
 						update_state(states.hurt_crouch, 0)
 						return
@@ -748,6 +739,6 @@ func damage_step(inputs : Dictionary, attack : Dictionary):
 		"mid":
 			try_block(input, attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, DEPENDENT, states.hurt_fall)
 		"high":
-			try_block(input, attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, DEPENDENT, states.hurt_bounce)
+			try_block(input, attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, states.hurt_high, states.hurt_bounce)
 		"low":
 			try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, DEPENDENT, states.hurt_fall)
