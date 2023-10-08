@@ -187,4 +187,6 @@ func animation_ended(current_step) -> bool:
 	return current_step >= animations[current_animation]["animation_length"]
 
 func anim(current_step) -> void:
+	if current_animation == "":
+		return
 	frame_coords = (animations[current_animation] as Dictionary).get(current_step, frame_coords)
