@@ -1,7 +1,6 @@
-[gd_scene load_steps=51 format=3 uid="uid://kquoyj34deus"]
+[gd_scene load_steps=50 format=3 uid="uid://kquoyj34deus"]
 
 [ext_resource type="Texture2D" uid="uid://bh8asn38oyfgq" path="res://GodotGuy/SpriteSheet.png" id="2_86yo0"]
-[ext_resource type="Script" path="res://GodotGuy/AnimationScript_Sprite.gd" id="3_mm4t4"]
 [ext_resource type="Script" path="res://GodotGuy/HurtboxScript.gd" id="4_5pucv"]
 [ext_resource type="Script" path="res://GodotGuy/HitboxScript.gd" id="5_b7x6q"]
 [ext_resource type="Script" path="res://GodotGuy/MainScript.gd" id="53"]
@@ -627,38 +626,6 @@ _data = {
 "stand_c": SubResource("Animation_j2a7j")
 }
 
-[sub_resource type="Animation" id="Animation_oq48w"]
-resource_name = "idle"
-length = 0.0166683
-loop_mode = 1
-step = 0.0166667
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame_coords")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2i(0, 0)]
-}
-tracks/1/type = "method"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("../Hurtboxes")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [["Base"], 0],
-"method": &"update_hurtboxes"
-}]
-}
-
 [sub_resource type="Animation" id="Animation_sap85"]
 resource_name = "crouch"
 length = 0.0166683
@@ -691,9 +658,9 @@ tracks/1/keys = {
 }]
 }
 
-[sub_resource type="Animation" id="Animation_4a8gk"]
-resource_name = "walk_right"
-length = 0.650002
+[sub_resource type="Animation" id="Animation_oq48w"]
+resource_name = "idle"
+length = 0.0166683
 loop_mode = 1
 step = 0.0166667
 tracks/0/type = "value"
@@ -703,42 +670,10 @@ tracks/0/path = NodePath(".:frame_coords")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.0666667, 0.15, 0.233333, 0.316667, 0.4, 0.483333, 0.566667),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(2, 0), Vector2(3, 0), Vector2(4, 0), Vector2(5, 0), Vector2(6, 0), Vector2(7, 0), Vector2(8, 0), Vector2(0, 0)]
-}
-tracks/1/type = "method"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("../Hurtboxes")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"values": [{
-"args": [["Base"], 0],
-"method": &"update_hurtboxes"
-}]
-}
-
-[sub_resource type="Animation" id="Animation_bo21u"]
-resource_name = "walk_right"
-length = 0.650002
-loop_mode = 1
-step = 0.0166667
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame_coords")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.0666667, 0.15, 0.233333, 0.316667, 0.4, 0.483333, 0.566667),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0, 0), Vector2(2, 0), Vector2(3, 0), Vector2(4, 0), Vector2(5, 0), Vector2(6, 0), Vector2(7, 0), Vector2(8, 0)]
+"values": [Vector2i(0, 0)]
 }
 tracks/1/type = "method"
 tracks/1/imported = false
@@ -787,6 +722,70 @@ tracks/1/keys = {
 }]
 }
 
+[sub_resource type="Animation" id="Animation_bo21u"]
+resource_name = "walk_right"
+length = 0.650002
+loop_mode = 1
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0666667, 0.15, 0.233333, 0.316667, 0.4, 0.483333, 0.566667),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(2, 0), Vector2(3, 0), Vector2(4, 0), Vector2(5, 0), Vector2(6, 0), Vector2(7, 0), Vector2(8, 0)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Hurtboxes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [["Base"], 0],
+"method": &"update_hurtboxes"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_4a8gk"]
+resource_name = "walk_right"
+length = 0.650002
+loop_mode = 1
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0666667, 0.15, 0.233333, 0.316667, 0.4, 0.483333, 0.566667),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(2, 0), Vector2(3, 0), Vector2(4, 0), Vector2(5, 0), Vector2(6, 0), Vector2(7, 0), Vector2(8, 0), Vector2(0, 0)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Hurtboxes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [["Base"], 0],
+"method": &"update_hurtboxes"
+}]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1famj"]
 _data = {
 "crouch": SubResource("Animation_sap85"),
@@ -794,6 +793,38 @@ _data = {
 "jump": SubResource("Animation_yt5la"),
 "walk_left": SubResource("Animation_bo21u"),
 "walk_right": SubResource("Animation_4a8gk")
+}
+
+[sub_resource type="Animation" id="Animation_y1isn"]
+resource_name = "air"
+length = 0.0166683
+loop_mode = 1
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(7, 3)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Hurtboxes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [["Base"], 0],
+"method": &"update_hurtboxes"
+}]
 }
 
 [sub_resource type="Animation" id="Animation_168pe"]
@@ -860,7 +891,14 @@ tracks/1/keys = {
 }]
 }
 
-[sub_resource type="Animation" id="Animation_y1isn"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_450jr"]
+_data = {
+"air": SubResource("Animation_y1isn"),
+"high": SubResource("Animation_168pe"),
+"low": SubResource("Animation_am371")
+}
+
+[sub_resource type="Animation" id="Animation_4du6f"]
 resource_name = "air"
 length = 0.0166683
 loop_mode = 1
@@ -875,7 +913,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(7, 3)]
+"values": [Vector2(5, 5)]
 }
 tracks/1/type = "method"
 tracks/1/imported = false
@@ -892,11 +930,67 @@ tracks/1/keys = {
 }]
 }
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_450jr"]
-_data = {
-"air": SubResource("Animation_y1isn"),
-"high": SubResource("Animation_168pe"),
-"low": SubResource("Animation_am371")
+[sub_resource type="Animation" id="Animation_0uij0"]
+resource_name = "crouch"
+length = 0.0166683
+loop_mode = 1
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(7, 5)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Hurtboxes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [["Low"], 0],
+"method": &"update_hurtboxes"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_ukw7d"]
+resource_name = "get_up"
+length = 0.250002
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.116667, 0.233333),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(5, 5), Vector2(8, 0), Vector2(0, 0)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Hurtboxes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [[], 0],
+"method": &"update_hurtboxes"
+}]
 }
 
 [sub_resource type="Animation" id="Animation_j2ifv"]
@@ -963,70 +1057,6 @@ tracks/1/keys = {
 }]
 }
 
-[sub_resource type="Animation" id="Animation_0uij0"]
-resource_name = "crouch"
-length = 0.0166683
-loop_mode = 1
-step = 0.0166667
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame_coords")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(7, 5)]
-}
-tracks/1/type = "method"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("../Hurtboxes")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [["Low"], 0],
-"method": &"update_hurtboxes"
-}]
-}
-
-[sub_resource type="Animation" id="Animation_4du6f"]
-resource_name = "air"
-length = 0.0166683
-loop_mode = 1
-step = 0.0166667
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame_coords")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(5, 5)]
-}
-tracks/1/type = "method"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("../Hurtboxes")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [["Base"], 0],
-"method": &"update_hurtboxes"
-}]
-}
-
 [sub_resource type="Animation" id="Animation_yyyv5"]
 resource_name = "lying"
 length = 0.0166683
@@ -1043,37 +1073,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(6, 5)]
-}
-tracks/1/type = "method"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("../Hurtboxes")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [[], 0],
-"method": &"update_hurtboxes"
-}]
-}
-
-[sub_resource type="Animation" id="Animation_ukw7d"]
-resource_name = "get_up"
-length = 0.250002
-step = 0.0166667
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame_coords")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.116667, 0.233333),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector2(5, 5), Vector2(8, 0), Vector2(0, 0)]
 }
 tracks/1/type = "method"
 tracks/1/imported = false
@@ -1110,7 +1109,6 @@ texture = ExtResource("2_86yo0")
 hframes = 9
 vframes = 6
 frame = 12
-script = ExtResource("3_mm4t4")
 
 [node name="GroundCollision1" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0972432, 0)
