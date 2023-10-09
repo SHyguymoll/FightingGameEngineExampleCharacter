@@ -14,6 +14,8 @@ extends CharacterBody3D
 @export var gravity : float = -0.5
 @export var min_fall_vel : float = -6.5
 
+@export var attack_velocity = Vector3.ZERO
+
 var input_buffer_len : int = 10
 
 var distance : float = 0.0
@@ -38,14 +40,17 @@ enum states {
 	intro, round_win, set_win, #round stuff
 	idle, crouch, #basic basics
 	walk_forward, walk_back, #lateral movement
+	jump_forward_init, jump_neutral_init, jump_back_init, #aerial movement initial boost
 	jump_forward, jump_neutral, jump_back, #aerial movement
 	attack, attack_command, jump_attack, special_attack, #handling attacks
 	block_high, block_low, block_air, get_up, #handling getting attacked well
 	hurt_high, hurt_low, hurt_crouch, #not handling getting attacked well
 	hurt_fall, hurt_lie, hurt_bounce, #REALLY not handling getting attacked well
+	none
 	}
 var state_start := states.idle
-var current_state: states
+@export var current_state: states
+var previous_state : states
 
 func update_state(new_state: states):
 	current_state = new_state
@@ -78,7 +83,8 @@ var attacks = {
 			"kbHori": 0.2,
 			"kbVert": 0.0,
 			"kbHori_block": 0.1,
-			"kbVert_block": 0.0
+			"kbVert_block": 0.0,
+			"return_state": states.idle
 		},
 	"attack_normal/stand_b":
 		{
@@ -91,7 +97,8 @@ var attacks = {
 			"kbHori": 0.6,
 			"kbVert": 0.0,
 			"kbHori_block": -0.15,
-			"kbVert_block": 0.0
+			"kbVert_block": 0.0,
+			"return_state": states.idle
 		},
 	"attack_normal/stand_c":
 		{
@@ -104,7 +111,8 @@ var attacks = {
 			"kbHori": 0.6,
 			"kbVert": 0.0,
 			"kbHori_block": 1,
-			"kbVert_block": 0.0
+			"kbVert_block": 0.0,
+			"return_state": states.idle
 		},
 	"attack_command/crouch_a":
 		{
@@ -117,7 +125,8 @@ var attacks = {
 			"kbHori": 0.05,
 			"kbVert": 0.0,
 			"kbHori_block": 0.3,
-			"kbVert_block": 0.0
+			"kbVert_block": 0.0,
+			"return_state": states.crouch
 		},
 	"attack_command/crouch_b":
 		{
@@ -130,7 +139,8 @@ var attacks = {
 			"kbHori": 0.6,
 			"kbVert": 0.0,
 			"kbHori_block": 1,
-			"kbVert_block": 0.0
+			"kbVert_block": 0.0,
+			"return_state": states.crouch
 		},
 	"attack_command/crouch_c":
 		{
@@ -143,7 +153,8 @@ var attacks = {
 			"kbHori": 0.0,
 			"kbVert": 4,
 			"kbHori_block": 2,
-			"kbVert_block": 0.0
+			"kbVert_block": 0.0,
+			"return_state": states.crouch
 		},
 	"attack_jumping/a":
 		{
@@ -156,7 +167,8 @@ var attacks = {
 			"kbHori": 0.0,
 			"kbVert": 4,
 			"kbHori_block": 2,
-			"kbVert_block": 0.0
+			"kbVert_block": 0.0,
+			"return_state": states.none
 		},
 	"attack_jumping/b":
 		{
@@ -169,7 +181,8 @@ var attacks = {
 			"kbHori": 0.0,
 			"kbVert": 4,
 			"kbHori_block": 2,
-			"kbVert_block": 0.0
+			"kbVert_block": 0.0,
+			"return_state": states.none
 		},
 	"attack_jumping/c":
 		{
@@ -182,7 +195,8 @@ var attacks = {
 			"kbHori": 0.0,
 			"kbVert": 4,
 			"kbHori_block": 2,
-			"kbVert_block": 0.0
+			"kbVert_block": 0.0,
+			"return_state": states.none
 		},
 }
 
@@ -199,10 +213,10 @@ enum actions {set, add, remove}
 
 func initialize_boxes(player: bool) -> void:
 	if player:
-		$Hurtboxes.collision_layer = 2
+		$Hurtbox.collision_layer = 2
 		$Hitboxes.collision_mask = 4
 	else:
-		$Hurtboxes.collision_layer = 4
+		$Hurtbox.collision_layer = 4
 		$Hitboxes.collision_mask = 2
 
 enum buttons {Up = 1, Down = 2, Left = 4, Right = 8, A = 16, B = 32, C = 64}
@@ -216,13 +230,14 @@ func button_just_pressed(inputs: Dictionary, input: String):
 func button_held(inputs: Dictionary, input: String, length: int):
 	return inputs[input][-1][0] >= length and inputs[input][-1][1]
 
-func handle_attack(buffer: Dictionary) -> states:
+func handle_attack(buffer: Dictionary, cur_state: states) -> states:
 	if (
-		!button_pressed(buffer, "button0") and
-		!button_pressed(buffer, "button1") and
-		!button_pressed(buffer, "button2")
+		!button_just_pressed(buffer, "button0") and
+		!button_just_pressed(buffer, "button1") and
+		!button_just_pressed(buffer, "button2")
 		):
-		return current_state
+		return cur_state
+	previous_state = cur_state
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
 			if button_just_pressed(buffer, "button0"):
@@ -231,6 +246,7 @@ func handle_attack(buffer: Dictionary) -> states:
 				update_attack("attack_normal/stand_b")
 			if button_just_pressed(buffer, "button2"):
 				update_attack("attack_normal/stand_c")
+			return states.attack
 		states.crouch:
 			if button_just_pressed(buffer, "button0"):
 				update_attack("attack_command/crouch_a")
@@ -238,16 +254,7 @@ func handle_attack(buffer: Dictionary) -> states:
 				update_attack("attack_command/crouch_b")
 			if button_just_pressed(buffer, "button2"):
 				update_attack("attack_command/crouch_c")
-	return states.attack
-
-func handle_jump_attack(buffer: Dictionary) -> states:
-	if (
-		!button_just_pressed(buffer, "button0") and
-		!button_just_pressed(buffer, "button1") and
-		!button_just_pressed(buffer, "button2")
-		):
-		return current_state
-	match current_state:
+			return states.attack_command
 		states.jump_neutral, states.jump_back, states.jump_forward:
 			if button_just_pressed(buffer, "button0"):
 				update_attack("attack_jumping/a")
@@ -255,7 +262,8 @@ func handle_jump_attack(buffer: Dictionary) -> states:
 				update_attack("attack_jumping/b")
 			if button_just_pressed(buffer, "button2"):
 				update_attack("attack_jumping/c")
-	return states.jump_attack
+			return states.jump_attack
+	return states.attack
 
 #returns -1 (walk away), 0 (neutral), and 1 (walk towards)
 func walk_value(input: Dictionary) -> int:
@@ -269,7 +277,7 @@ enum walk_directions {
 	none = 2
 }
 
-func walk_check(input : Dictionary, exclude: walk_directions) -> states:
+func walk_check(input : Dictionary, exclude: walk_directions, cur_state: states) -> states:
 	var walk = walk_value(input)
 	if walk != exclude:
 		match walk:
@@ -280,20 +288,20 @@ func walk_check(input : Dictionary, exclude: walk_directions) -> states:
 			walk_directions.back:
 				if distance < 5:
 					return states.walk_back
-	return current_state
+	return cur_state
 
-func jump_check(input: Dictionary, exclude: walk_directions) -> states:
+func jump_check(input: Dictionary, exclude: walk_directions, cur_state: states) -> states:
 	if button_just_pressed(input, "up") and jump_count > 0:
 		var dir = walk_value(input)
 		if dir != exclude:
 			match dir:
 				walk_directions.forward:
-					return states.jump_forward
+					return states.jump_forward_init
 				walk_directions.neutral:
-					return states.jump_neutral
+					return states.jump_neutral_init
 				walk_directions.back:
-					return states.jump_back
-	return current_state
+					return states.jump_back_init
+	return cur_state
 
 func is_in_air_state() -> bool:
 	return current_state in [states.jump_attack, states.jump_back, states.jump_neutral, states.jump_forward, states.block_air, states.hurt_bounce, states.hurt_fall]
@@ -316,62 +324,28 @@ func slice_input_dictionary(input_dict: Dictionary, from: int, to: int):
 func handle_input(buffer: Dictionary) -> void:
 	var input = slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up))
 	var decision : states = current_state
-	
-	var walk_decision
-	var jump_decision
-	var attack_decision
 	match current_state:
+# Priority order, from least to most: Walk, Crouch, Jump, Attack, Block/Hurt (handled elsewhere)
 		states.idle, states.walk_back, states.walk_forward:
 			match current_state:
 				states.idle:
-					walk_decision = walk_check(input, walk_directions.neutral)
+					decision = walk_check(input, walk_directions.neutral, decision)
 				states.walk_back:
-					walk_decision = walk_check(input, walk_directions.back)
+					decision = walk_check(input, walk_directions.back, decision)
 				states.walk_forward:
-					walk_decision = walk_check(input, walk_directions.forward)
-			if walk_decision != current_state:
-				decision = walk_decision
-			if button_pressed(input, "down"):
-				decision = states.crouch
-			jump_decision = jump_check(input, walk_directions.none)
-			if jump_decision != current_state:
-				decision = jump_decision
-			attack_decision = handle_attack(buffer)
-			if attack_decision != current_state:
-				decision = attack_decision
+					decision = walk_check(input, walk_directions.forward, decision)
+			decision = states.crouch if button_pressed(input, "down") else decision
+			decision = jump_check(input, walk_directions.none, decision)
+			decision = handle_attack(buffer, decision)
+# Order: release down, attack, b/h
 		states.crouch:
-			if !button_pressed(input, "down"):
-				decision = walk_check(input, walk_directions.none)
-			attack_decision = handle_attack(buffer)
-			if attack_decision != current_state:
-				decision = attack_decision
+			decision = walk_check(input, walk_directions.none, decision) if !button_pressed(input, "down") else decision
+			decision = handle_attack(buffer, decision)
+# Order: jump, attack, b/h
 		states.jump_neutral, states.jump_back, states.jump_forward:
-			jump_decision = jump_check(input, walk_directions.none)
-			if jump_decision != current_state:
-				decision = jump_decision
-			attack_decision = handle_jump_attack(buffer)
-			if attack_decision != current_state:
-				decision = attack_decision
-		states.attack:
-			if attack_ended:
-				match current_attack:
-					"attack_normal/stand_a", "attack_normal/stand_b", "attack_normal/stand_c":
-						decision = states.idle
-		states.attack_command:
-			if attack_ended:
-				match current_attack:
-					"attack_command/crouch_a", "attack_command/crouch_b", "attack_command/crouch_c":
-						decision = states.crouch
-		states.jump_attack:
-			if attack_ended:
-				match current_attack:
-					"attack_jumping/jump_c":
-						decision = states.jump_neutral
-			if ground_cancelled_attack_ended(): #Ends when the character hits the ground
-				match current_attack:
-					"attack_jumping/jump_a", "attack_jumping/jump_b":
-						decision = states.idle
-						current_attack = ""
+			decision = jump_check(input, walk_directions.none, decision)
+			decision = handle_attack(buffer, decision)
+# Debug stuff
 	if Input.is_action_just_pressed("debug_hurt_weak"):
 		decision = states.hurt_high
 		kback_hori = 0.6
@@ -396,7 +370,8 @@ func standable_stun_check(buffer):
 	if stun_time_current == 0:
 		var new_walk = walk_check(
 				slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up)),
-				walk_directions.none
+				walk_directions.none,
+				current_state
 			)
 		update_state(new_walk)
 
@@ -405,42 +380,32 @@ func aerial_stun_check(buffer):
 #		standable_stun_check(buffer)
 		var new_walk = walk_check(
 				slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up)),
-				walk_directions.none
+				walk_directions.none,
+				current_state
 			)
 		update_state(new_walk)
 
-func action(buffer : Dictionary) -> void:
-	handle_input(buffer)
+var record_y
+var check_true
+
+func update_character_state():
 	match current_state:
 		states.idle:
-			$AnimationPlayer.play("basic/idle")
 			velocity.x = 0
 			jump_count = jump_total
 		states.crouch:
-			$AnimationPlayer.play("basic/crouch")
 			velocity.x = 0
 			jump_count = jump_total
 		states.walk_forward:
-			if right_facing:
-				$AnimationPlayer.play("basic/walk_right")
-			else:
-				$AnimationPlayer.play("basic/walk_left")
 			jump_count = jump_total
 			velocity.x = (1 if right_facing else -1) * walk_speed
 		states.walk_back:
-			if right_facing:
-				$AnimationPlayer.play("basic/walk_left")
-			else:
-				$AnimationPlayer.play("basic/walk_right")
 			jump_count = jump_total
 			velocity.x = (-1 if right_facing else 1) * walk_speed
+		states.jump_forward_init, states.jump_back_init, states.jump_neutral_init:
+			jump_count -= 1
+			velocity.y = jump_height
 		states.jump_forward, states.jump_back, states.jump_neutral:
-			$AnimationPlayer.play("basic/jump")
-			if (jump_count > 0 and button_just_pressed(buffer, "up")):
-					jump_count -= 1
-					velocity.y = jump_height
-					var jump = jump_check(buffer, walk_directions.none)
-					current_state = jump
 			match current_state:
 				states.jump_forward:
 					velocity.x = (1 if right_facing else -1) * walk_speed
@@ -448,81 +413,110 @@ func action(buffer : Dictionary) -> void:
 					velocity.x = (1 if !right_facing else -1) * walk_speed
 				states.jump_neutral:
 					velocity.x = 0
-		states.attack:
-			$AnimationPlayer.play(current_attack)
-			velocity.x = 0
-		states.attack_command:
-			$AnimationPlayer.play(current_attack)
-			velocity.x = 0
-		states.jump_attack:
-			$AnimationPlayer.play(current_attack)
-		states.hurt_high:
-			$AnimationPlayer.play("hurting/high")
+		states.hurt_high, states.hurt_low, states.hurt_crouch, states.block_high, states.block_low:
 			if stun_time_current == stun_time_start:
 				velocity.x += (-1 if right_facing else 1) * kback_hori
-		states.hurt_low:
-			$AnimationPlayer.play("hurting/low")
-			if stun_time_current == stun_time_start:
-				velocity.x += (-1 if right_facing else 1) * kback_hori
-		states.hurt_crouch:
-			$AnimationPlayer.play("hurting/crouch")
-			if stun_time_current == stun_time_start:
-				velocity.x += (-1 if right_facing else 1) * kback_hori
-		states.hurt_fall, states.hurt_bounce:
-			$AnimationPlayer.play("hurting/air")
+		states.hurt_fall, states.hurt_bounce, states.block_air:
 			if stun_time_current == stun_time_start:
 				velocity.x += (-1 if right_facing else 1) * kback_hori
 				velocity.y += kback_vert
 		states.hurt_lie:
-			$AnimationPlayer.play("hurting/lying")
 			velocity.x = velocity.x * GROUND_SLIDE_FRICTION
-		states.get_up:
-			$AnimationPlayer.play("hurting/get_up")
-		states.block_high:
-			$AnimationPlayer.play("blocking/high")
-			if stun_time_current == stun_time_start:
-				velocity.x += (-1 if right_facing else 1) * kback_hori
-		states.block_low:
-			$AnimationPlayer.play("blocking/low")
-			if stun_time_current == stun_time_start:
-				velocity.x += (-1 if right_facing else 1) * kback_hori
-		states.block_air:
-			$AnimationPlayer.play("blocking/air")
-			if stun_time_current == stun_time_start:
-				velocity.x += (-1 if right_facing else 1) * kback_hori
-				velocity.y += kback_vert
+		states.attack:
+			velocity.x = 0
 	velocity.y += gravity
 	velocity.y = max(min_fall_vel, velocity.y)
-	var record_y = velocity.y
-	var check_true = move_and_slide()
+	record_y = velocity.y
+	check_true = move_and_slide()
+	if velocity.y < 0 and is_on_floor():
+		velocity.y = 0
+
+func resolve_state_transitions(buffer : Dictionary):
 	match current_state:
+		states.jump_forward_init:
+			update_state(states.jump_forward)
+		states.jump_back_init:
+			update_state(states.jump_back)
+		states.jump_neutral_init:
+			update_state(states.jump_neutral)
 		states.jump_forward, states.jump_back, states.jump_neutral, states.jump_attack:
 			if is_on_floor():
 				var new_walk = walk_check(
 					slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up)),
-					walk_directions.none
+					walk_directions.none,
+					current_state
 				)
 				update_state(new_walk)
-		states.block_high, states.block_low:
-			stun_time_current -= 1
-			standable_stun_check(buffer)
 		states.block_air:
 			stun_time_current -= 1
 			if is_on_floor():
 				stun_time_current = 0
 			aerial_stun_check(buffer)
-		states.hurt_high, states.hurt_low, states.hurt_crouch:
+		states.hurt_high, states.hurt_low, states.hurt_crouch, states.block_high, states.block_low:
 			stun_time_current -= 1
 			standable_stun_check(buffer)
-		states.hurt_fall, states.hurt_lie:
+		states.hurt_fall:
 			stun_time_current -= 1
 			aerial_stun_check(buffer)
 		states.hurt_bounce:
 			if check_true:
 				update_state(states.hurt_fall)
 				velocity.y = record_y * -1
-	if velocity.y < 0 and is_on_floor():
-		velocity.y = 0
+		states.hurt_lie:
+			stun_time_current -= 1
+			if stun_time_current == 0:
+				update_state(states.get_up)
+		states.attack, states.attack_command, states.jump_attack:
+			if attack_ended:
+				if attacks[current_attack]["return_state"] != states.none:
+					update_state(attacks[current_attack]["return_state"])
+				else:
+					update_state(previous_state)
+
+func update_character_animation():
+	match current_state:
+		states.idle:
+			$AnimationPlayer.play("basic/idle")
+		states.crouch:
+			$AnimationPlayer.play("basic/crouch")
+		states.walk_forward:
+			if right_facing:
+				$AnimationPlayer.play("basic/walk_right")
+			else:
+				$AnimationPlayer.play("basic/walk_left")
+		states.walk_back:
+			if right_facing:
+				$AnimationPlayer.play("basic/walk_left")
+			else:
+				$AnimationPlayer.play("basic/walk_right")
+		states.jump_forward_init, states.jump_back_init, states.jump_neutral_init, states.jump_forward, states.jump_back, states.jump_neutral:
+			$AnimationPlayer.play("basic/jump")
+		states.attack, states.attack_command, states.jump_attack:
+			$AnimationPlayer.play(current_attack)
+		states.hurt_high:
+			$AnimationPlayer.play("hurting/high")
+		states.hurt_low:
+			$AnimationPlayer.play("hurting/low")
+		states.hurt_crouch:
+			$AnimationPlayer.play("hurting/crouch")
+		states.hurt_fall, states.hurt_bounce:
+			$AnimationPlayer.play("hurting/air")
+		states.hurt_lie:
+			$AnimationPlayer.play("hurting/lying")
+		states.get_up:
+			$AnimationPlayer.play("hurting/get_up")
+		states.block_high:
+			$AnimationPlayer.play("blocking/high")
+		states.block_low:
+			$AnimationPlayer.play("blocking/low")
+		states.block_air:
+			$AnimationPlayer.play("blocking/air")
+
+func action(buffer : Dictionary) -> void:
+	resolve_state_transitions(buffer)
+	handle_input(buffer)
+	update_character_state()
+	update_character_animation()
 
 func reset_facing():
 	if distance < 0:
@@ -532,23 +526,13 @@ func reset_facing():
 	rotation_degrees.y = 180 * int(!right_facing)
 
 func return_overlaps():
-	return $Hurtboxes.get_overlapping_areas()
+	return $Hurtbox.get_overlapping_areas()
+
+const FRAMERATE = 1.0/60.0
 
 func input_step(inputs : Dictionary) -> void:
 	action(inputs)
-
-#"stand_a":
-#		{
-#			"damage": 3,
-#			"type": "mid",
-#			"stun_time": 4,
-#			"priority": 2,
-#			"kbHori": 0.2,
-#			"kbVert": 0.0,
-#			"total_frame_length": 8,
-#			"cancelable_after_frame": 3,
-#			"hitboxes": "stand_a"
-#		}
+	$AnimationPlayer.advance(FRAMERATE)
 
 func take_damage(attack, blocked):
 	if not blocked:
