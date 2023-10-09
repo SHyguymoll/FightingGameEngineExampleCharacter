@@ -260,9 +260,9 @@ func handle_inputs():
 	build_inputs_tracked(p1_buf, p2_buf)
 	
 	if p1.return_overlaps():
-		p1.damage_step(p1_buf, p2.attacks[p2.current_attack])
+		p1.damage_step(p1_buf, p2.attacks[p2.current_attack], p2.attack_number)
 	if p2.return_overlaps():
-		p2.damage_step(p2_buf, p1.attacks[p1.current_attack])
+		p2.damage_step(p2_buf, p1.attacks[p1.current_attack], p1.attack_number)
 	
 	p1.input_step(p1_buf)
 	p2.input_step(p2_buf)

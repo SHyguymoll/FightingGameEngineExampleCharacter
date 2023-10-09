@@ -13,9 +13,10 @@ extends CharacterBody3D
 @export var jump_height : float = 11
 @export var gravity : float = -0.5
 @export var min_fall_vel : float = -6.5
-
+@export var max_fall_vel : float = 10
+@export var attacked_number : int = -1
+@export var attack_number = -1
 @export var attack_velocity = Vector3.ZERO
-
 var input_buffer_len : int = 10
 
 var distance : float = 0.0
@@ -84,7 +85,7 @@ var attacks = {
 			"stun_time_block": 4,
 			"priority": 2,
 			"kbHori": 0.2,
-			"kbVert": 0.0,
+			"kbVert": 10,
 			"kbHori_block": 0.1,
 			"kbVert_block": 0.0,
 			"return_state": states.idle
@@ -196,7 +197,7 @@ var attacks = {
 			"stun_time_block": 30,
 			"priority": 1,
 			"kbHori": 0.0,
-			"kbVert": 4,
+			"kbVert": -6.5,
 			"kbHori_block": 2,
 			"kbVert_block": 0.0,
 			"return_state": states.none
@@ -245,6 +246,7 @@ func handle_attack(buffer: Dictionary, cur_state: states) -> states:
 		):
 		return cur_state
 	previous_state = cur_state
+	attack_number += 1
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
 			if button_just_pressed(buffer, "button0"):
@@ -438,6 +440,7 @@ func update_character_state():
 		states.attack:
 			velocity.x = 0
 	velocity.y += gravity
+	velocity.y = min(max_fall_vel, velocity.y)
 	velocity.y = max(min_fall_vel, velocity.y)
 	record_y = velocity.y
 	check_true = move_and_slide()
@@ -472,8 +475,10 @@ func resolve_state_transitions(buffer : Dictionary):
 			stun_time_current -= 1
 			aerial_stun_check(buffer)
 		states.hurt_bounce:
+			stun_time_current -= 1
 			if check_true:
 				update_state(states.hurt_fall)
+				stun_time_current = stun_time_start
 				velocity.y = record_y * -1
 		states.hurt_lie:
 			stun_time_current -= 1
@@ -574,16 +579,23 @@ func take_damage(attack, blocked):
 		kback_hori = attack["kbHori_block"]
 		kback_vert = attack["kbVert_block"]
 
-# block rule arrays: [up, down, left, right], 1 means valid, 0 means ignored, -1 means invalid
+# block rule arrays: [up, down, away, towards], 1 means valid, 0 means ignored, -1 means invalid
 const BLOCK_ANY = [1, 1, 1, 1]
-const BLOCK_AWAY_ANY = [0, 1, 0, -1]
+const BLOCK_AWAY_ANY = [0, 0, 1, -1]
 const BLOCK_AWAY_HIGH = [0, -1, 1, -1]
 const BLOCK_AWAY_LOW = [-1, 1, 1, -1]
 
 const DEPENDENT = "dependent"
 
-func try_block(input : Dictionary, attack : Dictionary, ground_block_rules : Array, air_block_rules : Array, block_fail_state_ground, block_fail_state_air):
-	var directions = [button_pressed(input, "up"),button_pressed(input, "down"),button_pressed(input, "left"),button_pressed(input, "right")]
+func try_block(input : Dictionary, attack : Dictionary, ground_block_rules : Array, air_block_rules : Array, block_fail_state_ground, block_fail_state_air, frame):
+	if attacked_number == frame:
+		return
+	attacked_number = frame
+	var directions
+	if right_facing:
+		directions = [button_pressed(input, "up"),button_pressed(input, "down"),button_pressed(input, "left"),button_pressed(input, "right")]
+	else:
+		directions = [button_pressed(input, "up"),button_pressed(input, "down"),button_pressed(input, "right"),button_pressed(input, "left")]
 	if not is_in_air_state():
 		for check_input in range(len(directions)):
 			if (directions[check_input] == true and ground_block_rules[check_input] == -1) or (directions[check_input] == false and ground_block_rules[check_input] == 1):
@@ -618,12 +630,12 @@ func try_block(input : Dictionary, attack : Dictionary, ground_block_rules : Arr
 		update_state(states.block_air)
 		return
 
-func damage_step(inputs : Dictionary, attack : Dictionary):
+func damage_step(inputs : Dictionary, attack : Dictionary, attack_number : int):
 	var input = slice_input_dictionary(inputs, len(inputs.up) - 1, len(inputs.up))
 	match attack["type"]:
 		"mid":
-			try_block(input, attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, DEPENDENT, states.hurt_fall)
+			try_block(input, attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, DEPENDENT, states.hurt_fall, attack_number)
 		"high":
-			try_block(input, attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, states.hurt_high, states.hurt_bounce)
+			try_block(input, attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, states.hurt_high, states.hurt_bounce, attack_number)
 		"low":
-			try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, DEPENDENT, states.hurt_fall)
+			try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, DEPENDENT, states.hurt_fall, attack_number)
