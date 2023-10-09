@@ -1623,7 +1623,7 @@ _data = {
 size = Vector3(1.25158, 0.162607, 0.270464)
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ld0vm"]
-points = PackedVector3Array(0.626, -0.551, 0.135, -0.626, -0.551, 0.135, -0.626, -0.551, -0.135, 0.626, -0.551, -0.135, 0, 0.61, 0)
+points = PackedVector3Array(0.626, -0.551, 0.135, -0.626, -0.551, 0.135, -0.626, -0.551, -0.135, 0.626, -0.551, -0.135, 0, 0.61, -0.135, 0, 0.61, 0.135)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2i5jm"]
 size = Vector3(1.70423, 0.397227, 1)
@@ -1654,6 +1654,7 @@ size = Vector3(1.46398, 1.48125, 1)
 
 [node name="GodotGuy" type="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0157823, 0)
+axis_lock_linear_z = true
 script = ExtResource("53")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -1675,7 +1676,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.30447, 0)
 texture = ExtResource("2_86yo0")
 hframes = 9
 vframes = 6
-frame = 45
 
 [node name="GroundCollision1" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0972432, 0)
@@ -1735,7 +1735,9 @@ disabled = true
 
 [node name="JumpA" type="CollisionShape3D" parent="Hitboxes"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.529636, -1.05073, 0)
+visible = false
 shape = SubResource("BoxShape3D_rgq7h")
+disabled = true
 
 [node name="JumpB" type="CollisionShape3D" parent="Hitboxes"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.363057, -1.04646, 0)
