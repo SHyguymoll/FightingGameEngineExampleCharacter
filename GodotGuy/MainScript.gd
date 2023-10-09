@@ -217,9 +217,13 @@ enum actions {set, add, remove}
 func initialize_boxes(player: bool) -> void:
 	if player:
 		$Hurtbox.collision_layer = 2
+		$Hitboxes.collision_layer = 4
+		$Hurtbox.collision_mask = 2
 		$Hitboxes.collision_mask = 4
 	else:
 		$Hurtbox.collision_layer = 4
+		$Hitboxes.collision_layer = 2
+		$Hurtbox.collision_mask = 4
 		$Hitboxes.collision_mask = 2
 
 enum buttons {Up = 1, Down = 2, Left = 4, Right = 8, A = 16, B = 32, C = 64}
@@ -583,7 +587,7 @@ func try_block(input : Dictionary, attack : Dictionary, ground_block_rules : Arr
 	if not is_in_air_state():
 		for check_input in range(len(directions)):
 			if (directions[check_input] == true and ground_block_rules[check_input] == -1) or (directions[check_input] == false and ground_block_rules[check_input] == 1):
-				if block_fail_state_ground == DEPENDENT:
+				if block_fail_state_ground is String:
 					if is_in_crouch_state():
 						take_damage(attack, false)
 						update_state(states.hurt_crouch)

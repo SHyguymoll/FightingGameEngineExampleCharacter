@@ -259,11 +259,9 @@ func handle_inputs():
 	)
 	build_inputs_tracked(p1_buf, p2_buf)
 	
-	var p1_hit = p1.return_overlaps()
-	var p2_hit = p2.return_overlaps()
-	if p1_hit:
+	if p1.return_overlaps():
 		p1.damage_step(p1_buf, p2.attacks[p2.current_attack])
-	if p2_hit:
+	if p2.return_overlaps():
 		p2.damage_step(p2_buf, p1.attacks[p1.current_attack])
 	
 	p1.input_step(p1_buf)

@@ -1698,6 +1698,7 @@ shape = SubResource("ConvexPolygonShape3D_ld0vm")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.30447, 0)
 collision_layer = 0
 collision_mask = 0
+monitorable = false
 
 [node name="HurtboxShape" type="CollisionShape3D" parent="Hurtbox"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.642, 0)
@@ -1707,6 +1708,7 @@ shape = ExtResource("3_8q5n8")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.30447, 0)
 collision_layer = 0
 collision_mask = 0
+monitoring = false
 
 [node name="StandA" type="CollisionShape3D" parent="Hitboxes"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.136681, -0.533908, 0)
