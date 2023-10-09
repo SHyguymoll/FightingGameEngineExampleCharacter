@@ -258,6 +258,18 @@ tracks/6/keys = {
 "update": 1,
 "values": [false, true, false]
 }
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("..:attack_velocity")
+tracks/7/interp = 0
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0.25, 0.283334),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Vector3(-3, 0, 0), Vector3(0, 0, 0)]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_w3q8l"]
 _data = {
@@ -268,7 +280,7 @@ _data = {
 
 [sub_resource type="Animation" id="Animation_73ol0"]
 resource_name = "a"
-length = 0.083335
+length = 0.150002
 loop_mode = 1
 step = 0.0166667
 tracks/0/type = "value"
@@ -278,10 +290,10 @@ tracks/0/path = NodePath(".:frame_coords")
 tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.0833333),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [Vector2(3, 1)]
+"values": [Vector2(3, 1), Vector2(0, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -321,10 +333,10 @@ tracks/4/path = NodePath("../Hitboxes/JumpA:disabled")
 tracks/4/interp = 0
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.0833333),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [false]
+"values": [false, true]
 }
 tracks/5/type = "value"
 tracks/5/imported = false
@@ -333,10 +345,10 @@ tracks/5/path = NodePath("../Hitboxes/JumpA:visible")
 tracks/5/interp = 0
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.0833333),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [true]
+"values": [true, false]
 }
 tracks/6/type = "value"
 tracks/6/imported = false
@@ -345,7 +357,7 @@ tracks/6/path = NodePath("..:attack_ended")
 tracks/6/interp = 0
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0.05),
+"times": PackedFloat32Array(0.116667),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [true]
@@ -1620,10 +1632,10 @@ _data = {
 }
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_38jcs"]
-size = Vector3(1.25158, 0.162607, 0.270464)
+size = Vector3(0.202, 1.068, 0.27)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ld0vm"]
-points = PackedVector3Array(0.626, -0.551, 0.135, -0.626, -0.551, 0.135, -0.626, -0.551, -0.135, 0.626, -0.551, -0.135, 0, 0.61, -0.135, 0, 0.61, 0.135)
+[sub_resource type="BoxShape3D" id="BoxShape3D_vbsgv"]
+size = Vector3(1.45025, 1.28207, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2i5jm"]
 size = Vector3(1.70423, 0.397227, 1)
@@ -1654,16 +1666,20 @@ size = Vector3(1.46398, 1.48125, 1)
 
 [node name="GodotGuy" type="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0157823, 0)
+collision_layer = 0
 axis_lock_linear_z = true
 script = ExtResource("53")
 
 [node name="DebugData" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.03479, 0)
+billboard = 2
 text = "Health: %s
 Right Facing: %s
 Knockback: %s
 Jump Count: %s
 Attack Finished: %s"
+font_size = 24
+outline_size = 4
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 root_node = NodePath("../Sprite")
@@ -1684,15 +1700,20 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.30447, 0)
 texture = ExtResource("2_86yo0")
 hframes = 9
 vframes = 6
-frame = 12
+frame = 15
 
-[node name="GroundCollision1" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0972432, 0)
+[node name="GroundCollision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.552, 0)
 shape = SubResource("BoxShape3D_38jcs")
 
-[node name="GroundCollision2" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.728692, 0)
-shape = SubResource("ConvexPolygonShape3D_ld0vm")
+[node name="StopPlayerIntersection" type="Area3D" parent="."]
+collision_layer = 8
+collision_mask = 8
+collision_priority = 5.0
+
+[node name="StopIntersection" type="CollisionShape3D" parent="StopPlayerIntersection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.663552, 0)
+shape = SubResource("BoxShape3D_vbsgv")
 
 [node name="Hurtbox" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.30447, 0)
@@ -1748,7 +1769,9 @@ disabled = true
 
 [node name="JumpA" type="CollisionShape3D" parent="Hitboxes"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.529636, -1.05073, 0)
+visible = false
 shape = SubResource("BoxShape3D_rgq7h")
+disabled = true
 
 [node name="JumpB" type="CollisionShape3D" parent="Hitboxes"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.363057, -1.04646, 0)
