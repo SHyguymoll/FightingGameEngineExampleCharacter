@@ -324,6 +324,9 @@ func is_in_air_state() -> bool:
 func is_in_crouch_state() -> bool:
 	return current_state in [states.crouch, states.hurt_crouch, states.block_low]
 
+func is_in_hurting_state() -> bool:
+	return current_state in [states.hurt_high, states.hurt_low, states.hurt_crouch, states.hurt_fall, states.hurt_bounce]
+
 func slice_input_dictionary(input_dict: Dictionary, from: int, to: int):
 	var ret_dict = {
 		up=input_dict["up"].slice(from, to),
@@ -591,6 +594,27 @@ func try_block(input : Dictionary, attack : Dictionary, ground_block_rules : Arr
 	if attacked_number == frame:
 		return
 	attacked_number = frame
+	# still in hitstun, can't block
+	if is_in_hurting_state():
+		if not is_in_air_state():
+			if block_fail_state_ground is String:
+				if is_in_crouch_state():
+					take_damage(attack, false)
+					update_state(states.hurt_crouch)
+					return
+				else:
+					take_damage(attack, false)
+					update_state(states.hurt_high)
+					return
+			else:
+				take_damage(attack, false)
+				update_state(block_fail_state_ground)
+				return
+		else:
+			take_damage(attack, false)
+			update_state(block_fail_state_air)
+			return
+	# Try to block
 	var directions
 	if right_facing:
 		directions = [button_pressed(input, "up"),button_pressed(input, "down"),button_pressed(input, "left"),button_pressed(input, "right")]
