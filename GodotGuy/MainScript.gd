@@ -40,8 +40,8 @@ enum states {
 	intro, round_win, set_win, #round stuff
 	idle, crouch, #basic basics
 	walk_forward, walk_back, #lateral movement
-	jump_forward_init, jump_neutral_init, jump_back_init, #aerial movement initial boost
-	jump_forward, jump_neutral, jump_back, #aerial movement
+	jump_right_init, jump_neutral_init, jump_left_init, #aerial movement initial boost
+	jump_right, jump_neutral, jump_left, #aerial movement
 	attack, attack_command, jump_attack, special_attack, #handling attacks
 	block_high, block_low, block_air, get_up, #handling getting attacked well
 	hurt_high, hurt_low, hurt_crouch, #not handling getting attacked well
@@ -255,7 +255,7 @@ func handle_attack(buffer: Dictionary, cur_state: states) -> states:
 			if button_just_pressed(buffer, "button2"):
 				update_attack("attack_command/crouch_c")
 			return states.attack_command
-		states.jump_neutral, states.jump_back, states.jump_forward:
+		states.jump_neutral, states.jump_left, states.jump_right:
 			if button_just_pressed(buffer, "button0"):
 				update_attack("attack_jumping/a")
 			if button_just_pressed(buffer, "button1"):
@@ -296,15 +296,21 @@ func jump_check(input: Dictionary, exclude: walk_directions, cur_state: states) 
 		if dir != exclude:
 			match dir:
 				walk_directions.forward:
-					return states.jump_forward_init
+					if right_facing:
+						return states.jump_right_init
+					else:
+						return states.jump_left_init
+				walk_directions.back:
+					if right_facing:
+						return states.jump_left_init
+					else:
+						return states.jump_right_init
 				walk_directions.neutral:
 					return states.jump_neutral_init
-				walk_directions.back:
-					return states.jump_back_init
 	return cur_state
 
 func is_in_air_state() -> bool:
-	return current_state in [states.jump_attack, states.jump_back, states.jump_neutral, states.jump_forward, states.block_air, states.hurt_bounce, states.hurt_fall]
+	return current_state in [states.jump_attack, states.jump_left, states.jump_neutral, states.jump_right, states.block_air, states.hurt_bounce, states.hurt_fall]
 
 func is_in_crouch_state() -> bool:
 	return current_state in [states.crouch, states.hurt_crouch, states.block_low]
@@ -342,7 +348,7 @@ func handle_input(buffer: Dictionary) -> void:
 			decision = walk_check(input, walk_directions.none, decision) if !button_pressed(input, "down") else decision
 			decision = handle_attack(buffer, decision)
 # Order: jump, attack, b/h
-		states.jump_neutral, states.jump_back, states.jump_forward:
+		states.jump_neutral, states.jump_left, states.jump_right:
 			decision = jump_check(input, walk_directions.none, decision)
 			decision = handle_attack(buffer, decision)
 # Debug stuff
@@ -402,15 +408,15 @@ func update_character_state():
 		states.walk_back:
 			jump_count = jump_total
 			velocity.x = (-1 if right_facing else 1) * walk_speed
-		states.jump_forward_init, states.jump_back_init, states.jump_neutral_init:
+		states.jump_right_init, states.jump_left_init, states.jump_neutral_init:
 			jump_count -= 1
 			velocity.y = jump_height
-		states.jump_forward, states.jump_back, states.jump_neutral:
+		states.jump_right, states.jump_left, states.jump_neutral:
 			match current_state:
-				states.jump_forward:
-					velocity.x = (1 if right_facing else -1) * walk_speed
-				states.jump_back:
-					velocity.x = (1 if !right_facing else -1) * walk_speed
+				states.jump_right:
+					velocity.x = walk_speed
+				states.jump_left:
+					velocity.x = -1 * walk_speed
 				states.jump_neutral:
 					velocity.x = 0
 		states.hurt_high, states.hurt_low, states.hurt_crouch, states.block_high, states.block_low:
@@ -433,13 +439,13 @@ func update_character_state():
 
 func resolve_state_transitions(buffer : Dictionary):
 	match current_state:
-		states.jump_forward_init:
-			update_state(states.jump_forward)
-		states.jump_back_init:
-			update_state(states.jump_back)
+		states.jump_right_init:
+			update_state(states.jump_right)
+		states.jump_left_init:
+			update_state(states.jump_left)
 		states.jump_neutral_init:
 			update_state(states.jump_neutral)
-		states.jump_forward, states.jump_back, states.jump_neutral, states.jump_attack:
+		states.jump_right, states.jump_left, states.jump_neutral, states.jump_attack:
 			if is_on_floor():
 				var new_walk = walk_check(
 					slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up)),
@@ -489,7 +495,7 @@ func update_character_animation():
 				$AnimationPlayer.play("basic/walk_left")
 			else:
 				$AnimationPlayer.play("basic/walk_right")
-		states.jump_forward_init, states.jump_back_init, states.jump_neutral_init, states.jump_forward, states.jump_back, states.jump_neutral:
+		states.jump_right_init, states.jump_left_init, states.jump_neutral_init, states.jump_right, states.jump_left, states.jump_neutral:
 			$AnimationPlayer.play("basic/jump")
 		states.attack, states.attack_command, states.jump_attack:
 			$AnimationPlayer.play(current_attack)
