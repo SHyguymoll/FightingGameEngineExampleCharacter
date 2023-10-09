@@ -30,6 +30,9 @@ var stun_time_current : int = 0
 
 @export var attack_ended = true
 
+func _process(_delta):
+	$DebugData.text = "Right Facing: %s\nKnockback: %s\nCurrent State: %s\nLast State: %s\nAttack Finished: %s" % [right_facing, [kback_hori, kback_vert], states.keys()[current_state], states.keys()[previous_state], attack_ended]
+
 var start_x_offset : float = 2
 const BUTTONCOUNT : int = 3
 const JUST_PRESSED_BUFFER : int = 2

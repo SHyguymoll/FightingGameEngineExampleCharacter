@@ -1657,6 +1657,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0157823, 0)
 axis_lock_linear_z = true
 script = ExtResource("53")
 
+[node name="DebugData" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.03479, 0)
+text = "Health: %s
+Right Facing: %s
+Knockback: %s
+Jump Count: %s
+Attack Finished: %s"
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 root_node = NodePath("../Sprite")
 playback_process_mode = 2
@@ -1676,6 +1684,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.30447, 0)
 texture = ExtResource("2_86yo0")
 hframes = 9
 vframes = 6
+frame = 12
 
 [node name="GroundCollision1" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0972432, 0)
@@ -1696,6 +1705,8 @@ shape = ExtResource("3_8q5n8")
 
 [node name="Hitboxes" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.30447, 0)
+collision_layer = 0
+collision_mask = 0
 
 [node name="StandA" type="CollisionShape3D" parent="Hitboxes"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.136681, -0.533908, 0)
@@ -1735,9 +1746,7 @@ disabled = true
 
 [node name="JumpA" type="CollisionShape3D" parent="Hitboxes"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.529636, -1.05073, 0)
-visible = false
 shape = SubResource("BoxShape3D_rgq7h")
-disabled = true
 
 [node name="JumpB" type="CollisionShape3D" parent="Hitboxes"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.363057, -1.04646, 0)
