@@ -448,7 +448,7 @@ func resolve_state_transitions(buffer : Dictionary):
 			update_state(states.jump_left)
 		states.jump_neutral_init:
 			update_state(states.jump_neutral)
-		states.jump_right, states.jump_left, states.jump_neutral, states.jump_attack:
+		states.jump_right, states.jump_left, states.jump_neutral:
 			if is_on_floor():
 				var new_walk = walk_check(
 					slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up)),
@@ -475,12 +475,25 @@ func resolve_state_transitions(buffer : Dictionary):
 			stun_time_current -= 1
 			if stun_time_current == 0:
 				update_state(states.get_up)
-		states.attack, states.attack_command, states.jump_attack:
+		states.attack, states.attack_command:
 			if attack_ended:
 				if attacks[current_attack]["return_state"] != states.none:
 					update_state(attacks[current_attack]["return_state"])
 				else:
 					update_state(previous_state)
+		states.jump_attack:
+			if attack_ended:
+				if attacks[current_attack]["return_state"] != states.none:
+					update_state(attacks[current_attack]["return_state"])
+				else:
+					update_state(previous_state)
+			elif is_on_floor():
+				var new_walk = walk_check(
+					slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up)),
+					walk_directions.none,
+					current_state
+				)
+				update_state(new_walk)
 
 func update_character_animation():
 	match current_state:
