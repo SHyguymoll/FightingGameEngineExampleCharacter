@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://ghdtgo2c8tch"]
+
+[ext_resource type="Script" path="res://GodotGuy/scenes/HitboxScript.gd" id="1_a3bkx"]
+
+[node name="Hitboxes" type="Area3D"]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+script = ExtResource("1_a3bkx")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]

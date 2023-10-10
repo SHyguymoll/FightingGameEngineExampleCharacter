@@ -27,16 +27,17 @@ var distance : float = 0.0
 var right_facing : bool = true
 var damage_mult : float = 1.0
 var defense_mult : float = 1.0
-var kback_hori : float = 0.0
-var kback_vert : float = 0.0
+var kback : Vector3 = Vector3.ZERO
 var jump_count : int = 0
 var stun_time_start : int = 0
 var stun_time_current : int = 0
 
+@onready var hitbox = preload("res://GodotGuy/scenes/Hitbox.tscn")
+
 @export var attack_ended = true
 
 func _process(_delta):
-	$DebugData.text = "Knockback: %s\nCurrent State: %s\nLast State: %s\nAttack Finished: %s\nStun: %s:%s" % [[kback_hori, kback_vert], states.keys()[current_state], states.keys()[previous_state], attack_ended, stun_time_current, stun_time_start]
+	$DebugData.text = "Current State: %s\nLast State: %s\nAttack Finished: %s\nStun: %s:%s\nKnockback: %s" % [states.keys()[current_state], states.keys()[previous_state], attack_ended, stun_time_current, stun_time_start, kback]
 
 var start_x_offset : float = 2
 const BUTTONCOUNT : int = 3
@@ -78,153 +79,107 @@ func update_state(new_state: states):
 #		"extra": ... This one is up to whatever
 #	}
 
-#TODO: attacks proper
-var attacks = {
+const hurtbox_base = preload("res://GodotGuy/hurtbox_shapes/base_shape.tres")
+const hurtbox_crouch = preload("res://GodotGuy/hurtbox_shapes/crouch_shape.tres")
+
+var attack_details = {
 	"attack_normal/stand_a":
 		{
-			"damage": 3,
-			"damage_block": 0,
-			"type": "mid",
-			"stun_time": 10,
-			"stun_time_block": 4,
-			"priority": 2,
-			"kbHori": 0.2,
-			"kbVert": 10,
-			"kbHori_block": 0.1,
-			"kbVert_block": 0.0,
 			"initial_attack_velocity" : Vector3.ZERO,
 			"attack_velocity_mode": av_effects.SET,
+			"initial_hurtbox_position": Vector3(0, -0.642, 0),
+			"initial_hurtbox_shape": hurtbox_base,
 			"return_state": states.idle
 		},
 	"attack_normal/stand_b":
 		{
-			"damage": 4,
-			"damage_block": 0,
-			"type": "mid",
-			"stun_time": 7,
-			"stun_time_block": 7,
-			"priority": 1,
-			"kbHori": 0.6,
-			"kbVert": 0.0,
-			"kbHori_block": -0.15,
-			"kbVert_block": 0.0,
 			"initial_attack_velocity" : Vector3.ZERO,
 			"attack_velocity_mode": av_effects.SET,
+			"initial_hurtbox_position": Vector3(0, -0.642, 0),
+			"initial_hurtbox_shape": hurtbox_base,
 			"return_state": states.idle
 		},
 	"attack_normal/stand_c":
 		{
-			"damage": 8,
-			"damage_block": 2,
-			"type": "high",
-			"stun_time": 25,
-			"stun_time_block": 2,
-			"priority": 1,
-			"kbHori": 0.6,
-			"kbVert": 0.0,
-			"kbHori_block": 1,
-			"kbVert_block": 0.0,
 			"initial_attack_velocity" : Vector3.ZERO,
 			"attack_velocity_mode": av_effects.SET,
+			"initial_hurtbox_position": Vector3(0, -0.642, 0),
+			"initial_hurtbox_shape": hurtbox_base,
 			"return_state": states.idle
 		},
 	"attack_command/crouch_a":
 		{
-			"damage": 3,
-			"damage_block": 0,
-			"type": "low",
-			"stun_time": 5,
-			"stun_time_block": 4,
-			"priority": 1,
-			"kbHori": 0.05,
-			"kbVert": 0.0,
-			"kbHori_block": 0.3,
-			"kbVert_block": 0.0,
 			"initial_attack_velocity" : Vector3.ZERO,
 			"attack_velocity_mode": av_effects.ADD,
+			"initial_hurtbox_position": Vector3(0, -1.007, 0),
+			"initial_hurtbox_shape": hurtbox_crouch,
 			"return_state": states.crouch
 		},
 	"attack_command/crouch_b":
 		{
-			"damage": 8,
-			"damage_block": 3,
-			"type": "mid",
-			"stun_time": 16,
-			"stun_time_block": 8,
-			"priority": 1,
-			"kbHori": 0.6,
-			"kbVert": 0.0,
-			"kbHori_block": 1,
-			"kbVert_block": 0.0,
 			"initial_attack_velocity" : Vector3.ZERO,
 			"attack_velocity_mode": av_effects.ADD,
+			"initial_hurtbox_position": Vector3(0, -1.007, 0),
+			"initial_hurtbox_shape": hurtbox_crouch,
 			"return_state": states.crouch
 		},
 	"attack_command/crouch_c":
 		{
-			"damage": 15,
-			"damage_block": 5,
-			"type": "launch",
-			"stun_time": 20,
-			"stun_time_block": 10,
-			"priority": 1,
-			"kbHori": 0.4,
-			"kbVert": 10,
-			"kbHori_block": 2,
-			"kbVert_block": 0.0,
 			"initial_attack_velocity" : Vector3.ZERO,
 			"attack_velocity_mode": av_effects.ADD,
+			"initial_hurtbox_position": Vector3(0, -1.007, 0),
+			"initial_hurtbox_shape": hurtbox_crouch,
 			"return_state": states.crouch
 		},
 	"attack_jumping/a":
 		{
-			"damage": 15,
-			"damage_block": 5,
-			"type": "mid",
-			"stun_time": 7,
-			"stun_time_block": 2,
-			"priority": 1,
-			"kbHori": 1.0,
-			"kbVert": 4,
-			"kbHori_block": 0.5,
-			"kbVert_block": 0.0,
 			"initial_attack_velocity" : Vector3.ZERO,
 			"attack_velocity_mode": av_effects.ADD,
+			"initial_hurtbox_position": Vector3(0, -0.642, 0),
+			"initial_hurtbox_shape": hurtbox_base,
 			"return_state": states.none
 		},
 	"attack_jumping/b":
 		{
-			"damage": 15,
-			"damage_block": 5,
-			"type": "mid",
-			"stun_time": 20,
-			"stun_time_block": 12,
-			"priority": 1,
-			"kbHori": 0.0,
-			"kbVert": 4,
-			"kbHori_block": 2,
-			"kbVert_block": 0.0,
 			"initial_attack_velocity" : Vector3.ZERO,
 			"attack_velocity_mode": av_effects.ADD,
+			"initial_hurtbox_position": Vector3(0, -0.642, 0),
+			"initial_hurtbox_shape": hurtbox_base,
 			"return_state": states.none
 		},
 	"attack_jumping/c":
 		{
-			"damage": 15,
-			"damage_block": 5,
-			"type": "slam",
-			"stun_time": 60,
-			"stun_time_block": 30,
-			"priority": 1,
-			"kbHori": 0.0,
-			"kbVert": -6.5,
-			"kbHori_block": 2,
-			"kbVert_block": 0.0,
 			"initial_attack_velocity" : Vector3.ZERO,
 			"attack_velocity_mode": av_effects.ADD,
+			"initial_hurtbox_position": Vector3(0, -0.642, 0),
+			"initial_hurtbox_shape": hurtbox_base,
 			"return_state": states.none
 		},
 }
+
+var hitbox_layermask : int
+
+func create_hitbox(
+			pos : Vector3, shape : Shape3D, lifetime : int,
+			damage_hit : float, damage_block : float, stun_hit : int, stun_block : int,
+			hit_priority : int, kback_hit : Vector3, kback_block : Vector3, type : String):
+	var new_hitbox := (hitbox.instantiate() as Hitbox)
+	if not right_facing:
+		pos.x *= 1
+	new_hitbox.set_position(pos)
+	(new_hitbox.get_node("CollisionShape3D") as CollisionShape3D).set_shape(shape)
+	new_hitbox.collision_layer = hitbox_layermask
+	new_hitbox.collision_mask = hitbox_layermask
+	new_hitbox.lifetime = lifetime
+	new_hitbox.damage_hit = damage_hit
+	new_hitbox.damage_block = damage_block
+	new_hitbox.stun_hit = stun_hit
+	new_hitbox.stun_block = stun_block
+	new_hitbox.kback_hit = kback_hit
+	new_hitbox.kback_block = kback_block
+	new_hitbox.hit_priority = hit_priority
+	new_hitbox.type = type
+	add_child(new_hitbox,true)
 
 var current_attack : String
 
@@ -234,22 +189,22 @@ func ground_cancelled_attack_ended() -> bool:
 func update_attack(new_attack: String) -> void:
 	current_attack = new_attack
 	attack_ended = false
-	attack_velocity = attacks[new_attack]["initial_attack_velocity"]
-	attack_velocity_mode = attacks[new_attack]["attack_velocity_mode"]
+	attack_velocity = attack_details[new_attack]["initial_attack_velocity"]
+	attack_velocity_mode = attack_details[new_attack]["attack_velocity_mode"]
+	$Hurtbox/HurtboxShape.position = attack_details[new_attack]["initial_hurtbox_position"]
+	$Hurtbox/HurtboxShape.shape = attack_details[new_attack]["initial_hurtbox_shape"]
 
 enum actions {set, add, remove}
 
 func initialize_boxes(player: bool) -> void:
 	if player:
 		$Hurtbox.collision_layer = 2
-		$Hitboxes.collision_layer = 4
 		$Hurtbox.collision_mask = 2
-		$Hitboxes.collision_mask = 4
+		hitbox_layermask = 4
 	else:
 		$Hurtbox.collision_layer = 4
-		$Hitboxes.collision_layer = 2
 		$Hurtbox.collision_mask = 4
-		$Hitboxes.collision_mask = 2
+		hitbox_layermask = 2
 
 enum buttons {Up = 1, Down = 2, Left = 4, Right = 8, A = 16, B = 32, C = 64}
 
@@ -462,13 +417,13 @@ func update_character_state():
 					velocity.x = 0
 		states.hurt_high, states.hurt_low, states.hurt_crouch, states.block_high, states.block_low:
 			if stun_time_current == stun_time_start:
-				velocity.x += (-1 if right_facing else 1) * kback_hori
+				velocity.x += (-1 if right_facing else 1) * kback.x
 		states.hurt_fall, states.hurt_bounce, states.block_air:
 			if stun_time_current == stun_time_start:
-				velocity.x += (-1 if right_facing else 1) * kback_hori
-				velocity.y += kback_vert
+				velocity.x += (-1 if right_facing else 1) * kback.x
+				velocity.y += kback.y
 		states.hurt_lie:
-			velocity.x = velocity.x * GROUND_SLIDE_FRICTION
+			velocity.x *= GROUND_SLIDE_FRICTION
 		states.attack, states.attack_command, states.jump_attack:
 			match attack_velocity_mode:
 				av_effects.ADD:
@@ -516,7 +471,7 @@ func resolve_state_transitions(buffer : Dictionary):
 			if check_true:
 				update_state(states.hurt_fall)
 				set_stun_time(stun_time_start)
-				velocity.y = record_y * -1
+				kback.y *= -1
 		states.hurt_lie:
 			stun_time_current -= 1
 			if stun_time_current == 0:
@@ -524,15 +479,15 @@ func resolve_state_transitions(buffer : Dictionary):
 		states.attack, states.attack_command:
 			if attack_ended:
 				attack_velocity = Vector3.ZERO
-				if attacks[current_attack]["return_state"] != states.none:
-					update_state(attacks[current_attack]["return_state"])
+				if attack_details[current_attack]["return_state"] != states.none:
+					update_state(attack_details[current_attack]["return_state"])
 				else:
 					update_state(previous_state)
 		states.jump_attack:
 			if attack_ended:
 				attack_velocity = Vector3.ZERO
-				if attacks[current_attack]["return_state"] != states.none:
-					update_state(attacks[current_attack]["return_state"])
+				if attack_details[current_attack]["return_state"] != states.none:
+					update_state(attack_details[current_attack]["return_state"])
 				else:
 					update_state(previous_state)
 			elif is_on_floor():
@@ -598,6 +553,9 @@ func reset_facing():
 func return_overlaps():
 	return $Hurtbox.get_overlapping_areas()
 
+func return_attacker():
+	return ($Hurtbox.get_overlapping_areas()[0] as Hitbox)
+
 const FRAMERATE = 1.0/60.0
 
 func input_step(inputs : Dictionary) -> void:
@@ -608,17 +566,15 @@ func set_stun_time(value):
 	stun_time_start = value
 	stun_time_current = stun_time_start + 1
 
-func take_damage(attack, blocked):
+func take_damage(attack : Hitbox, blocked : bool):
 	if not blocked:
-		health -= attack["damage"]
-		set_stun_time(attack["stun_time"])
-		kback_hori = attack["kbHori"]
-		kback_vert = attack["kbVert"]
+		health -= attack.damage_hit
+		set_stun_time(attack.stun_hit)
+		kback = attack.kback_hit
 	else:
-		health -= attack["damage_block"]
-		set_stun_time(attack["stun_time_block"])
-		kback_hori = attack["kbHori_block"]
-		kback_vert = attack["kbVert_block"]
+		health -= attack.damage_block
+		set_stun_time(attack.stun_block)
+		kback = attack.kback_block
 
 # block rule arrays: [up, down, away, towards], 1 means valid, 0 means ignored, -1 means invalid
 const BLOCK_ANY = [1, 1, 1, 1]
@@ -626,11 +582,9 @@ const BLOCK_AWAY_ANY = [0, 0, 1, -1]
 const BLOCK_AWAY_HIGH = [0, -1, 1, -1]
 const BLOCK_AWAY_LOW = [-1, 1, 1, -1]
 
-func try_block(input : Dictionary, attack : Dictionary, ground_block_rules : Array, air_block_rules : Array, fs_stand : states, fs_crouch : states, fs_air : states, frame):
-	if attacked_number == frame:
-		return
-	attacked_number = frame
+func try_block(input : Dictionary, attack : Hitbox, ground_block_rules : Array, air_block_rules : Array, fs_stand : states, fs_crouch : states, fs_air : states):
 	# still in hitstun, can't block
+	attack.queue_free()
 	if is_in_hurting_state():
 		if not is_in_air_state():
 			if is_in_crouch_state():
@@ -680,18 +634,18 @@ func try_block(input : Dictionary, attack : Dictionary, ground_block_rules : Arr
 		update_state(states.block_air)
 		return
 
-func damage_step(inputs : Dictionary, attack : Dictionary, a_number : int):
+func damage_step(inputs : Dictionary, attack : Hitbox):
 	var input = slice_input_dictionary(inputs, len(inputs.up) - 1, len(inputs.up))
 	match attack["type"]:
 		"mid":
-			try_block(input, attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, states.hurt_high, states.crouch, states.hurt_fall, a_number)
+			try_block(input, attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, states.hurt_high, states.crouch, states.hurt_fall)
 		"high":
-			try_block(input, attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, states.hurt_high, states.crouch, states.hurt_bounce, a_number)
+			try_block(input, attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, states.hurt_high, states.crouch, states.hurt_bounce)
 		"low":
-			try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_low, states.crouch, states.hurt_fall, a_number)
+			try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_low, states.crouch, states.hurt_fall)
 		"launch":
-			try_block(input, attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, states.hurt_fall, states.hurt_fall, states.hurt_fall, a_number)
+			try_block(input, attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, states.hurt_fall, states.hurt_fall, states.hurt_fall)
 		"sweep":
-			try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_lie, states.crouch, states.hurt_fall, a_number)
+			try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_lie, states.crouch, states.hurt_fall)
 		"slam":
-			try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_bounce, states.hurt_bounce, states.hurt_fall, a_number)
+			try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_bounce, states.hurt_bounce, states.hurt_fall)
