@@ -318,8 +318,11 @@ func slice_input_dictionary(input_dict: Dictionary, from: int, to: int):
 		ret_dict["button" + str(i)] = input_dict["button" + str(i)].slice(from, to)
 	return ret_dict
 
+func latest_input_from_buffer(buffer):
+	return slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up))
+
 func handle_input(buffer: Dictionary) -> void:
-	var input = slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up))
+	var input = latest_input_from_buffer(buffer)
 	var decision : states = current_state
 	match current_state:
 # Priority order, from least to most: Walk, Crouch, Jump, Attack, Block/Hurt (handled elsewhere)
@@ -342,31 +345,12 @@ func handle_input(buffer: Dictionary) -> void:
 		states.jump_neutral, states.jump_left, states.jump_right:
 			decision = jump_check(input, walk_directions.none, decision)
 			decision = handle_attack(buffer, decision)
-# Debug stuff
-#	if Input.is_action_just_pressed("debug_hurt_weak"):
-#		decision = states.hurt_high
-#		kback_hori = 0.6
-#		kback_vert = 0
-#		stun_time_start = 15
-#		stun_time_current = stun_time_start
-#	if Input.is_action_just_pressed("debug_hurt_knockdown"):
-#		decision = states.hurt_fall
-#		kback_hori = 0.2
-#		kback_vert = 15
-#		stun_time_start = 50
-#		stun_time_current = stun_time_start
-#	if Input.is_action_just_pressed("debug_hurt_bounce"):
-#		decision = states.hurt_bounce
-#		kback_hori = 0.25
-#		kback_vert = -2
-#		stun_time_start = 30
-#		stun_time_current = stun_time_start
 	update_state(decision)
 
 func standable_stun_check(buffer):
 	if stun_time_current == 0:
 		var new_walk = walk_check(
-				slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up)),
+				latest_input_from_buffer(buffer),
 				walk_directions.none,
 				current_state
 			)
@@ -378,7 +362,7 @@ func aerial_stun_check(buffer):
 	if is_on_floor():
 #		standable_stun_check(buffer)
 		var new_walk = walk_check(
-				slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up)),
+				latest_input_from_buffer(buffer),
 				walk_directions.none,
 				current_state
 			)
@@ -450,7 +434,7 @@ func resolve_state_transitions(buffer : Dictionary):
 		states.jump_right, states.jump_left, states.jump_neutral:
 			if is_on_floor():
 				var new_walk = walk_check(
-					slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up)),
+					latest_input_from_buffer(buffer),
 					walk_directions.none,
 					current_state
 				)
@@ -492,7 +476,7 @@ func resolve_state_transitions(buffer : Dictionary):
 					update_state(previous_state)
 			elif is_on_floor():
 				var new_walk = walk_check(
-					slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up)),
+					latest_input_from_buffer(buffer),
 					walk_directions.none,
 					current_state
 				)

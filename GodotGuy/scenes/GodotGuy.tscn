@@ -1233,7 +1233,6 @@ no_depth_test = true
 texture = ExtResource("2_86yo0")
 hframes = 9
 vframes = 6
-frame = 45
 
 [node name="GroundCollision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.552, 0)
@@ -1255,7 +1254,7 @@ collision_mask = 0
 monitorable = false
 
 [node name="HurtboxShape" type="CollisionShape3D" parent="Hurtbox"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.223, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.642, 0)
 shape = ExtResource("3_8q5n8")
 
 [node name="Node3D" type="Node3D" parent="."]
