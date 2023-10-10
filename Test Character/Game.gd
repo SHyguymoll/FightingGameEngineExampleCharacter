@@ -26,6 +26,7 @@ var p2_inputs : Dictionary = {
 var p1_input_index : int = 0
 var p2_input_index : int = 0
 
+#required variables and methods from Game.gd
 @export var cameraMode = 0
 const CAMERAMAXX = 6
 const CAMERAMAXY = 10
