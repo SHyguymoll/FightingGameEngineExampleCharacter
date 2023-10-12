@@ -42,13 +42,14 @@ func _process(_delta):
 var start_x_offset : float = 2
 const BUTTONCOUNT : int = 3
 const JUST_PRESSED_BUFFER : int = 2
+const DASH_DURATION : int = 4
 const GROUND_SLIDE_FRICTION : float = 0.97
 
 #State transitions are handled by a FSM implemented as match statements
 enum states {
 	intro, round_win, set_win, #round stuff
 	idle, crouch, #basic basics
-	walk_forward, walk_back, #lateral movement
+	walk_forward, walk_back, dash_forward, dash_back, #lateral movement
 	jump_right_init, jump_neutral_init, jump_left_init, #aerial movement initial boost
 	jump_right, jump_neutral, jump_left, #aerial movement
 	attack, attack_command, jump_attack, special_attack, #handling attacks
@@ -208,14 +209,20 @@ func initialize_boxes(player: bool) -> void:
 
 enum buttons {Up = 1, Down = 2, Left = 4, Right = 8, A = 16, B = 32, C = 64}
 
+func button_pressed_at_ind(inputs: Dictionary, input: String, ind: int):
+	return inputs[input][ind][1]
+
 func button_pressed(inputs: Dictionary, input: String):
-	return inputs[input][-1][1]
+	return button_pressed_at_ind(inputs, input, -1)
 
 func button_just_pressed(inputs: Dictionary, input: String):
-	return inputs[input][-1][0] < JUST_PRESSED_BUFFER and inputs[input][-1][1]
+	return button_pressed_at_ind_under_duration(inputs, input, -1, JUST_PRESSED_BUFFER)
+
+func button_pressed_at_ind_under_duration(inputs: Dictionary, input: String, ind: int, duration: int):
+	return inputs[input][ind][0] < duration and button_pressed_at_ind(inputs, input, ind)
 
 func button_held(inputs: Dictionary, input: String, length: int):
-	return inputs[input][-1][0] >= length and inputs[input][-1][1]
+	return inputs[input][-1][0] >= length and button_pressed(inputs, input)
 
 func handle_attack(buffer: Dictionary, cur_state: states) -> states:
 	if (
@@ -278,6 +285,18 @@ func walk_check(input : Dictionary, exclude: walk_directions, cur_state: states)
 					return states.walk_back
 	return cur_state
 
+
+func dash_check(buffer : Dictionary, input: String, success_state: states, cur_state: states) -> states:
+# we only need the last three inputs
+	var walks = [
+		button_pressed_at_ind_under_duration(buffer, input, -3, DASH_DURATION),
+		button_pressed_at_ind_under_duration(buffer, input, -2, DASH_DURATION),
+		button_pressed_at_ind_under_duration(buffer, input, -1, DASH_DURATION)
+	]
+	if walks == [true, false, true]:
+		return success_state
+	return cur_state
+
 func jump_check(input: Dictionary, exclude: walk_directions, cur_state: states) -> states:
 	if button_just_pressed(input, "up") and jump_count > 0:
 		var dir = walk_value(input)
@@ -325,11 +344,18 @@ func handle_input(buffer: Dictionary) -> void:
 	var input = latest_input_from_buffer(buffer)
 	var decision : states = current_state
 	match current_state:
-# Priority order, from least to most: Walk, Crouch, Jump, Attack, Block/Hurt (handled elsewhere)
+# Priority order, from least to most: Walk, Backdash, Dash, Crouch, Jump, Attack, Block/Hurt (handled elsewhere)
 		states.idle, states.walk_back, states.walk_forward:
 			match current_state:
 				states.idle:
 					decision = walk_check(input, walk_directions.neutral, decision)
+					if len(buffer.up) > 4:
+						if right_facing:
+							decision = dash_check(buffer, "left", states.dash_back, decision)
+							decision = dash_check(buffer, "right", states.dash_forward, decision)
+						else:
+							decision = dash_check(buffer, "left", states.dash_forward, decision)
+							decision = dash_check(buffer, "right", states.dash_back, decision)
 				states.walk_back:
 					decision = walk_check(input, walk_directions.back, decision)
 				states.walk_forward:
@@ -423,6 +449,12 @@ func update_character_state():
 
 func resolve_state_transitions(buffer : Dictionary):
 	match current_state:
+		states.dash_back:
+			print("dash back successful")
+			update_state(states.walk_back)
+		states.dash_forward:
+			print("dash forward successful")
+			update_state(states.walk_forward)
 		states.jump_right_init:
 			update_state(states.jump_right)
 		states.jump_left_init:
