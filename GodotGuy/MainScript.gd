@@ -391,14 +391,12 @@ func update_character_state():
 		states.jump_right_init, states.jump_left_init, states.jump_neutral_init:
 			jump_count -= 1
 			velocity.y = jump_height
-		states.jump_right, states.jump_left, states.jump_neutral:
-			match current_state:
-				states.jump_right:
-					velocity.x = walk_speed
-				states.jump_left:
-					velocity.x = -1 * walk_speed
-				states.jump_neutral:
-					velocity.x = 0
+		states.jump_right:
+			velocity.x = walk_speed
+		states.jump_left:
+			velocity.x = -1 * walk_speed
+		states.jump_neutral:
+			velocity.x = 0
 		states.hurt_high, states.hurt_low, states.hurt_crouch, states.block_high, states.block_low:
 			if stun_time_current == stun_time_start:
 				velocity.x += (-1 if right_facing else 1) * kback.x

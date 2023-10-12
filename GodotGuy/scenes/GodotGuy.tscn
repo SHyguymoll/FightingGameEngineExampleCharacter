@@ -1233,6 +1233,7 @@ no_depth_test = true
 texture = ExtResource("2_86yo0")
 hframes = 9
 vframes = 6
+frame = 9
 
 [node name="GroundCollision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.552, 0)
