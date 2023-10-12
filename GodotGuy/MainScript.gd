@@ -221,8 +221,8 @@ func button_just_pressed(inputs: Dictionary, input: String):
 func button_pressed_at_ind_under_duration(inputs: Dictionary, input: String, ind: int, duration: int):
 	return inputs[input][ind][0] < duration and button_pressed_at_ind(inputs, input, ind)
 
-func button_held(inputs: Dictionary, input: String, length: int):
-	return inputs[input][-1][0] >= length and button_pressed(inputs, input)
+func button_held_over_duration(inputs: Dictionary, input: String, duration: int):
+	return inputs[input][-1][0] >= duration and button_pressed(inputs, input)
 
 func handle_attack(buffer: Dictionary, cur_state: states) -> states:
 	if (
