@@ -35,6 +35,7 @@ var stun_time_current : int = 0
 @onready var hitbox = preload("res://GodotGuy/scenes/Hitbox.tscn")
 
 @export var attack_ended = true
+@export var dash_ended = true
 
 func _process(_delta):
 	$DebugData.text = "Current State: %s\nLast State: %s\nAttack Finished: %s\nStun: %s:%s\nKnockback: %s" % [states.keys()[current_state], states.keys()[previous_state], attack_ended, stun_time_current, stun_time_start, kback]
@@ -294,6 +295,7 @@ func dash_check(buffer : Dictionary, input: String, success_state: states, cur_s
 		button_pressed_at_ind_under_duration(buffer, input, -1, DASH_DURATION)
 	]
 	if walks == [true, false, true]:
+		dash_ended = false
 		return success_state
 	return cur_state
 
@@ -349,7 +351,7 @@ func handle_input(buffer: Dictionary) -> void:
 			match current_state:
 				states.idle:
 					decision = walk_check(input, walk_directions.neutral, decision)
-					if len(buffer.up) > 4:
+					if len(buffer.up) > 3:
 						if right_facing:
 							decision = dash_check(buffer, "left", states.dash_back, decision)
 							decision = dash_check(buffer, "right", states.dash_forward, decision)
@@ -414,6 +416,15 @@ func update_character_state():
 		states.walk_back:
 			jump_count = jump_total
 			velocity.x = (-1 if right_facing else 1) * walk_speed
+		states.dash_forward:
+			jump_count = jump_total
+			if not $StopPlayerIntersection.has_overlapping_areas():
+				velocity.x = (1 if right_facing else -1) * walk_speed * 1.5
+			else:
+				velocity.x = 0
+		states.dash_back:
+			jump_count = jump_total
+			velocity.x = (-1 if right_facing else 1) * walk_speed * 1.5
 		states.jump_right_init, states.jump_left_init, states.jump_neutral_init:
 			jump_count -= 1
 			velocity.y = jump_height
@@ -450,11 +461,11 @@ func update_character_state():
 func resolve_state_transitions(buffer : Dictionary):
 	match current_state:
 		states.dash_back:
-			print("dash back successful")
-			update_state(states.walk_back)
+			if dash_ended:
+				update_state(states.walk_back)
 		states.dash_forward:
-			print("dash forward successful")
-			update_state(states.walk_forward)
+			if dash_ended:
+				update_state(states.walk_forward)
 		states.jump_right_init:
 			update_state(states.jump_right)
 		states.jump_left_init:
@@ -528,6 +539,8 @@ func update_character_animation():
 				$AnimationPlayer.play("basic/walk_left")
 			else:
 				$AnimationPlayer.play("basic/walk_right")
+		states.dash_forward, states.dash_back:
+			$AnimationPlayer.play("basic/dash")
 		states.jump_right_init, states.jump_left_init, states.jump_neutral_init, states.jump_right, states.jump_left, states.jump_neutral:
 			$AnimationPlayer.play("basic/jump")
 		states.attack, states.attack_command, states.jump_attack:

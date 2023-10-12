@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=3 uid="uid://kquoyj34deus"]
+[gd_scene load_steps=47 format=3 uid="uid://kquoyj34deus"]
 
 [ext_resource type="Texture2D" uid="uid://bh8asn38oyfgq" path="res://GodotGuy/SpriteSheet.png" id="2_86yo0"]
 [ext_resource type="Shape3D" uid="uid://dlbbd7lyja2p6" path="res://GodotGuy/hurtbox_shapes/crouch_shape.tres" id="2_ahw0y"]
@@ -797,9 +797,46 @@ tracks/3/keys = {
 "values": [ExtResource("3_8q5n8")]
 }
 
+[sub_resource type="Animation" id="Animation_00jti"]
+resource_name = "dash"
+length = 0.333335
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame_coords")
+tracks/0/interp = 0
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("..:dash_ended")
+tracks/1/interp = 0
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.266667),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "position_3d"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0, 1, 0, 1.30447, 0, 0.133333, 1, 0, 1.35, 0, 0.266667, 1, 0, 1.30447, 0)
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1famj"]
 _data = {
 "crouch": SubResource("Animation_sap85"),
+"dash": SubResource("Animation_00jti"),
 "idle": SubResource("Animation_oq48w"),
 "jump": SubResource("Animation_yt5la"),
 "walk_left": SubResource("Animation_bo21u"),
@@ -1233,7 +1270,6 @@ no_depth_test = true
 texture = ExtResource("2_86yo0")
 hframes = 9
 vframes = 6
-frame = 9
 
 [node name="GroundCollision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.552, 0)
