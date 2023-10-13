@@ -324,6 +324,12 @@ func is_in_air_state() -> bool:
 func is_in_crouch_state() -> bool:
 	return current_state in [states.crouch, states.hurt_crouch, states.block_low]
 
+func is_in_dashing_state() -> bool:
+	return current_state in [states.dash_back, states.dash_forward]
+
+func is_in_attacking_state() -> bool:
+	return current_state in [states.attack, states.attack_command, states.jump_attack]
+
 func is_in_hurting_state() -> bool:
 	return current_state in [states.hurt_high, states.hurt_low, states.hurt_crouch, states.hurt_fall, states.hurt_bounce]
 
@@ -612,7 +618,7 @@ const BLOCK_AWAY_LOW = [-1, 1, 1, -1]
 func try_block(input : Dictionary, attack : Hitbox, ground_block_rules : Array, air_block_rules : Array, fs_stand : states, fs_crouch : states, fs_air : states):
 	# still in hitstun, can't block
 	attack.queue_free()
-	if is_in_hurting_state():
+	if is_in_hurting_state() or is_in_dashing_state() or is_in_attacking_state():
 		if not is_in_air_state():
 			if is_in_crouch_state():
 				take_damage(attack, false)
