@@ -612,6 +612,7 @@ const BLOCK_ANY = [1, 1, 1, 1]
 const BLOCK_AWAY_ANY = [0, 0, 1, -1]
 const BLOCK_AWAY_HIGH = [0, -1, 1, -1]
 const BLOCK_AWAY_LOW = [-1, 1, 1, -1]
+const BLOCK_UNBLOCKABLE = [-1, -1. -1, -1]
 
 func try_block(input : Dictionary, attack : Hitbox, ground_block_rules : Array, air_block_rules : Array, fs_stand : states, fs_crouch : states, fs_air : states):
 	# still in hitstun, can't block
@@ -669,14 +670,16 @@ func damage_step(inputs : Dictionary, attack : Hitbox):
 	var input = slice_input_dictionary(inputs, len(inputs.up) - 1, len(inputs.up))
 	match attack["type"]:
 		"mid":
-			try_block(input, attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, states.hurt_high, states.crouch, states.hurt_fall)
+			try_block(input, attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, states.hurt_high, states.hurt_crouch, states.hurt_fall)
 		"high":
-			try_block(input, attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, states.hurt_high, states.crouch, states.hurt_bounce)
+			try_block(input, attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, states.hurt_high, states.hurt_crouch, states.hurt_bounce)
 		"low":
-			try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_low, states.crouch, states.hurt_fall)
+			try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_low, states.hurt_crouch, states.hurt_fall)
 		"launch":
 			try_block(input, attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, states.hurt_fall, states.hurt_fall, states.hurt_fall)
 		"sweep":
-			try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_lie, states.crouch, states.hurt_fall)
+			try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_lie, states.hurt_crouch, states.hurt_fall)
 		"slam":
 			try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_bounce, states.hurt_bounce, states.hurt_fall)
+		"unblockable":
+			try_block(input, attack, BLOCK_UNBLOCKABLE, BLOCK_UNBLOCKABLE, states.hurt_high, states.hurt_crouch, states.hurt_fall)
