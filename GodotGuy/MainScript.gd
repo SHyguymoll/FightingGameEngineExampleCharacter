@@ -315,6 +315,14 @@ func jump_check(input: Dictionary, exclude: walk_directions, cur_state: states) 
 					return states.jump_neutral_init
 	return cur_state
 
+const QUARTER_CIRCLE_FORWARD = [2,3,6]
+const QUARTER_CIRCLE_BACK = [2,3,6]
+const Z_MOTION_FORWARD = [6,2,3]
+const Z_MOTION_BACK = [4,2,1]
+
+func motion_input_check(buffer : Dictionary, inputs : Array, success_attack: states, cur_state: states) -> states:
+	return cur_state
+
 func is_in_air_state() -> bool:
 	return current_state in [states.jump_attack, states.jump_left, states.jump_neutral, states.jump_right, states.block_air, states.hurt_bounce, states.hurt_fall]
 
