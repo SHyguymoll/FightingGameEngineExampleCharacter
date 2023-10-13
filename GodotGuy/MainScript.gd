@@ -6,47 +6,45 @@ extends CharacterBody3D
 # input_step() is called with the latest buffer of inputs
 # damage_step() is called with the details of the attack, if it happened
 
+# this block of variables is accessed by the game for various reasons
 @export var char_name : String = "Godot Guy"
 @export var health : float = 100
+var input_buffer_len : int = 10
+var distance : float = 0.0
+var start_x_offset : float = 2
+const BUTTONCOUNT : int = 3
+
+# this block of variables isn't required, but generally used by a typical fighter
 @export var walk_speed : float = 2
 @export var jump_total : int = 2
+var jump_count : int = 0
 @export var jump_height : float = 11
 @export var gravity : float = -0.5
 @export var min_fall_vel : float = -6.5
-@export var attacked_number : int = -1
-@export var attack_number = -1
+var right_facing : bool = true
+var kback : Vector3 = Vector3.ZERO
+var stun_time_start : int = 0
+var stun_time_current : int = 0
+const hurtbox_base = preload("res://GodotGuy/hurtbox_shapes/base_shape.tres")
+const hurtbox_crouch = preload("res://GodotGuy/hurtbox_shapes/crouch_shape.tres")
+@onready var hitbox = preload("res://GodotGuy/scenes/Hitbox.tscn")
+const JUST_PRESSED_BUFFER : int = 2
+const DASH_DURATION : int = 4
+const GROUND_SLIDE_FRICTION : float = 0.97
 @export var attack_velocity := Vector3.ZERO
 enum av_effects {
 	ADD,
 	SET
 }
 @export var attack_velocity_mode : av_effects
-var input_buffer_len : int = 10
-
-var distance : float = 0.0
-var right_facing : bool = true
 var damage_mult : float = 1.0
 var defense_mult : float = 1.0
-var kback : Vector3 = Vector3.ZERO
-var jump_count : int = 0
-var stun_time_start : int = 0
-var stun_time_current : int = 0
 
-@onready var hitbox = preload("res://GodotGuy/scenes/Hitbox.tscn")
-
+# these are guard clause variables, and may be removed
 @export var attack_ended = true
 @export var dash_ended = true
 
-func _process(_delta):
-	$DebugData.text = "Current State: %s\nLast State: %s\nAttack Finished: %s\nStun: %s:%s\nKnockback: %s" % [states.keys()[current_state], states.keys()[previous_state], attack_ended, stun_time_current, stun_time_start, kback]
-
-var start_x_offset : float = 2
-const BUTTONCOUNT : int = 3
-const JUST_PRESSED_BUFFER : int = 2
-const DASH_DURATION : int = 4
-const GROUND_SLIDE_FRICTION : float = 0.97
-
-#State transitions are handled by a FSM implemented as match statements
+#State transitions are handled by a FSM implemented as match statements in the input_step
 enum states {
 	intro, round_win, set_win, #round stuff
 	idle, crouch, #basic basics
@@ -62,6 +60,10 @@ enum states {
 var state_start := states.idle
 @export var current_state: states
 var previous_state : states
+
+# nothing should modify the fighter's state here, this is purely for real-time effects
+func _process(_delta):
+	$DebugData.text = "Current State: %s\nLast State: %s\nAttack Finished: %s\nStun: %s:%s\nKnockback: %s" % [states.keys()[current_state], states.keys()[previous_state], attack_ended, stun_time_current, stun_time_start, kback]
 
 func update_state(new_state: states):
 	current_state = new_state
@@ -80,9 +82,6 @@ func update_state(new_state: states):
 #		"hitboxes": "<hitbox set name>",
 #		"extra": ... This one is up to whatever
 #	}
-
-const hurtbox_base = preload("res://GodotGuy/hurtbox_shapes/base_shape.tres")
-const hurtbox_crouch = preload("res://GodotGuy/hurtbox_shapes/crouch_shape.tres")
 
 var attack_details = {
 	"attack_normal/stand_a":
@@ -173,8 +172,8 @@ func create_hitbox(
 	new_hitbox.collision_layer = hitbox_layermask
 	new_hitbox.collision_mask = hitbox_layermask
 	new_hitbox.lifetime = lifetime
-	new_hitbox.damage_hit = damage_hit
-	new_hitbox.damage_block = damage_block
+	new_hitbox.damage_hit = damage_hit * damage_mult
+	new_hitbox.damage_block = damage_block * damage_mult
 	new_hitbox.stun_hit = stun_hit
 	new_hitbox.stun_block = stun_block
 	new_hitbox.kback_hit = kback_hit
@@ -233,7 +232,6 @@ func handle_attack(buffer: Dictionary, cur_state: states) -> states:
 		):
 		return cur_state
 	previous_state = cur_state
-	attack_number += 1
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
 			if button_just_pressed(buffer, "button0"):
@@ -601,11 +599,11 @@ func set_stun_time(value):
 
 func take_damage(attack : Hitbox, blocked : bool):
 	if not blocked:
-		health -= attack.damage_hit
+		health -= attack.damage_hit * defense_mult
 		set_stun_time(attack.stun_hit)
 		kback = attack.kback_hit
 	else:
-		health -= attack.damage_block
+		health -= attack.damage_block * defense_mult
 		set_stun_time(attack.stun_block)
 		kback = attack.kback_block
 
