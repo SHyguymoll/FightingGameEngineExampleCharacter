@@ -29,7 +29,7 @@ const hurtbox_base = preload("res://GodotGuy/hurtbox_shapes/base_shape.tres")
 const hurtbox_crouch = preload("res://GodotGuy/hurtbox_shapes/crouch_shape.tres")
 @onready var hitbox = preload("res://GodotGuy/scenes/Hitbox.tscn")
 const JUST_PRESSED_BUFFER : int = 2
-const DASH_DURATION : int = 4
+const MOTION_INPUT_LENIENCY : int = 4
 const GROUND_SLIDE_FRICTION : float = 0.97
 @export var attack_velocity := Vector3.ZERO
 enum av_effects {
@@ -284,13 +284,12 @@ func walk_check(input : Dictionary, exclude: walk_directions, cur_state: states)
 					return states.walk_back
 	return cur_state
 
-
 func dash_check(buffer : Dictionary, input: String, success_state: states, cur_state: states) -> states:
 # we only need the last three inputs
 	var walks = [
-		button_pressed_at_ind_under_duration(buffer, input, -3, DASH_DURATION),
-		button_pressed_at_ind_under_duration(buffer, input, -2, DASH_DURATION),
-		button_pressed_at_ind_under_duration(buffer, input, -1, DASH_DURATION)
+		button_pressed_at_ind_under_duration(buffer, input, -3, MOTION_INPUT_LENIENCY),
+		button_pressed_at_ind_under_duration(buffer, input, -2, MOTION_INPUT_LENIENCY),
+		button_pressed_at_ind_under_duration(buffer, input, -1, MOTION_INPUT_LENIENCY)
 	]
 	if walks == [true, false, true]:
 		dash_ended = false
