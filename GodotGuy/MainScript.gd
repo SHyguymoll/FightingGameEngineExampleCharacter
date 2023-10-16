@@ -320,7 +320,41 @@ const QUARTER_CIRCLE_BACK = [2,3,6]
 const Z_MOTION_FORWARD = [6,2,3]
 const Z_MOTION_BACK = [4,2,1]
 
+func convert_directions_into_numpad_notation(up, down, back, forward) -> int:
+	if up:
+		if back:
+			return 7
+		if forward:
+			return 9
+		return 8
+	if down:
+		if back:
+			return 1
+		if forward:
+			return 3
+	if back:
+		return 4
+	if forward:
+		return 6
+	return 5
+
+func convert_buffer_inputs_into_numpad_notation(buffer: Dictionary) -> Array[int]:
+	var numpad_buffer = []
+	for i in range(len(buffer.up)):
+		numpad_buffer.append(
+			convert_directions_into_numpad_notation(
+				button_pressed_at_ind(buffer, "up", i),
+				button_pressed_at_ind(buffer, "down", i),
+				button_pressed_at_ind(buffer, "left", i),
+				button_pressed_at_ind(buffer, "right", i)
+			)
+		)
+	return numpad_buffer
+
 func motion_input_check(buffer : Dictionary, inputs : Array, success_attack: states, cur_state: states) -> states:
+	var buffer_as_numpad = convert_buffer_inputs_into_numpad_notation(buffer)
+	if buffer_as_numpad.slice(len(buffer_as_numpad) - len(inputs)) == inputs:
+		return success_attack
 	return cur_state
 
 func is_in_air_state() -> bool:
