@@ -14,6 +14,10 @@ config/name="Example Character"
 run/main_scene="res://Test Character/TestCharacter.tscn"
 config/features=PackedStringArray("4.2")
 
+[autoload]
+
+GlobalKnowledge="*res://Test Character/global_knowledge.gd"
+
 [display]
 
 window/size/viewport_width=1920
