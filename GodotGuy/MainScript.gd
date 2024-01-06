@@ -29,7 +29,7 @@ const hurtbox_base = preload("res://GodotGuy/hurtbox_shapes/base_shape.tres")
 const hurtbox_crouch = preload("res://GodotGuy/hurtbox_shapes/crouch_shape.tres")
 @onready var hitbox = preload("res://GodotGuy/scenes/Hitbox.tscn")
 const JUST_PRESSED_BUFFER : int = 2
-const MOTION_INPUT_LENIENCY : int = 4
+const MOTION_INPUT_LENIENCY : int = 6
 const GROUND_SLIDE_FRICTION : float = 0.97
 @export var attack_velocity := Vector3.ZERO
 enum av_effects {

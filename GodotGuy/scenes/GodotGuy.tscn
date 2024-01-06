@@ -1252,8 +1252,8 @@ outline_size = 4
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 root_node = NodePath("../Sprite")
-playback_process_mode = 2
-method_call_mode = 1
+callback_mode_process = 2
+callback_mode_method = 1
 libraries = {
 "": SubResource("AnimationLibrary_1cfsu"),
 "attack_command": SubResource("AnimationLibrary_w3q8l"),
@@ -1270,6 +1270,7 @@ no_depth_test = true
 texture = ExtResource("2_86yo0")
 hframes = 9
 vframes = 6
+frame = 9
 
 [node name="GroundCollision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.552, 0)
