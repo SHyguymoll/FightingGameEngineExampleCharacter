@@ -9,6 +9,7 @@ extends CharacterBody3D
 # this block of variables is accessed by the game for various reasons
 @export var char_name : String = "Godot Guy"
 @export var health : float = 100
+var player_number : int
 var input_buffer_len : int = 10
 var distance : float = 0.0
 var start_x_offset : float = 2
@@ -643,10 +644,14 @@ const FRAMERATE = 1.0/60.0
 
 func input_step(inputs : Dictionary) -> void:
 	action(inputs)
-	animate.advance(FRAMERATE)
+	if GlobalKnowledge.global_hitstop == 0 and \
+	(GlobalKnowledge.p1_hitstop == 0 and player_number == 1) or \
+	(GlobalKnowledge.p2_hitstop == 0 and player_number == 2):
+		animate.advance(FRAMERATE)
 
 func set_stun_time(value):
 	stun_time_start = value
+	GlobalKnowledge.global_hitstop = int(value/4)
 	stun_time_current = stun_time_start + 1
 
 func take_damage(attack : Hitbox, blocked : bool):
@@ -655,7 +660,7 @@ func take_damage(attack : Hitbox, blocked : bool):
 		set_stun_time(attack.stun_hit)
 		kback = attack.kback_hit
 	else:
-		health -= attack.damage_block * defense_mult
+		health = max(health - attack.damage_block * defense_mult, 1)
 		set_stun_time(attack.stun_block)
 		kback = attack.kback_block
 

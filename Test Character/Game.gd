@@ -65,6 +65,7 @@ func update_hud():
 func init_fighters():
 	for i in range(p1.BUTTONCOUNT):
 		p1_inputs["button" + str(i)] = [[0, false]]
+	p1.player_number = 1
 	p1.position = Vector3(p1.start_x_offset * -1,0,0)
 	p1.right_facing = true
 	p1.update_state(p1.state_start)
@@ -73,13 +74,20 @@ func init_fighters():
 	
 	for i in range(p2.BUTTONCOUNT):
 		p2_inputs["button" + str(i)] = [[0, false]]
+	p2.player_number = 2
 	p2.position = Vector3(p2.start_x_offset,0,0)
 	p2.right_facing = false
 	p2.update_state(p2.state_start)
 	p2.initialize_boxes(false)
 	p2.char_name += " p2"
 
+func reset_hitstop():
+	GlobalKnowledge.global_hitstop = 0
+	GlobalKnowledge.p1_hitstop = 0
+	GlobalKnowledge.p2_hitstop = 0
+
 func _ready():
+	reset_hitstop()
 	add_child(scene_to_test.instantiate())
 	p1 = player_test_one.instantiate()
 	p2 = player_test_two.instantiate()
