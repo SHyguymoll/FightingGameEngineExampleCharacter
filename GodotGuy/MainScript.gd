@@ -36,6 +36,7 @@ enum av_effects {
 	ADD,
 	SET
 }
+@export var animate : AnimationPlayer
 @export var attack_velocity_mode : av_effects
 var damage_mult : float = 1.0
 var defense_mult : float = 1.0
@@ -60,6 +61,34 @@ enum states {
 var state_start := states.idle
 @export var current_state: states
 var previous_state : states
+
+# Single animations for states can be handled by a simple hash lookup, edit as needed
+@export var basic_anim_state_dict := {
+	states.idle : &"basic/idle",
+	states.crouch : &"basic/crouch",
+	states.dash_forward : &"basic/dash",
+	states.dash_back : &"basic/dash",
+	states.jump_right_init : &"basic/jump",
+	states.jump_left_init : &"basic/jump",
+	states.jump_neutral_init : &"basic/jump",
+	states.jump_right : &"basic/jump",
+	states.jump_left : &"basic/jump",
+	states.jump_neutral : &"basic/jump",
+	states.hurt_high : &"hurting/high",
+	states.hurt_low : &"hurting/low",
+	states.hurt_crouch : &"hurting/crouch",
+	states.hurt_fall : &"hurting/air",
+	states.hurt_bounce : &"hurting/air",
+	states.hurt_lie : &"hurting/lying",
+	states.get_up : &"hurting/get_up",
+	states.block_high : &"blocking/high",
+	states.block_low : &"blocking/low",
+	states.block_air : &"blocking/air",
+}
+# Moving left and right is decoupled from moving forward and backward in this script,
+# so variables exist here for ease like the dictionary above.
+@export var move_left_anim : StringName = &"basic/walk_left"
+@export var move_right_anim : StringName = &"basic/walk_right"
 
 # nothing should modify the fighter's state here, this is purely for real-time effects
 func _process(_delta):
@@ -567,47 +596,29 @@ func resolve_state_transitions(buffer : Dictionary):
 					current_state
 				)
 				update_state(new_walk)
+			match previous_state: #fix previous state init bug
+				states.jump_neutral_init:
+					previous_state = states.jump_neutral
+				states.jump_right_init:
+					previous_state = states.jump_right
+				states.jump_left_init:
+					previous_state = states.jump_left
 
 func update_character_animation():
-	match current_state:
-		states.idle:
-			$AnimationPlayer.play("basic/idle")
-		states.crouch:
-			$AnimationPlayer.play("basic/crouch")
-		states.walk_forward:
-			if right_facing:
-				$AnimationPlayer.play("basic/walk_right")
-			else:
-				$AnimationPlayer.play("basic/walk_left")
-		states.walk_back:
-			if right_facing:
-				$AnimationPlayer.play("basic/walk_left")
-			else:
-				$AnimationPlayer.play("basic/walk_right")
-		states.dash_forward, states.dash_back:
-			$AnimationPlayer.play("basic/dash")
-		states.jump_right_init, states.jump_left_init, states.jump_neutral_init, states.jump_right, states.jump_left, states.jump_neutral:
-			$AnimationPlayer.play("basic/jump")
-		states.attack, states.attack_command, states.jump_attack:
-			$AnimationPlayer.play(current_attack)
-		states.hurt_high:
-			$AnimationPlayer.play("hurting/high")
-		states.hurt_low:
-			$AnimationPlayer.play("hurting/low")
-		states.hurt_crouch:
-			$AnimationPlayer.play("hurting/crouch")
-		states.hurt_fall, states.hurt_bounce:
-			$AnimationPlayer.play("hurting/air")
-		states.hurt_lie:
-			$AnimationPlayer.play("hurting/lying")
-		states.get_up:
-			$AnimationPlayer.play("hurting/get_up")
-		states.block_high:
-			$AnimationPlayer.play("blocking/high")
-		states.block_low:
-			$AnimationPlayer.play("blocking/low")
-		states.block_air:
-			$AnimationPlayer.play("blocking/air")
+	if current_state in [states.attack, states.attack_command, states.jump_attack]:
+		animate.play(current_attack)
+	else:
+		match current_state:
+			states.walk_forward when right_facing:
+				animate.play(move_right_anim)
+			states.walk_forward when !right_facing:
+				animate.play(move_left_anim)
+			states.walk_back when right_facing:
+				animate.play(move_left_anim)
+			states.walk_back when !right_facing:
+				animate.play(move_right_anim)
+			_:
+				animate.play(basic_anim_state_dict[current_state])
 
 func action(buffer : Dictionary) -> void:
 	resolve_state_transitions(buffer)
@@ -632,7 +643,7 @@ const FRAMERATE = 1.0/60.0
 
 func input_step(inputs : Dictionary) -> void:
 	action(inputs)
-	$AnimationPlayer.advance(FRAMERATE)
+	animate.advance(FRAMERATE)
 
 func set_stun_time(value):
 	stun_time_start = value
