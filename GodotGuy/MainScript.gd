@@ -33,10 +33,7 @@ const JUST_PRESSED_BUFFER : int = 2
 const MOTION_INPUT_LENIENCY : int = 6
 const GROUND_SLIDE_FRICTION : float = 0.97
 @export var attack_velocity := Vector3.ZERO
-enum av_effects {
-	ADD,
-	SET
-}
+enum av_effects {ADD, SET}
 @export var animate : AnimationPlayer
 @export var attack_velocity_mode : av_effects
 var damage_mult : float = 1.0
@@ -57,7 +54,6 @@ enum states {
 	block_high, block_low, block_air, get_up, #handling getting attacked well
 	hurt_high, hurt_low, hurt_crouch, #not handling getting attacked well
 	hurt_fall, hurt_lie, hurt_bounce, #REALLY not handling getting attacked well
-	none
 	}
 var state_start := states.idle
 @export var current_state: states
@@ -107,94 +103,16 @@ func update_state(new_state: states):
 		current_state = new_state
 		update_character_animation()
 
-# attack format:
-#"<Name>":
-#	{
-#		"damage": <damage>,
-#		"type": "<hit location>",
-#		"stun_time": <time value>,
-#		"priority": <priority value>,
-#		"kb_hori": <horizontal knockback value>,
-#		"kb_vert": <vertical knockback value>,
-#		"total_frame_length": <time value>,
-#		"cancelable_after_frame": <frame number>,
-#		"hitboxes": "<hitbox set name>",
-#		"extra": ... This one is up to whatever
-#	}
-
-var attack_details = {
-	"attack_normal/stand_a":
-		{
-			"initial_attack_velocity" : Vector3.ZERO,
-			"attack_velocity_mode": av_effects.SET,
-			"initial_hurtbox_position": Vector3(0, -0.642, 0),
-			"initial_hurtbox_shape": hurtbox_base,
-			"return_state": states.idle
-		},
-	"attack_normal/stand_b":
-		{
-			"initial_attack_velocity" : Vector3.ZERO,
-			"attack_velocity_mode": av_effects.SET,
-			"initial_hurtbox_position": Vector3(0, -0.642, 0),
-			"initial_hurtbox_shape": hurtbox_base,
-			"return_state": states.idle
-		},
-	"attack_normal/stand_c":
-		{
-			"initial_attack_velocity" : Vector3.ZERO,
-			"attack_velocity_mode": av_effects.SET,
-			"initial_hurtbox_position": Vector3(0, -0.642, 0),
-			"initial_hurtbox_shape": hurtbox_base,
-			"return_state": states.idle
-		},
-	"attack_command/crouch_a":
-		{
-			"initial_attack_velocity" : Vector3.ZERO,
-			"attack_velocity_mode": av_effects.ADD,
-			"initial_hurtbox_position": Vector3(0, -1.007, 0),
-			"initial_hurtbox_shape": hurtbox_crouch,
-			"return_state": states.crouch
-		},
-	"attack_command/crouch_b":
-		{
-			"initial_attack_velocity" : Vector3.ZERO,
-			"attack_velocity_mode": av_effects.ADD,
-			"initial_hurtbox_position": Vector3(0, -1.007, 0),
-			"initial_hurtbox_shape": hurtbox_crouch,
-			"return_state": states.crouch
-		},
-	"attack_command/crouch_c":
-		{
-			"initial_attack_velocity" : Vector3.ZERO,
-			"attack_velocity_mode": av_effects.ADD,
-			"initial_hurtbox_position": Vector3(0, -1.007, 0),
-			"initial_hurtbox_shape": hurtbox_crouch,
-			"return_state": states.crouch
-		},
-	"attack_jumping/a":
-		{
-			"initial_attack_velocity" : Vector3.ZERO,
-			"attack_velocity_mode": av_effects.ADD,
-			"initial_hurtbox_position": Vector3(0, -0.642, 0),
-			"initial_hurtbox_shape": hurtbox_base,
-			"return_state": states.none
-		},
-	"attack_jumping/b":
-		{
-			"initial_attack_velocity" : Vector3.ZERO,
-			"attack_velocity_mode": av_effects.ADD,
-			"initial_hurtbox_position": Vector3(0, -0.642, 0),
-			"initial_hurtbox_shape": hurtbox_base,
-			"return_state": states.none
-		},
-	"attack_jumping/c":
-		{
-			"initial_attack_velocity" : Vector3.ZERO,
-			"attack_velocity_mode": av_effects.ADD,
-			"initial_hurtbox_position": Vector3(0, -0.642, 0),
-			"initial_hurtbox_shape": hurtbox_base,
-			"return_state": states.none
-		},
+var attack_return_state = {
+	"attack_normal/stand_a": states.idle,
+	"attack_normal/stand_b": states.idle,
+	"attack_normal/stand_c": states.idle,
+	"attack_command/crouch_a": states.crouch,
+	"attack_command/crouch_b": states.crouch,
+	"attack_command/crouch_c": states.crouch,
+	"attack_jumping/a": null,
+	"attack_jumping/b": null,
+	"attack_jumping/c": null,
 }
 
 var hitbox_layermask : int
@@ -229,10 +147,6 @@ func ground_cancelled_attack_ended() -> bool:
 func update_attack(new_attack: String) -> void:
 	current_attack = new_attack
 	attack_ended = false
-	attack_velocity = attack_details[new_attack]["initial_attack_velocity"]
-	attack_velocity_mode = attack_details[new_attack]["attack_velocity_mode"]
-	$Hurtbox/HurtboxShape.position = attack_details[new_attack]["initial_hurtbox_position"]
-	$Hurtbox/HurtboxShape.shape = attack_details[new_attack]["initial_hurtbox_shape"]
 
 enum actions {set, add, remove}
 
@@ -588,15 +502,15 @@ func resolve_state_transitions(buffer : Dictionary):
 		states.attack, states.attack_command:
 			if attack_ended:
 				attack_velocity = Vector3.ZERO
-				if attack_details[current_attack]["return_state"] != states.none:
-					update_state(attack_details[current_attack]["return_state"])
+				if attack_return_state[current_attack] != null:
+					update_state(attack_return_state[current_attack])
 				else:
 					update_state(previous_state)
 		states.jump_attack:
 			if attack_ended:
 				attack_velocity = Vector3.ZERO
-				if attack_details[current_attack]["return_state"] != states.none:
-					update_state(attack_details[current_attack]["return_state"])
+				if attack_return_state[current_attack] != null:
+					update_state(attack_return_state[current_attack])
 				else:
 					update_state(previous_state)
 			elif is_on_floor():
