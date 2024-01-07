@@ -63,40 +63,49 @@ var state_start := states.idle
 @export var current_state: states
 var previous_state : states
 
-# Single animations for states can be handled by a simple hash lookup, edit as needed
+# left and right suffixes, change for your animation's version
+var anim_left_suf = "_left"
+var anim_right_suf = "_right"
+
+# Single animations for states can be handled by a simple hash lookup.
+# Because left vs right is handled externally, only the first part of the name is used
 @export var basic_anim_state_dict := {
-	states.idle : &"basic/idle",
-	states.crouch : &"basic/crouch",
-	states.dash_forward : &"basic/dash",
-	states.dash_back : &"basic/dash",
-	states.jump_right_init : &"basic/jump",
-	states.jump_left_init : &"basic/jump",
-	states.jump_neutral_init : &"basic/jump",
-	states.jump_right : &"basic/jump",
-	states.jump_left : &"basic/jump",
-	states.jump_neutral : &"basic/jump",
-	states.hurt_high : &"hurting/high",
-	states.hurt_low : &"hurting/low",
-	states.hurt_crouch : &"hurting/crouch",
-	states.hurt_fall : &"hurting/air",
-	states.hurt_bounce : &"hurting/air",
-	states.hurt_lie : &"hurting/lying",
-	states.get_up : &"hurting/get_up",
-	states.block_high : &"blocking/high",
-	states.block_low : &"blocking/low",
-	states.block_air : &"blocking/air",
+	states.idle : "basic/idle",
+	states.crouch : "basic/crouch",
+	states.jump_right_init : "basic/jump",
+	states.jump_left_init : "basic/jump",
+	states.jump_neutral_init : "basic/jump",
+	states.jump_right : "basic/jump",
+	states.jump_left : "basic/jump",
+	states.jump_neutral : "basic/jump",
+	states.hurt_high : "hurting/high",
+	states.hurt_low : "hurting/low",
+	states.hurt_crouch : "hurting/crouch",
+	states.hurt_fall : "hurting/air",
+	states.hurt_bounce : "hurting/air",
+	states.hurt_lie : "hurting/lying",
+	states.get_up : "hurting/get_up",
+	states.block_high : "blocking/high",
+	states.block_low : "blocking/low",
+	states.block_air : "blocking/air",
 }
-# Moving left and right is decoupled from moving forward and backward in this script,
+# Moving left and right on the ground is decoupled from moving forward and backward in this script,
 # so variables exist here for ease like the dictionary above.
 @export var move_left_anim : StringName = &"basic/walk_left"
 @export var move_right_anim : StringName = &"basic/walk_right"
 
+@export var dash_left_anim : StringName = &"basic/dash"
+@export var dash_right_anim : StringName = &"basic/dash"
+
+
 # nothing should modify the fighter's state here, this is purely for real-time effects
 func _process(_delta):
-	$DebugData.text = "Current State: %s\nLast State: %s\nAttack Finished: %s\nStun: %s:%s\nKnockback: %s" % [states.keys()[current_state], states.keys()[previous_state], attack_ended, stun_time_current, stun_time_start, kback]
+	$DebugData.text = "Right Facing: %s\nCurrent State: %s\nLast State: %s\nAttack Finished: %s\nStun: %s:%s\nKnockback: %s" % [right_facing, states.keys()[current_state], states.keys()[previous_state], attack_ended, stun_time_current, stun_time_start, kback]
 
 func update_state(new_state: states):
-	current_state = new_state
+	if current_state != new_state:
+		current_state = new_state
+		update_character_animation()
 
 # attack format:
 #"<Name>":
@@ -190,10 +199,10 @@ var attack_details = {
 
 var hitbox_layermask : int
 
-func create_hitbox(
-			pos : Vector3, shape : Shape3D, lifetime : int,
-			damage_hit : float, damage_block : float, stun_hit : int, stun_block : int,
-			hit_priority : int, kback_hit : Vector3, kback_block : Vector3, type : String):
+func create_hitbox(pos : Vector3, shape : Shape3D,
+				lifetime : int, damage_hit : float, damage_block : float,
+				stun_hit : int, stun_block : int, hit_priority : int,
+				kback_hit : Vector3, kback_block : Vector3, type : String):
 	var new_hitbox := (hitbox.instantiate() as Hitbox)
 	if not right_facing:
 		pos.x *= 1
@@ -607,7 +616,7 @@ func resolve_state_transitions(buffer : Dictionary):
 
 func update_character_animation():
 	if current_state in [states.attack, states.attack_command, states.jump_attack]:
-		animate.play(current_attack)
+		animate.play(current_attack + (anim_right_suf if right_facing else anim_left_suf))
 	else:
 		match current_state:
 			states.walk_forward when right_facing:
@@ -618,21 +627,30 @@ func update_character_animation():
 				animate.play(move_left_anim)
 			states.walk_back when !right_facing:
 				animate.play(move_right_anim)
+			states.dash_forward when right_facing:
+				animate.play(dash_right_anim)
+			states.dash_forward when !right_facing:
+				animate.play(dash_left_anim)
+			states.dash_back when right_facing:
+				animate.play(dash_left_anim)
+			states.dash_back when !right_facing:
+				animate.play(dash_right_anim)
 			_:
-				animate.play(basic_anim_state_dict[current_state])
+				animate.play(basic_anim_state_dict[current_state] + (anim_right_suf if right_facing else anim_left_suf))
 
 func action(buffer : Dictionary) -> void:
-	resolve_state_transitions(buffer)
+	if GlobalKnowledge.global_hitstop == 0:
+		resolve_state_transitions(buffer)
 	handle_input(buffer)
-	update_character_state()
-	update_character_animation()
+	if GlobalKnowledge.global_hitstop == 0:
+		update_character_state()
+	
 
 func reset_facing():
 	if distance < 0:
 		right_facing = true
 	else:
 		right_facing = false
-	rotation_degrees.y = 180 * int(!right_facing)
 
 func return_overlaps():
 	return $Hurtbox.get_overlapping_areas()
@@ -644,10 +662,9 @@ const FRAMERATE = 1.0/60.0
 
 func input_step(inputs : Dictionary) -> void:
 	action(inputs)
-	if GlobalKnowledge.global_hitstop == 0 and \
-	(GlobalKnowledge.p1_hitstop == 0 and player_number == 1) or \
-	(GlobalKnowledge.p2_hitstop == 0 and player_number == 2):
-		animate.advance(FRAMERATE)
+	animate.speed_scale = float(GlobalKnowledge.global_hitstop == 0)
+	#if GlobalKnowledge.global_hitstop == 0:
+		#animate.advance(FRAMERATE)
 
 func set_stun_time(value):
 	stun_time_start = value
@@ -671,7 +688,9 @@ const BLOCK_AWAY_HIGH = [0, -1, 1, -1]
 const BLOCK_AWAY_LOW = [-1, 1, 1, -1]
 const BLOCK_UNBLOCKABLE = [-1, -1. -1, -1]
 
-func try_block(input : Dictionary, attack : Hitbox, ground_block_rules : Array, air_block_rules : Array, fs_stand : states, fs_crouch : states, fs_air : states):
+func try_block(input : Dictionary, attack : Hitbox,
+			ground_block_rules : Array, air_block_rules : Array,
+			fs_stand : states, fs_crouch : states, fs_air : states):
 	# still in hitstun, can't block
 	attack.queue_free()
 	if is_in_hurting_state() or is_in_dashing_state() or is_in_attacking_state():
@@ -737,6 +756,6 @@ func damage_step(inputs : Dictionary, attack : Hitbox):
 		"sweep":
 			try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_lie, states.hurt_crouch, states.hurt_fall)
 		"slam":
-			try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_bounce, states.hurt_bounce, states.hurt_fall)
+			try_block(input, attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, states.hurt_bounce, states.hurt_bounce, states.hurt_fall)
 		"unblockable":
 			try_block(input, attack, BLOCK_UNBLOCKABLE, BLOCK_UNBLOCKABLE, states.hurt_high, states.hurt_crouch, states.hurt_fall)

@@ -11,7 +11,7 @@ var kback_block : Vector3
 var hit_priority : int
 var type : String
 
-func _physics_process(delta):
+func _physics_process(_d):
 	lifetime -= 1
 	if lifetime < 0:
 		queue_free()

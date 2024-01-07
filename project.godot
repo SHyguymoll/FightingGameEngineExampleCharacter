@@ -52,6 +52,9 @@ texture={
 "stream": false,
 "svg/scale": 1.0
 }
+animation_library={
+"animation/fps": 60.0
+}
 
 [input]
 
