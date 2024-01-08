@@ -43,6 +43,7 @@ theme_override_font_sizes/font_size = 64
 text = "Player 1 Character"
 
 [node name="P1Inputs" type="Label" parent="HUD"]
+visible = false
 offset_top = 292.0
 offset_right = 495.0
 offset_bottom = 356.0
@@ -64,6 +65,7 @@ text = "Player 2 Character"
 horizontal_alignment = 2
 
 [node name="P2Inputs" type="Label" parent="HUD"]
+visible = false
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -141,3 +143,31 @@ grow_horizontal = 0
 value = 10.0
 texture_under = ExtResource("5_6q5w6")
 texture_progress = ExtResource("6_2k3f0")
+
+[node name="P1Combo" type="Label" parent="HUD"]
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -11.5
+offset_right = 40.0
+offset_bottom = 11.5
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_jjmwk")
+theme_override_font_sizes/font_size = 60
+text = "999"
+
+[node name="P2Combo" type="Label" parent="HUD"]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -11.5
+offset_bottom = 11.5
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_jjmwk")
+theme_override_font_sizes/font_size = 60
+text = "999"
+horizontal_alignment = 2

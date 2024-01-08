@@ -31,6 +31,8 @@ var p2_input_index : int = 0
 const CAMERAMAXX = 6
 const CAMERAMAXY = 10
 const MOVEMENTBOUNDX = 8
+var p1_combo := 0
+var p2_combo := 0
 
 @export var player_test_one : PackedScene
 @export var player_test_two : PackedScene
@@ -55,12 +57,14 @@ func update_hud():
 	if "attack" in $HUD/P1State.text:
 		$HUD/P1State.text += " : " + p1.current_attack
 	$HUD/P1PosVel.text = str(p1.position) + "\n" + str(p1.velocity)
+	$HUD/P1Combo.text = str(p1_combo)
 	
 	$HUD/P2Health.value = p2.health
 	$HUD/P2State.text = p2.states.keys()[p2.current_state]
 	if "attack" in $HUD/P2State.text:
 		$HUD/P2State.text += " : " + p2.current_attack
 	$HUD/P2PosVel.text = str(p2.position) + "\n" + str(p2.velocity)
+	$HUD/P2Combo.text = str(p2_combo)
 
 func init_fighters():
 	for i in range(p1.BUTTONCOUNT):
@@ -269,12 +273,31 @@ func handle_inputs():
 	build_inputs_tracked(p1_buf, p2_buf)
 	
 	if p1.return_overlaps():
-		p1.damage_step(p1_buf, p1.return_attacker())
+		match p1.damage_step(p1_buf, p1.return_attacker()):
+			0: #blocked
+				p2.attack_connected = true
+				p2.attack_hurt = false
+			1: #hit
+				p2.attack_connected = true
+				p2.attack_hurt = true
+				p2_combo += 1
 	if p2.return_overlaps():
-		p2.damage_step(p2_buf, p2.return_attacker())
+		match p2.damage_step(p2_buf, p2.return_attacker()):
+			0:
+				p1.attack_connected = true
+				p1.attack_hurt = false
+			1:
+				p1.attack_connected = true
+				p1.attack_hurt = true
+				p1_combo += 1
 	
 	p1.input_step(p1_buf)
 	p2.input_step(p2_buf)
+	
+	if not p1.is_in_hurting_state():
+		p2_combo = 0
+	if not p2.is_in_hurting_state():
+		p1_combo = 0
 
 func character_positioning():
 	p1.position.x = clamp(p1.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
