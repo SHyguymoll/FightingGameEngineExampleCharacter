@@ -16,6 +16,139 @@
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1cfsu"]
 
+[sub_resource type="Animation" id="Animation_72a0u"]
+resource_name = "crouch_a_left"
+length = 0.183335
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("..:attack_ended")
+tracks/0/interp = 0
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.15),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("..")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0500001),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [Vector3(0.713, 0.254, 0), ExtResource("3_7yb5n"), 3, 3.0, 0.0, 6, 5, 1, Vector3(0.05, 0, 0), Vector3(0.3, 0, 0), "low"],
+"method": &"create_hitbox"
+}]
+}
+tracks/2/type = "scale_3d"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0, 1, 1, 0.776615, 1, 0.0500001, 1, 1.48613, 0.3, 1, 0.0833335, 1, 1.48613, 0.3, 1, 0.116667, 1, 0.666349, 0.419977, 1, 0.15, 1, 1.123, 0.351, 1)
+tracks/3/type = "rotation_3d"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
+tracks/4/type = "position_3d"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = PackedFloat32Array(0, 1, 0, 0.529186, 0, 0.0500001, 1, -0.349, 0.265, 0, 0.116667, 1, 0.214, 0.33, 0, 0.15, 1, 0, 0.247625, 0)
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("../SpriteAttack:visible")
+tracks/5/interp = 0
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.0333334, 0.1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, false]
+}
+tracks/6/type = "position_3d"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("../SpriteAttack")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = PackedFloat32Array(0.0333334, 1, -0.236, 0.345, 0.04, 0.0500001, 1, -0.734, 0.265, 0.04)
+tracks/7/type = "scale_3d"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("../SpriteAttack")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = PackedFloat32Array(0.0333334, 1, 0.212501, 0.475225, 1, 0.0500001, 1, 0.992772, 0.329543, 1)
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("../SpriteAttack:modulate")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0.0333334, 0.0500001, 0.1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(0.803922, 0.686275, 0, 1), Color(0.803922, 0.686275, 0, 0)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("../SpriteBlock:visible")
+tracks/9/interp = 0
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/10/type = "position_3d"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape")
+tracks/10/interp = 0
+tracks/10/loop_wrap = true
+tracks/10/keys = PackedFloat32Array(0, 1, 0, -1.007, 0)
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("../Hurtbox/HurtboxShape:shape")
+tracks/11/interp = 0
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("2_ahw0y")]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
 [sub_resource type="Animation" id="Animation_vmnh6"]
 resource_name = "crouch_a_right"
 length = 0.183335
@@ -117,53 +250,41 @@ tracks/9/keys = {
 "update": 1,
 "values": [false]
 }
-tracks/10/type = "value"
+tracks/10/type = "position_3d"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("..:attack_velocity")
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape")
 tracks/10/interp = 0
 tracks/10/loop_wrap = true
-tracks/10/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector3(0, 0, 0)]
-}
+tracks/10/keys = PackedFloat32Array(0, 1, 0, -1.007, 0)
 tracks/11/type = "value"
 tracks/11/imported = false
 tracks/11/enabled = true
-tracks/11/path = NodePath("..:attack_velocity_mode")
+tracks/11/path = NodePath("../Hurtbox/HurtboxShape:shape")
 tracks/11/interp = 0
 tracks/11/loop_wrap = true
 tracks/11/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [0]
+"values": [ExtResource("2_ahw0y")]
 }
-tracks/12/type = "position_3d"
+tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath("../Hurtbox/HurtboxShape")
-tracks/12/interp = 0
+tracks/12/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/12/interp = 1
 tracks/12/loop_wrap = true
-tracks/12/keys = PackedFloat32Array(0, 1, 0, -1.007, 0)
-tracks/13/type = "value"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("../Hurtbox/HurtboxShape:shape")
-tracks/13/interp = 0
-tracks/13/loop_wrap = true
-tracks/13/keys = {
+tracks/12/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ExtResource("2_ahw0y")]
+"values": [false]
 }
 
-[sub_resource type="Animation" id="Animation_72a0u"]
-resource_name = "crouch_a_left"
-length = 0.183335
+[sub_resource type="Animation" id="Animation_8dtmc"]
+resource_name = "crouch_b_left"
+length = 0.266668
 step = 0.0166667
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -172,134 +293,122 @@ tracks/0/path = NodePath("..:attack_ended")
 tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0.15),
+"times": PackedFloat32Array(0.233333),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [true]
 }
-tracks/1/type = "method"
+tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("..")
-tracks/1/interp = 1
+tracks/1/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/1/interp = 0
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.0500001),
+"times": PackedFloat32Array(0, 0.183333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("..")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.15),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [Vector3(-0.713, 0.254, 0), ExtResource("3_7yb5n"), 3, 3.0, 0.0, 6, 5, 1, Vector3(0.05, 0, 0), Vector3(0.3, 0, 0), "low"],
+"args": [Vector3(0.226, 0.967, 0), ExtResource("4_wmro4"), 2, 8.0, 3.0, 10, 7, 3, Vector3(0.6, 4, 0), Vector3(1, 0, 0), "mid"],
 "method": &"create_hitbox"
 }]
 }
-tracks/2/type = "scale_3d"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = PackedFloat32Array(0, 1, 1, 0.776615, 1, 0.0500001, 1, 1.48613, 0.3, 1, 0.0833335, 1, 1.48613, 0.3, 1, 0.116667, 1, 0.666349, 0.419977, 1, 0.15, 1, 1.123, 0.351, 1)
-tracks/3/type = "rotation_3d"
+tracks/3/type = "position_3d"
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/path = NodePath(".")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
-tracks/3/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
-tracks/4/type = "position_3d"
+tracks/3/keys = PackedFloat32Array(0, 1, 0, 0.125819, 0, 0.133334, 1, -0.229, 0.803, 0, 0.183334, 1, -0.229, 0.803, 0, 0.233334, 1, -0.229, 0.325, 0)
+tracks/4/type = "scale_3d"
 tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/path = NodePath(".")
-tracks/4/interp = 1
+tracks/4/interp = 2
 tracks/4/loop_wrap = true
-tracks/4/keys = PackedFloat32Array(0, 1, 0, 0.529186, 0, 0.0500001, 1, -0.349, 0.265, 0, 0.116667, 1, 0.214, 0.33, 0, 0.15, 1, 0, 0.247625, 0)
-tracks/5/type = "value"
+tracks/4/keys = PackedFloat32Array(0, 1, 1, 0.143314, 1, 0.133334, 1, 1.34379, 1.17861, 1, 0.183334, 1, 1.34379, 1.17861, 1, 0.233334, 1, 1.34379, 0.453914, 1)
+tracks/5/type = "rotation_3d"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("../SpriteAttack:visible")
-tracks/5/interp = 0
+tracks/5/path = NodePath(".")
+tracks/5/interp = 1
 tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.0333334, 0.1),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [false, true, false]
-}
+tracks/5/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
 tracks/6/type = "position_3d"
 tracks/6/imported = false
 tracks/6/enabled = true
 tracks/6/path = NodePath("../SpriteAttack")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
-tracks/6/keys = PackedFloat32Array(0.0333334, 1, -0.236, 0.345, 0.04, 0.0500001, 1, -0.734, 0.265, 0.04)
+tracks/6/keys = PackedFloat32Array(0.15, 1, -0.269, 1.011, 0.04)
 tracks/7/type = "scale_3d"
 tracks/7/imported = false
 tracks/7/enabled = true
 tracks/7/path = NodePath("../SpriteAttack")
-tracks/7/interp = 1
+tracks/7/interp = 2
 tracks/7/loop_wrap = true
-tracks/7/keys = PackedFloat32Array(0.0333334, 1, 0.212501, 0.475225, 1, 0.0500001, 1, 0.992772, 0.329543, 1)
+tracks/7/keys = PackedFloat32Array(0.15, 1, 1.4616, 1.49193, 1, 0.233334, 1, 1.81597, 1.77018, 1)
 tracks/8/type = "value"
 tracks/8/imported = false
 tracks/8/enabled = true
-tracks/8/path = NodePath("../SpriteAttack:modulate")
-tracks/8/interp = 1
+tracks/8/path = NodePath("../SpriteAttack:visible")
+tracks/8/interp = 0
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(0.0333334, 0.0500001, 0.1),
+"times": PackedFloat32Array(0, 0.15, 0.2),
 "transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(0.803922, 0.686275, 0, 1), Color(0.803922, 0.686275, 0, 0)]
+"update": 1,
+"values": [false, true, false]
 }
 tracks/9/type = "value"
 tracks/9/imported = false
 tracks/9/enabled = true
-tracks/9/path = NodePath("../SpriteBlock:visible")
-tracks/9/interp = 0
+tracks/9/path = NodePath("../SpriteAttack:modulate")
+tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
+"times": PackedFloat32Array(0.15, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0.686275, 0.898039, 1, 1), Color(0.686275, 0.898039, 1, 0)]
 }
 tracks/10/type = "value"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("..:attack_velocity")
+tracks/10/path = NodePath("../SpriteBlock:visible")
 tracks/10/interp = 0
 tracks/10/loop_wrap = true
 tracks/10/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Vector3(0, 0, 0)]
+"values": [false]
 }
-tracks/11/type = "value"
+tracks/11/type = "position_3d"
 tracks/11/imported = false
 tracks/11/enabled = true
-tracks/11/path = NodePath("..:attack_velocity_mode")
+tracks/11/path = NodePath("../Hurtbox/HurtboxShape")
 tracks/11/interp = 0
 tracks/11/loop_wrap = true
-tracks/11/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-tracks/12/type = "position_3d"
+tracks/11/keys = PackedFloat32Array(0, 1, 0, -1.007, 0)
+tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath("../Hurtbox/HurtboxShape")
+tracks/12/path = NodePath("../Hurtbox/HurtboxShape:shape")
 tracks/12/interp = 0
 tracks/12/loop_wrap = true
-tracks/12/keys = PackedFloat32Array(0, 1, 0, -1.007, 0)
-tracks/13/type = "value"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("../Hurtbox/HurtboxShape:shape")
-tracks/13/interp = 0
-tracks/13/loop_wrap = true
-tracks/13/keys = {
+tracks/12/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
@@ -419,346 +528,20 @@ tracks/10/keys = {
 "update": 1,
 "values": [false]
 }
-tracks/11/type = "value"
+tracks/11/type = "position_3d"
 tracks/11/imported = false
 tracks/11/enabled = true
-tracks/11/path = NodePath("..:attack_velocity")
+tracks/11/path = NodePath("../Hurtbox/HurtboxShape")
 tracks/11/interp = 0
 tracks/11/loop_wrap = true
-tracks/11/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector3(0, 0, 0)]
-}
+tracks/11/keys = PackedFloat32Array(0, 1, 0, -1.007, 0)
 tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath("..:attack_velocity_mode")
+tracks/12/path = NodePath("../Hurtbox/HurtboxShape:shape")
 tracks/12/interp = 0
 tracks/12/loop_wrap = true
 tracks/12/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-tracks/13/type = "position_3d"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("../Hurtbox/HurtboxShape")
-tracks/13/interp = 0
-tracks/13/loop_wrap = true
-tracks/13/keys = PackedFloat32Array(0, 1, 0, -1.007, 0)
-tracks/14/type = "value"
-tracks/14/imported = false
-tracks/14/enabled = true
-tracks/14/path = NodePath("../Hurtbox/HurtboxShape:shape")
-tracks/14/interp = 0
-tracks/14/loop_wrap = true
-tracks/14/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [ExtResource("2_ahw0y")]
-}
-
-[sub_resource type="Animation" id="Animation_8dtmc"]
-resource_name = "crouch_b_left"
-length = 0.266668
-step = 0.0166667
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("..:attack_ended")
-tracks/0/interp = 0
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0.233333),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("../Hurtbox/HurtboxShape:disabled")
-tracks/1/interp = 0
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.183333),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("..")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.15),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [Vector3(-0.226, 0.967, 0), ExtResource("4_wmro4"), 2, 8.0, 3.0, 10, 7, 3, Vector3(0.6, 4, 0), Vector3(1, 0, 0), "mid"],
-"method": &"create_hitbox"
-}]
-}
-tracks/3/type = "position_3d"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath(".")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = PackedFloat32Array(0, 1, 0, 0.125819, 0, 0.133334, 1, -0.229, 0.803, 0, 0.183334, 1, -0.229, 0.803, 0, 0.233334, 1, -0.229, 0.325, 0)
-tracks/4/type = "scale_3d"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath(".")
-tracks/4/interp = 2
-tracks/4/loop_wrap = true
-tracks/4/keys = PackedFloat32Array(0, 1, 1, 0.143314, 1, 0.133334, 1, 1.34379, 1.17861, 1, 0.183334, 1, 1.34379, 1.17861, 1, 0.233334, 1, 1.34379, 0.453914, 1)
-tracks/5/type = "rotation_3d"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath(".")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
-tracks/6/type = "position_3d"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("../SpriteAttack")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = PackedFloat32Array(0.15, 1, -0.269, 1.011, 0.04)
-tracks/7/type = "scale_3d"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("../SpriteAttack")
-tracks/7/interp = 2
-tracks/7/loop_wrap = true
-tracks/7/keys = PackedFloat32Array(0.15, 1, 1.4616, 1.49193, 1, 0.233334, 1, 1.81597, 1.77018, 1)
-tracks/8/type = "value"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("../SpriteAttack:visible")
-tracks/8/interp = 0
-tracks/8/loop_wrap = true
-tracks/8/keys = {
-"times": PackedFloat32Array(0, 0.15, 0.2),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [false, true, false]
-}
-tracks/9/type = "value"
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/path = NodePath("../SpriteAttack:modulate")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/keys = {
-"times": PackedFloat32Array(0.15, 0.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(0.686275, 0.898039, 1, 1), Color(0.686275, 0.898039, 1, 0)]
-}
-tracks/10/type = "value"
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/path = NodePath("../SpriteBlock:visible")
-tracks/10/interp = 0
-tracks/10/loop_wrap = true
-tracks/10/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-tracks/11/type = "value"
-tracks/11/imported = false
-tracks/11/enabled = true
-tracks/11/path = NodePath("..:attack_velocity")
-tracks/11/interp = 0
-tracks/11/loop_wrap = true
-tracks/11/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector3(0, 0, 0)]
-}
-tracks/12/type = "value"
-tracks/12/imported = false
-tracks/12/enabled = true
-tracks/12/path = NodePath("..:attack_velocity_mode")
-tracks/12/interp = 0
-tracks/12/loop_wrap = true
-tracks/12/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-tracks/13/type = "position_3d"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("../Hurtbox/HurtboxShape")
-tracks/13/interp = 0
-tracks/13/loop_wrap = true
-tracks/13/keys = PackedFloat32Array(0, 1, 0, -1.007, 0)
-tracks/14/type = "value"
-tracks/14/imported = false
-tracks/14/enabled = true
-tracks/14/path = NodePath("../Hurtbox/HurtboxShape:shape")
-tracks/14/interp = 0
-tracks/14/loop_wrap = true
-tracks/14/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [ExtResource("2_ahw0y")]
-}
-
-[sub_resource type="Animation" id="Animation_wvsyi"]
-resource_name = "crouch_c_right"
-length = 0.366668
-step = 0.0166667
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("..:attack_ended")
-tracks/0/interp = 0
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0.333333),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("..:attack_velocity")
-tracks/1/interp = 0
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.25, 0.283334),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [Vector3(0, 0, 0), Vector3(-3, 0, 0), Vector3(0, 0, 0)]
-}
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("..")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.25),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [Vector3(0.931, 1.279, 0), ExtResource("5_3uiqp"), 1, 15.0, 5.0, 20, 0, 3, Vector3(0.4, 10, 0), Vector3(0.1, 0, 0), "launch"],
-"method": &"create_hitbox"
-}]
-}
-tracks/3/type = "position_3d"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath(".")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = PackedFloat32Array(0, 1, 0, 0.275214, 0)
-tracks/4/type = "scale_3d"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath(".")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = PackedFloat32Array(0, 1, 1, 0.381826, 1)
-tracks/5/type = "rotation_3d"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath(".")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
-tracks/6/type = "position_3d"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("../SpriteAttack")
-tracks/6/interp = 2
-tracks/6/loop_wrap = true
-tracks/6/keys = PackedFloat32Array(0, 1, 0.229072, 0.328669, 0.04, 0.166667, 1, 0.966089, 0.328669, 0.04, 0.233334, 1, 0.966089, 0.0746976, 0.04, 0.266667, 1, 0.966089, 1.51196, 0.04, 0.333334, 1, 0.966089, 2.47186, 0.04)
-tracks/7/type = "scale_3d"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("../SpriteAttack")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/keys = PackedFloat32Array(0, 1, 0.371134, 0.371134, 1, 0.166667, 1, 0.371134, 0.371134, 1, 0.233334, 1, 0.371134, 0.0626758, 1, 0.266667, 1, 0.402219, 2.28378, 1, 0.333334, 1, 0.402219, 0.128501, 1)
-tracks/8/type = "value"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("../SpriteAttack:visible")
-tracks/8/interp = 0
-tracks/8/loop_wrap = true
-tracks/8/keys = {
-"times": PackedFloat32Array(0, 0.333334),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-tracks/9/type = "value"
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/path = NodePath("../SpriteAttack:modulate")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/keys = {
-"times": PackedFloat32Array(0, 0.166667, 0.233334, 0.300001, 0.333334),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 0, 1), Color(1, 1, 0, 1), Color(1, 1, 0, 0)]
-}
-tracks/10/type = "value"
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/path = NodePath("../SpriteBlock:visible")
-tracks/10/interp = 0
-tracks/10/loop_wrap = true
-tracks/10/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-tracks/11/type = "value"
-tracks/11/imported = false
-tracks/11/enabled = true
-tracks/11/path = NodePath("..:attack_velocity_mode")
-tracks/11/interp = 0
-tracks/11/loop_wrap = true
-tracks/11/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-tracks/12/type = "position_3d"
-tracks/12/imported = false
-tracks/12/enabled = true
-tracks/12/path = NodePath("../Hurtbox/HurtboxShape")
-tracks/12/interp = 0
-tracks/12/loop_wrap = true
-tracks/12/keys = PackedFloat32Array(0, 1, 0, -1.007, 0)
-tracks/13/type = "value"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("../Hurtbox/HurtboxShape:shape")
-tracks/13/interp = 0
-tracks/13/loop_wrap = true
-tracks/13/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
@@ -781,133 +564,266 @@ tracks/0/keys = {
 "update": 1,
 "values": [true]
 }
-tracks/1/type = "value"
+tracks/1/type = "method"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("..:attack_velocity")
-tracks/1/interp = 0
+tracks/1/path = NodePath("..")
+tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.25, 0.283334),
+"times": PackedFloat32Array(0.233334, 0.25, 0.283334),
 "transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [Vector3(0, 0, 0), Vector3(-3, 0, 0), Vector3(0, 0, 0)]
-}
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("..")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.25),
-"transitions": PackedFloat32Array(1),
 "values": [{
-"args": [Vector3(-0.931, 1.279, 0), ExtResource("5_3uiqp"), 1, 15.0, 5.0, 20, 0, 3, Vector3(0.4, 10, 0), Vector3(0.1, 0, 0), "launch"],
+"args": [Vector3(-3, 0, 0), 1],
+"method": &"update_velocity"
+}, {
+"args": [Vector3(0.931, 1.279, 0), ExtResource("5_3uiqp"), 1, 15.0, 5.0, 20, 0, 3, Vector3(0.4, 10, 0), Vector3(0.1, 0, 0), "launch"],
 "method": &"create_hitbox"
+}, {
+"args": [Vector3(0, 0, 0), 1],
+"method": &"update_velocity"
 }]
 }
-tracks/3/type = "position_3d"
+tracks/2/type = "position_3d"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0, 1, 0, 0.275214, 0)
+tracks/3/type = "scale_3d"
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/path = NodePath(".")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
-tracks/3/keys = PackedFloat32Array(0, 1, 0, 0.275214, 0)
-tracks/4/type = "scale_3d"
+tracks/3/keys = PackedFloat32Array(0, 1, 1, 0.381826, 1)
+tracks/4/type = "rotation_3d"
 tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/path = NodePath(".")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
-tracks/4/keys = PackedFloat32Array(0, 1, 1, 0.381826, 1)
-tracks/5/type = "rotation_3d"
+tracks/4/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
+tracks/5/type = "position_3d"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath(".")
-tracks/5/interp = 1
+tracks/5/path = NodePath("../SpriteAttack")
+tracks/5/interp = 2
 tracks/5/loop_wrap = true
-tracks/5/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
-tracks/6/type = "position_3d"
+tracks/5/keys = PackedFloat32Array(0, 1, -0.229, 0.329, 0.04, 0.166667, 1, -0.966, 0.329, 0.04, 0.233334, 1, -0.966, 0.075, 0.04, 0.266667, 1, -0.966, 1.512, 0.04, 0.333334, 1, -0.966, 2.472, 0.04)
+tracks/6/type = "scale_3d"
 tracks/6/imported = false
 tracks/6/enabled = true
 tracks/6/path = NodePath("../SpriteAttack")
-tracks/6/interp = 2
+tracks/6/interp = 1
 tracks/6/loop_wrap = true
-tracks/6/keys = PackedFloat32Array(0, 1, -0.229, 0.329, 0.04, 0.166667, 1, -0.966, 0.329, 0.04, 0.233334, 1, -0.966, 0.075, 0.04, 0.266667, 1, -0.966, 1.512, 0.04, 0.333334, 1, -0.966, 2.472, 0.04)
-tracks/7/type = "scale_3d"
+tracks/6/keys = PackedFloat32Array(0, 1, 0.371134, 0.371134, 1, 0.166667, 1, 0.371134, 0.371134, 1, 0.233334, 1, 0.371134, 0.0626758, 1, 0.266667, 1, 0.402219, 2.28378, 1, 0.333334, 1, 0.402219, 0.128501, 1)
+tracks/7/type = "value"
 tracks/7/imported = false
 tracks/7/enabled = true
-tracks/7/path = NodePath("../SpriteAttack")
-tracks/7/interp = 1
+tracks/7/path = NodePath("../SpriteAttack:visible")
+tracks/7/interp = 0
 tracks/7/loop_wrap = true
-tracks/7/keys = PackedFloat32Array(0, 1, 0.371134, 0.371134, 1, 0.166667, 1, 0.371134, 0.371134, 1, 0.233334, 1, 0.371134, 0.0626758, 1, 0.266667, 1, 0.402219, 2.28378, 1, 0.333334, 1, 0.402219, 0.128501, 1)
-tracks/8/type = "value"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("../SpriteAttack:visible")
-tracks/8/interp = 0
-tracks/8/loop_wrap = true
-tracks/8/keys = {
+tracks/7/keys = {
 "times": PackedFloat32Array(0, 0.333334),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
 }
-tracks/9/type = "value"
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/path = NodePath("../SpriteAttack:modulate")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/keys = {
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("../SpriteAttack:modulate")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
 "times": PackedFloat32Array(0, 0.166667, 0.233334, 0.300001, 0.333334),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 0, 1), Color(1, 1, 0, 1), Color(1, 1, 0, 0)]
 }
-tracks/10/type = "value"
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/path = NodePath("../SpriteBlock:visible")
-tracks/10/interp = 0
-tracks/10/loop_wrap = true
-tracks/10/keys = {
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("../SpriteBlock:visible")
+tracks/9/interp = 0
+tracks/9/loop_wrap = true
+tracks/9/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [false]
 }
+tracks/10/type = "position_3d"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape")
+tracks/10/interp = 0
+tracks/10/loop_wrap = true
+tracks/10/keys = PackedFloat32Array(0, 1, 0, -1.007, 0)
 tracks/11/type = "value"
 tracks/11/imported = false
 tracks/11/enabled = true
-tracks/11/path = NodePath("..:attack_velocity_mode")
+tracks/11/path = NodePath("../Hurtbox/HurtboxShape:shape")
 tracks/11/interp = 0
 tracks/11/loop_wrap = true
 tracks/11/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [0]
+"values": [ExtResource("2_ahw0y")]
 }
-tracks/12/type = "position_3d"
+tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath("../Hurtbox/HurtboxShape")
-tracks/12/interp = 0
+tracks/12/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/12/interp = 1
 tracks/12/loop_wrap = true
-tracks/12/keys = PackedFloat32Array(0, 1, 0, -1.007, 0)
-tracks/13/type = "value"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("../Hurtbox/HurtboxShape:shape")
-tracks/13/interp = 0
-tracks/13/loop_wrap = true
-tracks/13/keys = {
+tracks/12/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_wvsyi"]
+resource_name = "crouch_c_right"
+length = 0.366668
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("..:attack_ended")
+tracks/0/interp = 0
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.333333),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("..")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.233334, 0.25, 0.283334),
+"transitions": PackedFloat32Array(1, 1, 1),
+"values": [{
+"args": [Vector3(-3, 0, 0), 1],
+"method": &"update_velocity"
+}, {
+"args": [Vector3(0.931, 1.279, 0), ExtResource("5_3uiqp"), 1, 15.0, 5.0, 20, 0, 3, Vector3(0.4, 10, 0), Vector3(0.1, 0, 0), "launch"],
+"method": &"create_hitbox"
+}, {
+"args": [Vector3(0, 0, 0), 1],
+"method": &"update_velocity"
+}]
+}
+tracks/2/type = "position_3d"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0, 1, 0, 0.275214, 0)
+tracks/3/type = "scale_3d"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = PackedFloat32Array(0, 1, 1, 0.381826, 1)
+tracks/4/type = "rotation_3d"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
+tracks/5/type = "position_3d"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("../SpriteAttack")
+tracks/5/interp = 2
+tracks/5/loop_wrap = true
+tracks/5/keys = PackedFloat32Array(0, 1, 0.229072, 0.328669, 0.04, 0.166667, 1, 0.966089, 0.328669, 0.04, 0.233334, 1, 0.966089, 0.0746976, 0.04, 0.266667, 1, 0.966089, 1.51196, 0.04, 0.333334, 1, 0.966089, 2.47186, 0.04)
+tracks/6/type = "scale_3d"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("../SpriteAttack")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = PackedFloat32Array(0, 1, 0.371134, 0.371134, 1, 0.166667, 1, 0.371134, 0.371134, 1, 0.233334, 1, 0.371134, 0.0626758, 1, 0.266667, 1, 0.402219, 2.28378, 1, 0.333334, 1, 0.402219, 0.128501, 1)
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("../SpriteAttack:visible")
+tracks/7/interp = 0
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.333334),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("../SpriteAttack:modulate")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 0.166667, 0.233334, 0.300001, 0.333334),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 0, 1), Color(1, 1, 0, 1), Color(1, 1, 0, 0)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("../SpriteBlock:visible")
+tracks/9/interp = 0
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/10/type = "position_3d"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape")
+tracks/10/interp = 0
+tracks/10/loop_wrap = true
+tracks/10/keys = PackedFloat32Array(0, 1, 0, -1.007, 0)
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("../Hurtbox/HurtboxShape:shape")
+tracks/11/interp = 0
+tracks/11/loop_wrap = true
+tracks/11/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [ExtResource("2_ahw0y")]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_w3q8l"]
@@ -946,7 +862,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0.0500001),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [Vector3(-0.53, 0.215, 0), ExtResource("7_g6kjg"), 2, 2.0, 0.0, 4, 2, 0, Vector3(1, 1, 0), Vector3(0.5, 0, 0), "mid"],
+"args": [Vector3(0.53, 0.215, 0), ExtResource("7_g6kjg"), 2, 2.0, 0.0, 4, 2, 0, Vector3(1, 1, 0), Vector3(0.5, 0, 0), "mid"],
 "method": &"create_hitbox"
 }]
 }
@@ -1021,48 +937,36 @@ tracks/9/keys = {
 "update": 1,
 "values": [false]
 }
-tracks/10/type = "value"
+tracks/10/type = "position_3d"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("..:attack_velocity")
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape")
 tracks/10/interp = 0
 tracks/10/loop_wrap = true
-tracks/10/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector3(0, 0, 0)]
-}
+tracks/10/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
 tracks/11/type = "value"
 tracks/11/imported = false
 tracks/11/enabled = true
-tracks/11/path = NodePath("..:attack_velocity_mode")
+tracks/11/path = NodePath("../Hurtbox/HurtboxShape:shape")
 tracks/11/interp = 0
 tracks/11/loop_wrap = true
 tracks/11/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [0]
+"values": [ExtResource("3_8q5n8")]
 }
-tracks/12/type = "position_3d"
+tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath("../Hurtbox/HurtboxShape")
-tracks/12/interp = 0
+tracks/12/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/12/interp = 1
 tracks/12/loop_wrap = true
-tracks/12/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
-tracks/13/type = "value"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("../Hurtbox/HurtboxShape:shape")
-tracks/13/interp = 0
-tracks/13/loop_wrap = true
-tracks/13/keys = {
+tracks/12/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ExtResource("3_8q5n8")]
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_73ol0"]
@@ -1166,48 +1070,36 @@ tracks/9/keys = {
 "update": 1,
 "values": [false]
 }
-tracks/10/type = "value"
+tracks/10/type = "position_3d"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("..:attack_velocity")
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape")
 tracks/10/interp = 0
 tracks/10/loop_wrap = true
-tracks/10/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector3(0, 0, 0)]
-}
+tracks/10/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
 tracks/11/type = "value"
 tracks/11/imported = false
 tracks/11/enabled = true
-tracks/11/path = NodePath("..:attack_velocity_mode")
+tracks/11/path = NodePath("../Hurtbox/HurtboxShape:shape")
 tracks/11/interp = 0
 tracks/11/loop_wrap = true
 tracks/11/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [0]
+"values": [ExtResource("3_8q5n8")]
 }
-tracks/12/type = "position_3d"
+tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath("../Hurtbox/HurtboxShape")
-tracks/12/interp = 0
+tracks/12/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/12/interp = 1
 tracks/12/loop_wrap = true
-tracks/12/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
-tracks/13/type = "value"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("../Hurtbox/HurtboxShape:shape")
-tracks/13/interp = 0
-tracks/13/loop_wrap = true
-tracks/13/keys = {
+tracks/12/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ExtResource("3_8q5n8")]
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_ol6o8"]
@@ -1236,7 +1128,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [Vector3(-0.363, 0.22, 0), ExtResource("8_i46wk"), 8, 6.0, 1.0, 1, 8, 2, Vector3(3, 0, 0), Vector3(1, 0, 0), "mid"],
+"args": [Vector3(0.363, 0.22, 0), ExtResource("8_i46wk"), 8, 6.0, 1.0, 1, 8, 2, Vector3(3, 0, 0), Vector3(1, 0, 0), "mid"],
 "method": &"create_hitbox"
 }]
 }
@@ -1311,48 +1203,36 @@ tracks/9/keys = {
 "update": 1,
 "values": [false]
 }
-tracks/10/type = "value"
+tracks/10/type = "position_3d"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("..:attack_velocity")
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape")
 tracks/10/interp = 0
 tracks/10/loop_wrap = true
-tracks/10/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector3(0, 0, 0)]
-}
+tracks/10/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
 tracks/11/type = "value"
 tracks/11/imported = false
 tracks/11/enabled = true
-tracks/11/path = NodePath("..:attack_velocity_mode")
+tracks/11/path = NodePath("../Hurtbox/HurtboxShape:shape")
 tracks/11/interp = 0
 tracks/11/loop_wrap = true
 tracks/11/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [0]
+"values": [ExtResource("3_8q5n8")]
 }
-tracks/12/type = "position_3d"
+tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath("../Hurtbox/HurtboxShape")
-tracks/12/interp = 0
+tracks/12/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/12/interp = 1
 tracks/12/loop_wrap = true
-tracks/12/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
-tracks/13/type = "value"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("../Hurtbox/HurtboxShape:shape")
-tracks/13/interp = 0
-tracks/13/loop_wrap = true
-tracks/13/keys = {
+tracks/12/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ExtResource("3_8q5n8")]
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_x0i0k"]
@@ -1456,48 +1336,36 @@ tracks/9/keys = {
 "update": 1,
 "values": [false]
 }
-tracks/10/type = "value"
+tracks/10/type = "position_3d"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("..:attack_velocity")
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape")
 tracks/10/interp = 0
 tracks/10/loop_wrap = true
-tracks/10/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector3(0, 0, 0)]
-}
+tracks/10/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
 tracks/11/type = "value"
 tracks/11/imported = false
 tracks/11/enabled = true
-tracks/11/path = NodePath("..:attack_velocity_mode")
+tracks/11/path = NodePath("../Hurtbox/HurtboxShape:shape")
 tracks/11/interp = 0
 tracks/11/loop_wrap = true
 tracks/11/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [0]
+"values": [ExtResource("3_8q5n8")]
 }
-tracks/12/type = "position_3d"
+tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath("../Hurtbox/HurtboxShape")
-tracks/12/interp = 0
+tracks/12/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/12/interp = 1
 tracks/12/loop_wrap = true
-tracks/12/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
-tracks/13/type = "value"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("../Hurtbox/HurtboxShape:shape")
-tracks/13/interp = 0
-tracks/13/loop_wrap = true
-tracks/13/keys = {
+tracks/12/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ExtResource("3_8q5n8")]
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_kri0l"]
@@ -1545,7 +1413,7 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0.2),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [Vector3(-0.276, 0.562, 0), ExtResource("9_xagu3"), 4, 15.0, 7.0, 60, 3, 4, Vector3(0, -6.5, 0), Vector3(0, 0, 0), "slam"],
+"args": [Vector3(0.276, 0.562, 0), ExtResource("9_xagu3"), 4, 15.0, 7.0, 60, 3, 4, Vector3(0, -6.5, 0), Vector3(0, 0, 0), "slam"],
 "method": &"create_hitbox"
 }]
 }
@@ -1623,26 +1491,14 @@ tracks/11/keys = {
 tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath("..:attack_velocity")
-tracks/12/interp = 0
+tracks/12/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/12/interp = 1
 tracks/12/loop_wrap = true
 tracks/12/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Vector3(0, 0, 0)]
-}
-tracks/13/type = "value"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("..:attack_velocity_mode")
-tracks/13/interp = 0
-tracks/13/loop_wrap = true
-tracks/13/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_8hvrr"]
@@ -1768,26 +1624,14 @@ tracks/11/keys = {
 tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath("..:attack_velocity")
-tracks/12/interp = 0
+tracks/12/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/12/interp = 1
 tracks/12/loop_wrap = true
 tracks/12/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Vector3(0, 0, 0)]
-}
-tracks/13/type = "value"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("..:attack_velocity_mode")
-tracks/13/interp = 0
-tracks/13/loop_wrap = true
-tracks/13/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
+"values": [false]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_cdh00"]
@@ -1823,10 +1667,13 @@ tracks/1/path = NodePath("..")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.0333334),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.0333334),
+"transitions": PackedFloat32Array(1, 1),
 "values": [{
-"args": [Vector3(-0.137, 0.782, 0), ExtResource("10_fhhj4"), 1, 2.0, 0.0, 3, 0, 0, Vector3(0.2, 0.1, 0), Vector3(0.4, 0, 0), "mid"],
+"args": [Vector3(0, 0, 0), 1],
+"method": &"update_velocity"
+}, {
+"args": [Vector3(0.137, 0.782, 0), ExtResource("10_fhhj4"), 1, 2.0, 0.0, 3, 0, 0, Vector3(0.2, 0.1, 0), Vector3(0.4, 0, 0), "mid"],
 "method": &"create_hitbox"
 }]
 }
@@ -1901,48 +1748,36 @@ tracks/9/keys = {
 "update": 1,
 "values": [false]
 }
-tracks/10/type = "value"
+tracks/10/type = "position_3d"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("..:attack_velocity")
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape")
 tracks/10/interp = 0
 tracks/10/loop_wrap = true
-tracks/10/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector3(0, 0, 0)]
-}
+tracks/10/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
 tracks/11/type = "value"
 tracks/11/imported = false
 tracks/11/enabled = true
-tracks/11/path = NodePath("..:attack_velocity_mode")
+tracks/11/path = NodePath("../Hurtbox/HurtboxShape:shape")
 tracks/11/interp = 0
 tracks/11/loop_wrap = true
 tracks/11/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [1]
+"values": [ExtResource("3_8q5n8")]
 }
-tracks/12/type = "position_3d"
+tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath("../Hurtbox/HurtboxShape")
-tracks/12/interp = 0
+tracks/12/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/12/interp = 1
 tracks/12/loop_wrap = true
-tracks/12/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
-tracks/13/type = "value"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("../Hurtbox/HurtboxShape:shape")
-tracks/13/interp = 0
-tracks/13/loop_wrap = true
-tracks/13/keys = {
+tracks/12/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ExtResource("3_8q5n8")]
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_i22pp"]
@@ -1968,9 +1803,12 @@ tracks/1/path = NodePath("..")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.0333334),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.0333334),
+"transitions": PackedFloat32Array(1, 1),
 "values": [{
+"args": [Vector3(0, 0, 0), 1],
+"method": &"update_velocity"
+}, {
 "args": [Vector3(0.137, 0.782, 0), ExtResource("10_fhhj4"), 1, 2.0, 0.0, 3, 0, 0, Vector3(0.2, 0.1, 0), Vector3(0.4, 0, 0), "mid"],
 "method": &"create_hitbox"
 }]
@@ -2046,48 +1884,36 @@ tracks/9/keys = {
 "update": 1,
 "values": [false]
 }
-tracks/10/type = "value"
+tracks/10/type = "position_3d"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("..:attack_velocity")
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape")
 tracks/10/interp = 0
 tracks/10/loop_wrap = true
-tracks/10/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector3(0, 0, 0)]
-}
+tracks/10/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
 tracks/11/type = "value"
 tracks/11/imported = false
 tracks/11/enabled = true
-tracks/11/path = NodePath("..:attack_velocity_mode")
+tracks/11/path = NodePath("../Hurtbox/HurtboxShape:shape")
 tracks/11/interp = 0
 tracks/11/loop_wrap = true
 tracks/11/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [1]
+"values": [ExtResource("3_8q5n8")]
 }
-tracks/12/type = "position_3d"
+tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath("../Hurtbox/HurtboxShape")
-tracks/12/interp = 0
+tracks/12/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/12/interp = 1
 tracks/12/loop_wrap = true
-tracks/12/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
-tracks/13/type = "value"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("../Hurtbox/HurtboxShape:shape")
-tracks/13/interp = 0
-tracks/13/loop_wrap = true
-tracks/13/keys = {
+tracks/12/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ExtResource("3_8q5n8")]
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_eor4c"]
@@ -2113,10 +1939,13 @@ tracks/1/path = NodePath("..")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.116667),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.116667),
+"transitions": PackedFloat32Array(1, 1),
 "values": [{
-"args": [Vector3(-1.409, 0.561, 0), ExtResource("11_5iab6"), 2, 4.0, 0.0, 8, 5, 2, Vector3(0.6, 0, 0), Vector3(-0.2, 0, 0), "mid"],
+"args": [Vector3(0, 0, 0), 1],
+"method": &"update_velocity"
+}, {
+"args": [Vector3(1.409, 0.561, 0), ExtResource("11_5iab6"), 2, 4.0, 0.0, 8, 5, 2, Vector3(0.6, 0, 0), Vector3(-0.2, 0, 0), "mid"],
 "method": &"create_hitbox"
 }]
 }
@@ -2177,48 +2006,36 @@ tracks/7/keys = {
 "update": 1,
 "values": [false]
 }
-tracks/8/type = "value"
+tracks/8/type = "position_3d"
 tracks/8/imported = false
 tracks/8/enabled = true
-tracks/8/path = NodePath("..:attack_velocity")
+tracks/8/path = NodePath("../Hurtbox/HurtboxShape")
 tracks/8/interp = 0
 tracks/8/loop_wrap = true
-tracks/8/keys = {
-"times": PackedFloat32Array(),
-"transitions": PackedFloat32Array(),
-"update": 1,
-"values": []
-}
+tracks/8/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
 tracks/9/type = "value"
 tracks/9/imported = false
 tracks/9/enabled = true
-tracks/9/path = NodePath("..:attack_velocity_mode")
+tracks/9/path = NodePath("../Hurtbox/HurtboxShape:shape")
 tracks/9/interp = 0
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(),
-"transitions": PackedFloat32Array(),
-"update": 1,
-"values": []
-}
-tracks/10/type = "position_3d"
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/path = NodePath("../Hurtbox/HurtboxShape")
-tracks/10/interp = 0
-tracks/10/loop_wrap = true
-tracks/10/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
-tracks/11/type = "value"
-tracks/11/imported = false
-tracks/11/enabled = true
-tracks/11/path = NodePath("../Hurtbox/HurtboxShape:shape")
-tracks/11/interp = 0
-tracks/11/loop_wrap = true
-tracks/11/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [ExtResource("2_ahw0y")]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_sij77"]
@@ -2244,9 +2061,12 @@ tracks/1/path = NodePath("..")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.116667),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.116667),
+"transitions": PackedFloat32Array(1, 1),
 "values": [{
+"args": [Vector3(0, 0, 0), 1],
+"method": &"update_velocity"
+}, {
 "args": [Vector3(1.409, 0.561, 0), ExtResource("11_5iab6"), 2, 4.0, 0.0, 8, 5, 2, Vector3(0.6, 0, 0), Vector3(-0.2, 0, 0), "mid"],
 "method": &"create_hitbox"
 }]
@@ -2308,48 +2128,36 @@ tracks/7/keys = {
 "update": 1,
 "values": [false]
 }
-tracks/8/type = "value"
+tracks/8/type = "position_3d"
 tracks/8/imported = false
 tracks/8/enabled = true
-tracks/8/path = NodePath("..:attack_velocity")
+tracks/8/path = NodePath("../Hurtbox/HurtboxShape")
 tracks/8/interp = 0
 tracks/8/loop_wrap = true
-tracks/8/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector3(0, 0, 0)]
-}
+tracks/8/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
 tracks/9/type = "value"
 tracks/9/imported = false
 tracks/9/enabled = true
-tracks/9/path = NodePath("..:attack_velocity_mode")
+tracks/9/path = NodePath("../Hurtbox/HurtboxShape:shape")
 tracks/9/interp = 0
 tracks/9/loop_wrap = true
 tracks/9/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [1]
+"values": [ExtResource("2_ahw0y")]
 }
-tracks/10/type = "position_3d"
+tracks/10/type = "value"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("../Hurtbox/HurtboxShape")
-tracks/10/interp = 0
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/10/interp = 1
 tracks/10/loop_wrap = true
-tracks/10/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
-tracks/11/type = "value"
-tracks/11/imported = false
-tracks/11/enabled = true
-tracks/11/path = NodePath("../Hurtbox/HurtboxShape:shape")
-tracks/11/interp = 0
-tracks/11/loop_wrap = true
-tracks/11/keys = {
+tracks/10/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ExtResource("2_ahw0y")]
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_8oljd"]
@@ -2375,10 +2183,13 @@ tracks/1/path = NodePath("..")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.166667),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.166667),
+"transitions": PackedFloat32Array(1, 1),
 "values": [{
-"args": [Vector3(-0.705, 0.92, 0), ExtResource("12_qtwap"), 2, 15.0, 6.0, 25, 5, 3, Vector3(3, -2, 0), Vector3(1, 0, 0), "high"],
+"args": [Vector3(0, 0, 0), 1],
+"method": &"update_velocity"
+}, {
+"args": [Vector3(0.705, 0.92, 0), ExtResource("12_qtwap"), 2, 15.0, 6.0, 20, 5, 3, Vector3(3, -2, 0), Vector3(1, 0, 0), "high"],
 "method": &"create_hitbox"
 }]
 }
@@ -2453,48 +2264,36 @@ tracks/9/path = NodePath(".")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = PackedFloat32Array(0, 1, 1, 1, 1)
-tracks/10/type = "value"
+tracks/10/type = "position_3d"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("..:attack_velocity")
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape")
 tracks/10/interp = 0
 tracks/10/loop_wrap = true
-tracks/10/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector3(0, 0, 0)]
-}
+tracks/10/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
 tracks/11/type = "value"
 tracks/11/imported = false
 tracks/11/enabled = true
-tracks/11/path = NodePath("..:attack_velocity_mode")
+tracks/11/path = NodePath("../Hurtbox/HurtboxShape:shape")
 tracks/11/interp = 0
 tracks/11/loop_wrap = true
 tracks/11/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [1]
+"values": [ExtResource("2_ahw0y")]
 }
-tracks/12/type = "position_3d"
+tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath("../Hurtbox/HurtboxShape")
-tracks/12/interp = 0
+tracks/12/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/12/interp = 1
 tracks/12/loop_wrap = true
-tracks/12/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
-tracks/13/type = "value"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("../Hurtbox/HurtboxShape:shape")
-tracks/13/interp = 0
-tracks/13/loop_wrap = true
-tracks/13/keys = {
+tracks/12/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ExtResource("2_ahw0y")]
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_j2a7j"]
@@ -2520,10 +2319,13 @@ tracks/1/path = NodePath("..")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.166667),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.166667),
+"transitions": PackedFloat32Array(1, 1),
 "values": [{
-"args": [Vector3(0.705, 0.92, 0), ExtResource("12_qtwap"), 2, 15.0, 6.0, 25, 5, 3, Vector3(3, -2, 0), Vector3(1, 0, 0), "high"],
+"args": [Vector3(0, 0, 0), 1],
+"method": &"update_velocity"
+}, {
+"args": [Vector3(0.705, 0.92, 0), ExtResource("12_qtwap"), 2, 15.0, 6.0, 20, 5, 3, Vector3(3, -2, 0), Vector3(1, 0, 0), "high"],
 "method": &"create_hitbox"
 }]
 }
@@ -2598,48 +2400,36 @@ tracks/9/path = NodePath(".")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = PackedFloat32Array(0, 1, 1, 1, 1)
-tracks/10/type = "value"
+tracks/10/type = "position_3d"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("..:attack_velocity")
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape")
 tracks/10/interp = 0
 tracks/10/loop_wrap = true
-tracks/10/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector3(0, 0, 0)]
-}
+tracks/10/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
 tracks/11/type = "value"
 tracks/11/imported = false
 tracks/11/enabled = true
-tracks/11/path = NodePath("..:attack_velocity_mode")
+tracks/11/path = NodePath("../Hurtbox/HurtboxShape:shape")
 tracks/11/interp = 0
 tracks/11/loop_wrap = true
 tracks/11/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [1]
+"values": [ExtResource("2_ahw0y")]
 }
-tracks/12/type = "position_3d"
+tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath("../Hurtbox/HurtboxShape")
-tracks/12/interp = 0
+tracks/12/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/12/interp = 1
 tracks/12/loop_wrap = true
-tracks/12/keys = PackedFloat32Array(0, 1, 0, -0.642, 0)
-tracks/13/type = "value"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("../Hurtbox/HurtboxShape:shape")
-tracks/13/interp = 0
-tracks/13/loop_wrap = true
-tracks/13/keys = {
+tracks/12/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ExtResource("2_ahw0y")]
+"values": [false]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_k2jj7"]
@@ -2894,6 +2684,18 @@ tracks/7/keys = {
 "update": 1,
 "values": [ExtResource("3_8q5n8")]
 }
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_audrv"]
 resource_name = "idle_left"
@@ -2963,6 +2765,18 @@ tracks/6/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [ExtResource("3_8q5n8")]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_oq48w"]
@@ -3034,6 +2848,18 @@ tracks/6/keys = {
 "update": 1,
 "values": [ExtResource("3_8q5n8")]
 }
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_pfwyi"]
 resource_name = "jump_left"
@@ -3103,6 +2929,18 @@ tracks/6/keys = {
 "update": 1,
 "values": [ExtResource("3_8q5n8")]
 }
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_yt5la"]
 resource_name = "jump_right"
@@ -3171,6 +3009,18 @@ tracks/6/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [ExtResource("3_8q5n8")]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_4a8gk"]
@@ -3242,6 +3092,18 @@ tracks/6/keys = {
 "update": 1,
 "values": [ExtResource("3_8q5n8")]
 }
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_bo21u"]
 resource_name = "walk_right"
@@ -3311,6 +3173,18 @@ tracks/6/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [ExtResource("3_8q5n8")]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1famj"]
@@ -3420,6 +3294,18 @@ tracks/9/keys = {
 "update": 1,
 "values": [ExtResource("3_8q5n8")]
 }
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_y1isn"]
 resource_name = "air_right"
@@ -3514,6 +3400,18 @@ tracks/9/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [ExtResource("3_8q5n8")]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_c135b"]
@@ -3611,6 +3509,18 @@ tracks/9/keys = {
 "update": 1,
 "values": [ExtResource("3_8q5n8")]
 }
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_168pe"]
 resource_name = "high_right"
@@ -3706,6 +3616,18 @@ tracks/9/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [ExtResource("3_8q5n8")]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_pxdus"]
@@ -3803,6 +3725,18 @@ tracks/9/keys = {
 "update": 1,
 "values": [ExtResource("2_ahw0y")]
 }
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_am371"]
 resource_name = "low_right"
@@ -3898,6 +3832,18 @@ tracks/9/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [ExtResource("2_ahw0y")]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("../Hurtbox/HurtboxShape:disabled")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_450jr"]
@@ -4844,7 +4790,6 @@ collision_layer = 0
 axis_lock_linear_z = true
 script = ExtResource("53")
 animate = NodePath("AnimationPlayer")
-attack_velocity_mode = 1
 
 [node name="DebugData" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.03479, 0)
@@ -4888,25 +4833,24 @@ monitorable = false
 
 [node name="HurtboxShape" type="CollisionShape3D" parent="Hurtbox"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.642, 0)
-shape = ExtResource("3_8q5n8")
+shape = ExtResource("2_ahw0y")
 
 [node name="Node3D" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.273207, 0.781501, 0)
 
 [node name="SpriteMain" type="Sprite3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.61, 0)
 rotation_edit_mode = 1
 no_depth_test = true
 texture = ExtResource("14_03fpi")
 
 [node name="SpriteAttack" type="Sprite3D" parent="."]
-transform = Transform3D(0.271676, 0, 0, 0, 0.271676, 0, 0, 0, 0.565, -0.612462, 0.811107, 0.04)
-visible = false
+transform = Transform3D(0.322331, 0, 0, 0, 0.322331, 0, 0, 0, 1, -0.616, 0.417, 0.04)
 no_depth_test = true
 texture = ExtResource("14_03fpi")
 
 [node name="SpriteBlock" type="Sprite3D" parent="."]
-transform = Transform3D(0.375, 0, 0, 0, 1, 0, 0, 0, 1, -0.422, 0.61, 0.04)
+transform = Transform3D(0.375, 0, 0, 0, 0.39381, 0, 0, 0, 1, 0.422, 0.307, 0.04)
 visible = false
 modulate = Color(0.807843, 0.384314, 0.392157, 1)
 no_depth_test = true

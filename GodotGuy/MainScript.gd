@@ -26,16 +26,11 @@ var right_facing : bool = true
 var kback : Vector3 = Vector3.ZERO
 var stun_time_start : int = 0
 var stun_time_current : int = 0
-const hurtbox_base = preload("res://GodotGuy/hurtbox_shapes/base_shape.tres")
-const hurtbox_crouch = preload("res://GodotGuy/hurtbox_shapes/crouch_shape.tres")
 @onready var hitbox = preload("res://GodotGuy/scenes/Hitbox.tscn")
 const JUST_PRESSED_BUFFER : int = 2
 const MOTION_INPUT_LENIENCY : int = 6
 const GROUND_SLIDE_FRICTION : float = 0.97
-@export var attack_velocity := Vector3.ZERO
-enum av_effects {ADD, SET}
 @export var animate : AnimationPlayer
-@export var attack_velocity_mode : av_effects
 var damage_mult : float = 1.0
 var defense_mult : float = 1.0
 
@@ -93,7 +88,6 @@ var anim_right_suf = "_right"
 @export var dash_left_anim : StringName = &"basic/dash"
 @export var dash_right_anim : StringName = &"basic/dash"
 
-
 # nothing should modify the fighter's state here, this is purely for real-time effects
 func _process(_delta):
 	$DebugData.text = "Right Facing: %s\nCurrent State: %s\nLast State: %s\nAttack Finished: %s\nStun: %s:%s\nKnockback: %s" % [right_facing, states.keys()[current_state], states.keys()[previous_state], attack_ended, stun_time_current, stun_time_start, kback]
@@ -117,13 +111,25 @@ var attack_return_state = {
 
 var hitbox_layermask : int
 
+# Functions used by the AnimationPlayer to perform actions within animations
+
+enum av_effects {ADD = 0, SET = 1}
+
+func update_velocity(vel : Vector3, how : av_effects):
+	if not right_facing: vel.x *= -1
+	match how:
+		av_effects.SET:
+			velocity = vel
+		av_effects.ADD:
+			velocity += vel
+
 func create_hitbox(pos : Vector3, shape : Shape3D,
 				lifetime : int, damage_hit : float, damage_block : float,
 				stun_hit : int, stun_block : int, hit_priority : int,
 				kback_hit : Vector3, kback_block : Vector3, type : String):
 	var new_hitbox := (hitbox.instantiate() as Hitbox)
 	if not right_facing:
-		pos.x *= 1
+		pos.x *= -1
 	new_hitbox.set_position(pos)
 	(new_hitbox.get_node("CollisionShape3D") as CollisionShape3D).set_shape(shape)
 	new_hitbox.collision_layer = hitbox_layermask
@@ -138,6 +144,8 @@ func create_hitbox(pos : Vector3, shape : Shape3D,
 	new_hitbox.hit_priority = hit_priority
 	new_hitbox.type = type
 	add_child(new_hitbox,true)
+
+# Functions used within this script
 
 var current_attack : String
 
@@ -441,14 +449,6 @@ func update_character_state():
 				velocity.y += kback.y
 		states.hurt_lie:
 			velocity.x *= GROUND_SLIDE_FRICTION
-		states.attack, states.attack_command, states.jump_attack:
-			match attack_velocity_mode:
-				av_effects.ADD:
-					velocity.x += attack_velocity.x if right_facing else -attack_velocity.x
-					velocity.y += attack_velocity.y
-				av_effects.SET:
-					velocity.x = attack_velocity.x if right_facing else -attack_velocity.x
-					velocity.y = attack_velocity.y
 	velocity.y += gravity
 	velocity.y = max(min_fall_vel, velocity.y)
 	record_y = velocity.y
@@ -501,14 +501,12 @@ func resolve_state_transitions(buffer : Dictionary):
 				update_state(states.get_up)
 		states.attack, states.attack_command:
 			if attack_ended:
-				attack_velocity = Vector3.ZERO
 				if attack_return_state[current_attack] != null:
 					update_state(attack_return_state[current_attack])
 				else:
 					update_state(previous_state)
 		states.jump_attack:
 			if attack_ended:
-				attack_velocity = Vector3.ZERO
 				if attack_return_state[current_attack] != null:
 					update_state(attack_return_state[current_attack])
 				else:
