@@ -476,7 +476,12 @@ func update_character_state():
 		velocity.y = 0
 
 func resolve_state_transitions(buffer : Dictionary):
+	if previous_state == states.intro:
+		previous_state = current_state
 	match current_state:
+		states.get_up:
+			if not animate.is_playing():
+				update_state(previous_state)
 		states.dash_back:
 			if dash_ended:
 				update_state(states.walk_back)
@@ -678,7 +683,7 @@ func damage_step(inputs : Dictionary, attack : Hitbox) -> int:
 		"launch":
 			return try_block(input, attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, states.hurt_fall, states.hurt_fall, states.hurt_fall)
 		"sweep":
-			return try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_lie, states.hurt_crouch, states.hurt_fall)
+			return try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_lie, states.hurt_lie, states.hurt_fall)
 		"slam":
 			return try_block(input, attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, states.hurt_bounce, states.hurt_bounce, states.hurt_fall)
 		_: # this will definitely not be a bug in the future
