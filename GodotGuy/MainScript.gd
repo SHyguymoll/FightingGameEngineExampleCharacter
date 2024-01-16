@@ -191,9 +191,6 @@ func update_attack(new_attack: String) -> void:
 	attack_hurt = false
 
 enum actions {set, add, remove}
-
-
-
 enum buttons {Up = 1, Down = 2, Left = 4, Right = 8, A = 16, B = 32, C = 64}
 
 func button_pressed_at_ind(inputs: Dictionary, input: String, ind: int):
@@ -261,11 +258,7 @@ func walk_value(input: Dictionary) -> int:
 	return int((button_pressed(input, "right") and right_facing) or (button_pressed(input, "left") and !right_facing)) +\
 		-1 * int((button_pressed(input, "left") and right_facing) or (button_pressed(input, "right") and !right_facing))
 
-enum walk_directions {
-	back = -1,
-	neutral = 0,
-	forward = 1,
-}
+enum walk_directions {back = -1, neutral = 0, forward = 1}
 
 func walk_check(input : Dictionary, exclude, cur_state: states) -> states:
 	var walk = walk_value(input)
@@ -352,7 +345,6 @@ func motion_input_check(buffer : Dictionary, inputs : Array, success_attack: sta
 	if buffer_as_numpad.slice(len(buffer_as_numpad) - len(inputs)) == inputs:
 		return success_attack
 	return cur_state
-
 
 func slice_input_dictionary(input_dict: Dictionary, from: int, to: int):
 	var ret_dict = {
@@ -575,7 +567,6 @@ func action(buffer : Dictionary) -> void:
 	handle_input(buffer)
 	if GlobalKnowledge.global_hitstop == 0:
 		update_character_state()
-	
 
 func reset_facing():
 	if distance < 0:
