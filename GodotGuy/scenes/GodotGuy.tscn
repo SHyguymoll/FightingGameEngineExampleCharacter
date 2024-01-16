@@ -42,7 +42,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0.0500001),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [Vector3(0.713, 0.254, 0), ExtResource("3_7yb5n"), 3, 3.0, 0.0, 6, 5, 1, Vector3(0.05, 0, 0), Vector3(0.3, 0, 0), "low"],
+"args": [Vector3(0.713, 0.254, 0), ExtResource("3_7yb5n"), 3, 3.0, 0.0, 6, 5, 1, Vector3(0.05, 0, 0), Vector3(0.3, 0, 0), "sweep"],
 "method": &"create_hitbox"
 }]
 }
@@ -175,7 +175,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0.0500001),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [Vector3(0.713, 0.254, 0), ExtResource("3_7yb5n"), 3, 3.0, 0.0, 6, 5, 1, Vector3(0.05, 0, 0), Vector3(0.3, 0, 0), "low"],
+"args": [Vector3(0.713, 0.254, 0), ExtResource("3_7yb5n"), 3, 3.0, 0.0, 6, 5, 1, Vector3(0.05, 0, 0), Vector3(0.3, 0, 0), "sweep"],
 "method": &"create_hitbox"
 }]
 }
@@ -4845,7 +4845,7 @@ no_depth_test = true
 texture = ExtResource("14_03fpi")
 
 [node name="SpriteAttack" type="Sprite3D" parent="."]
-transform = Transform3D(0.212501, 0, 0, 0, 0.475225, 0, 0, 0, 1, -0.236, 0.345, 0.04)
+transform = Transform3D(0.212501, 0, 0, 0, 0.475225, 0, 0, 0, 1, 0.236201, 0.344891, 0.04)
 visible = false
 no_depth_test = true
 texture = ExtResource("14_03fpi")
