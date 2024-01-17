@@ -13,8 +13,14 @@ func _ready():
 	$AnimationPlayer.play(start_anim)
 
 func tick():
-	# just moves straight forward, velocity isn't even calculated here for simplicity's sake
-	move_and_slide()
+	# check if hitbox exists since it's removed on contact
+	if get_node_or_null(hitbox.get_path()):
+		# just moves straight forward, velocity isn't even calculated here for simplicity's sake
+		move_and_slide()
+	else:
+		destroy()
+	
+	#TODO also check if it's hit the bounds of the level
 
 func destroy():
 	$AnimationPlayer.play(end_anim)
