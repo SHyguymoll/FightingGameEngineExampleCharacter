@@ -11,6 +11,7 @@ extends CharacterBody3D
 @export var health : float = 100
 var player_number : int #this is set by the game, don't change this
 var distance : float #ditto
+var game #ditto
 var input_buffer_len : int = 10
 var start_x_offset : float = 2
 const BUTTONCOUNT : int = 3
@@ -135,7 +136,7 @@ func create_hitbox(pos : Vector3, shape : Shape3D,
 	var new_hitbox := (hitbox.instantiate() as Hitbox)
 	if not right_facing:
 		pos.x *= -1
-	new_hitbox.set_position(pos)
+	new_hitbox.set_position(pos + global_position)
 	(new_hitbox.get_node("CollisionShape3D") as CollisionShape3D).set_shape(shape)
 	new_hitbox.collision_layer = hitbox_layermask
 	new_hitbox.collision_mask = hitbox_layermask
@@ -148,7 +149,7 @@ func create_hitbox(pos : Vector3, shape : Shape3D,
 	new_hitbox.kback_block = kback_block
 	new_hitbox.hit_priority = hit_priority
 	new_hitbox.type = type
-	add_child(new_hitbox,true)
+	game.register_hitbox(new_hitbox)
 
 func create_projectile(pos : Vector3, projectile : Projectile, speed : float,
 				damage_hit : float, damage_block : float,
@@ -157,7 +158,7 @@ func create_projectile(pos : Vector3, projectile : Projectile, speed : float,
 	var new_projectile := (projectile.instantiate() as Projectile)
 	if not right_facing:
 		pos.x *= -1
-	new_projectile.set_position(pos)
+	new_projectile.set_position(pos + global_position)
 	new_projectile.right_facing = right_facing
 	new_projectile.speed = speed
 	new_projectile.hitbox.collision_layer = hitbox_layermask
@@ -170,7 +171,7 @@ func create_projectile(pos : Vector3, projectile : Projectile, speed : float,
 	new_projectile.hitbox.kback_block = kback_block
 	new_projectile.hitbox.hit_priority = hit_priority
 	new_projectile.hitbox.type = type
-	add_child(new_projectile,true)
+	game.register_projectile(new_projectile)
 
 # Functions used within this script and by the game, mostly for checks
 func is_in_air_state() -> bool:
