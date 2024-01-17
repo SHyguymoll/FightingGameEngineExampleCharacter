@@ -476,9 +476,11 @@ func update_character_state():
 		velocity.y = 0
 
 func resolve_state_transitions(buffer : Dictionary):
-	if previous_state == states.intro:
-		previous_state = current_state
 	match current_state:
+		states.intro:
+			if not animate.is_playing():
+				update_state(states.idle)
+				previous_state = current_state
 		states.get_up:
 			if not animate.is_playing():
 				update_state(previous_state)
