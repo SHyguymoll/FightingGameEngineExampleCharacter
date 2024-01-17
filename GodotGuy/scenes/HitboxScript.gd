@@ -12,5 +12,7 @@ extends Area3D
 @export var type : String
 
 func _physics_process(_d):
-	if lifetime > 0: lifetime -= 1
-	if lifetime == -1: queue_free()
+	if lifetime >= 0:
+		lifetime -= 1
+	if lifetime == -1:
+		queue_free()
