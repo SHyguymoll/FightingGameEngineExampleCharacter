@@ -53,7 +53,7 @@ enum states {
 	hurt_high, hurt_low, hurt_crouch, #not handling getting attacked well
 	hurt_fall, hurt_lie, hurt_bounce, #REALLY not handling getting attacked well
 	}
-var state_start := states.idle
+var state_start := states.intro
 @export var current_state: states
 var previous_state : states
 
@@ -64,6 +64,9 @@ var anim_right_suf = "_right"
 # Single animations for states can be handled by a simple hash lookup.
 # Because left vs right is handled externally, only the first part of the name is used
 @export var basic_anim_state_dict := {
+	states.intro : "other/intro",
+	states.round_win : "other/round_win",
+	states.set_win : "other/set_win",
 	states.idle : "basic/idle",
 	states.crouch : "basic/crouch",
 	states.jump_right_init : "basic/jump",
@@ -95,6 +98,9 @@ var anim_right_suf = "_right"
 @export var dash_right_anim : StringName = &"basic/dash"
 
 # nothing should modify the fighter's state here, this is purely for real-time effects
+# and starting the animation player
+func _ready():
+	animate.play(basic_anim_state_dict[current_state] + (anim_right_suf if right_facing else anim_left_suf))
 func _process(_delta):
 	$DebugData.text = "Right Facing: %s\nCurrent State: %s\nLast State: %s\nAttack Finished: %s\nStun: %s:%s\nKnockback: %s" % [right_facing, states.keys()[current_state], states.keys()[previous_state], attack_ended, stun_time_current, stun_time_start, kback]
 
