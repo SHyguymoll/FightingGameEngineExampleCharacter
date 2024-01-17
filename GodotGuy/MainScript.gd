@@ -244,7 +244,8 @@ func handle_attack(buffer: Dictionary, cur_state: states) -> states:
 	previous_state = cur_state
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
-			if motion_input_check(buffer, QUARTER_CIRCLE_FORWARD):
+			#if motion_input_check(buffer, QUARTER_CIRCLE_FORWARD):
+			if button_just_pressed(buffer, "button1") and button_just_pressed(buffer, "button2"):
 				update_attack("attack_command/attack_projectile")
 				return states.attack_command
 			if button_just_pressed(buffer, "button0"):
