@@ -4,6 +4,7 @@ extends Node3D
 var p1
 var p2
 var stage
+var projectiles : Array[Projectile]
 
 #required variables from InputHandle.gd
 var p1_buttons = [false, false, false, false, false, false, false, false, false, false]
@@ -309,6 +310,10 @@ func character_positioning():
 
 func _physics_process(_delta):
 	camera_control(cameraMode)
+	# handle projectiles
+	for proj in projectiles:
+		proj.tick()
+	
 	handle_inputs()
 	character_positioning()
 	update_hud()

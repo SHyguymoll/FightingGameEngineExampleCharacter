@@ -152,6 +152,13 @@ func create_hitbox(pos : Vector3, shape : Shape3D,
 	new_hitbox.type = type
 	add_child(new_hitbox,true)
 
+func create_projectile(pos : Vector3, projectile : Projectile):
+	var new_projectile := (projectile.instantiate() as Projectile)
+	if not right_facing:
+		pos.x *= -1
+	new_projectile.set_position(pos)
+	add_child(new_projectile,true)
+
 # Functions used within this script and by the game, mostly for checks
 func is_in_air_state() -> bool:
 	return current_state in [states.jump_attack, states.jump_left, states.jump_neutral, states.jump_right, states.block_air, states.hurt_bounce, states.hurt_fall]
