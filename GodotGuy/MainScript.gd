@@ -628,11 +628,11 @@ const BLOCK_AWAY_HIGH = [0, -1, 1, -1]
 const BLOCK_AWAY_LOW = [-1, 1, 1, -1]
 const BLOCK_UNBLOCKABLE = [-1, -1. -1, -1]
 
-# If attack is blocked, return 0
-# If attack isn't blocked, return 1
+# If attack is blocked, return false
+# If attack isn't blocked, return true
 func try_block(input : Dictionary, attack : Hitbox,
 			ground_block_rules : Array, air_block_rules : Array,
-			fs_stand : states, fs_crouch : states, fs_air : states) -> int:
+			fs_stand : states, fs_crouch : states, fs_air : states) -> bool:
 	# still in hitstun, can't block
 	attack.queue_free()
 	if is_in_hurting_state() or is_in_dashing_state() or is_in_attacking_state():
@@ -640,15 +640,15 @@ func try_block(input : Dictionary, attack : Hitbox,
 			if is_in_crouch_state():
 				take_damage(attack, false)
 				update_state(fs_crouch)
-				return 1
+				return true
 			else:
 				take_damage(attack, false)
 				update_state(fs_stand)
-				return 1
+				return true
 		else:
 			take_damage(attack, false)
 			update_state(fs_air)
-			return 1
+			return true
 	# Try to block
 	var directions
 	if right_facing:
@@ -661,31 +661,31 @@ func try_block(input : Dictionary, attack : Hitbox,
 				if is_in_crouch_state():
 					take_damage(attack, false)
 					update_state(fs_crouch)
-					return 1
+					return true
 				else:
 					take_damage(attack, false)
 					update_state(fs_stand)
-					return 1
+					return true
 		if button_pressed(input, "down"):
 			take_damage(attack, true)
 			update_state(states.block_low)
-			return 0
+			return false
 		else:
 			take_damage(attack, true)
 			update_state(states.block_high)
-			return 0
+			return false
 	else:
 		for check_input in range(len(directions)):
 			if (directions[check_input] == true and air_block_rules[check_input] == -1) or (directions[check_input] == false and air_block_rules[check_input] == 1):
 				take_damage(attack, false)
 				update_state(fs_air)
-				return 1
+				return true
 		take_damage(attack, true)
 		update_state(states.block_air)
-		return 0
+		return false
 
 # Only runs when a hitbox is overlapping, return rules explained above
-func damage_step(inputs : Dictionary, attack : Hitbox) -> int:
+func damage_step(inputs : Dictionary, attack : Hitbox) -> bool:
 	attack.queue_free()
 	var input = slice_input_dictionary(inputs, len(inputs.up) - 1, len(inputs.up))
 	match attack["type"]:
