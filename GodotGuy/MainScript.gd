@@ -246,30 +246,40 @@ func handle_attack(buffer: Dictionary, cur_state: states) -> states:
 	previous_state = cur_state
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
+			if motion_input_check(buffer, QUARTER_CIRCLE_FORWARD):
+				update_attack("attack_command/attack_projectile")
+				return states.attack_command
 			if button_just_pressed(buffer, "button0"):
 				update_attack("attack_normal/stand_a")
+				return states.attack
 			if button_just_pressed(buffer, "button1"):
 				update_attack("attack_normal/stand_b")
+				return states.attack
 			if button_just_pressed(buffer, "button2"):
 				update_attack("attack_normal/stand_c")
-			return states.attack
+				return states.attack
 		states.crouch:
 			if button_just_pressed(buffer, "button0"):
 				update_attack("attack_command/crouch_a")
+				return states.attack_command
 			if button_just_pressed(buffer, "button1"):
 				update_attack("attack_command/crouch_b")
+				return states.attack_command
 			if button_just_pressed(buffer, "button2"):
 				update_attack("attack_command/crouch_c")
-			return states.attack_command
+				return states.attack_command
 		states.jump_neutral, states.jump_left, states.jump_right, states.jump_neutral_air_init, states.jump_left_air_init, states.jump_right_air_init:
 			if button_just_pressed(buffer, "button0"):
 				update_attack("attack_jumping/a")
+				return states.jump_attack
 			if button_just_pressed(buffer, "button1"):
 				update_attack("attack_jumping/b")
+				return states.jump_attack
 			if button_just_pressed(buffer, "button2"):
 				update_attack("attack_jumping/c")
-			return states.jump_attack
-	return states.attack
+				return states.jump_attack
+	# how did we get here, something has gone terribly wrong
+	return states.intro
 
 func magic_series(buffer: Dictionary, level: int):
 	if level == 3:
@@ -355,7 +365,7 @@ func convert_directions_into_numpad_notation(up, down, back, forward) -> int:
 		return 6
 	return 5
 
-func convert_buffer_inputs_into_numpad_notation(buffer: Dictionary) -> Array[int]:
+func convert_buffer_inputs_into_numpad_notation(buffer: Dictionary) -> Array:
 	var numpad_buffer = []
 	for i in range(len(buffer.up)):
 		numpad_buffer.append(
@@ -368,11 +378,11 @@ func convert_buffer_inputs_into_numpad_notation(buffer: Dictionary) -> Array[int
 		)
 	return numpad_buffer
 
-func motion_input_check(buffer : Dictionary, inputs : Array, success_attack: states, cur_state: states) -> states:
+func motion_input_check(buffer : Dictionary, inputs : Array) -> bool:
 	var buffer_as_numpad = convert_buffer_inputs_into_numpad_notation(buffer)
 	if buffer_as_numpad.slice(len(buffer_as_numpad) - len(inputs)) == inputs:
-		return success_attack
-	return cur_state
+		return true
+	return false
 
 func slice_input_dictionary(input_dict: Dictionary, from: int, to: int):
 	var ret_dict = {
