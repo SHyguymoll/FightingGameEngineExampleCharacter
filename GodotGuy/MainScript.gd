@@ -104,16 +104,14 @@ func _ready():
 func _process(_delta):
 	$DebugData.text = "Right Facing: %s\nCurrent State: %s\nLast State: %s\nAttack Finished: %s\nStun: %s:%s\nKnockback: %s" % [right_facing, states.keys()[current_state], states.keys()[previous_state], attack_ended, stun_time_current, stun_time_start, kback]
 
-var attack_return_state = {
+var attack_return_state := {
 	"attack_normal/stand_a": states.idle,
 	"attack_normal/stand_b": states.idle,
 	"attack_normal/stand_c": states.idle,
 	"attack_command/crouch_a": states.crouch,
 	"attack_command/crouch_b": states.crouch,
 	"attack_command/crouch_c": states.crouch,
-	"attack_jumping/a": null,
-	"attack_jumping/b": null,
-	"attack_jumping/c": null,
+	"attack_command/attack_projectile": states.idle,
 }
 
 var hitbox_layermask : int
@@ -561,13 +559,13 @@ func resolve_state_transitions(buffer : Dictionary):
 				update_state(states.get_up)
 		states.attack, states.attack_command:
 			if attack_ended:
-				if attack_return_state[current_attack] != null:
+				if attack_return_state.get(current_attack) != null:
 					update_state(attack_return_state[current_attack])
 				else:
 					update_state(previous_state)
 		states.jump_attack:
 			if attack_ended:
-				if attack_return_state[current_attack] != null:
+				if attack_return_state.get(current_attack) != null:
 					update_state(attack_return_state[current_attack])
 				else:
 					update_state(previous_state)
