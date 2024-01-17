@@ -4826,8 +4826,8 @@ tracks/10/keys = {
 "values": [true, false]
 }
 
-[sub_resource type="Animation" id="Animation_ftlgv"]
-resource_name = "round_win_left"
+[sub_resource type="Animation" id="Animation_wcq0f"]
+resource_name = "set_win_left"
 length = 3.41667
 step = 0.0166667
 tracks/0/type = "position_3d"
@@ -4850,7 +4850,7 @@ tracks/2/enabled = true
 tracks/2/path = NodePath(".")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
-tracks/2/keys = PackedFloat32Array(0, 1, 0, 0, 0.095, 0.996, 0.133333, 1, 0, 0, -0.111, 0.994, 0.266667, 1, 0, 0, -0.111, 0.994, 0.383333, 1, 0, 0, 0, 1, 0.983333, 1, 0, 0, -0.111, 0.994, 1.15, 1, 0, 0, 0, 1, 1.95, 1, 0, 0, -0.111, 0.994, 2.11667, 1, 0, 0, 0, 1, 2.71667, 1, 0, 0, 0.095, 0.996, 3.11667, 1, 0, 0, 0.095, 0.996, 3.33333, 1, 0, 0, 0, 1)
+tracks/2/keys = PackedFloat32Array(0, 1, 0, 0, 0.095, 0.995, 0.133333, 1, 0, 0, -0.111, 0.994, 0.266667, 1, 0, 0, -0.111, 0.994, 0.366667, 1, 0, 0, 0, 1, 0.783333, 1, 0, 0, 0.095, 0.995, 0.983333, 1, 0, 0, -0.111, 0.994, 1.15, 1, 0, 0, 0, 1, 1.75, 1, 0, 0, 0.095, 0.995, 1.95, 1, 0, 0, -0.111, 0.994, 2.11667, 1, 0, 0, 0, 1, 2.71667, 1, 0, 0, 0.095, 0.995, 3.11667, 1, 0, 0, 0.095, 0.995, 3.33333, 1, 0, 0, 0, 1)
 tracks/3/type = "position_3d"
 tracks/3/imported = false
 tracks/3/enabled = true
@@ -4928,8 +4928,8 @@ tracks/10/keys = {
 "values": [true, false]
 }
 
-[sub_resource type="Animation" id="Animation_wcq0f"]
-resource_name = "set_win_left"
+[sub_resource type="Animation" id="Animation_k1jma"]
+resource_name = "round_win_left"
 length = 3.41667
 step = 0.0166667
 tracks/0/type = "position_3d"
@@ -4952,7 +4952,7 @@ tracks/2/enabled = true
 tracks/2/path = NodePath(".")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
-tracks/2/keys = PackedFloat32Array(0, 1, 0, 0, 0.095, 0.996, 0.133333, 1, 0, 0, -0.111, 0.994, 0.266667, 1, 0, 0, -0.111, 0.994, 0.383333, 1, 0, 0, 0, 1, 0.783333, 1, 0, 0, 0.095, 0.996, 0.983333, 1, 0, 0, -0.111, 0.994, 1.15, 1, 0, 0, 0, 1, 1.75, 1, 0, 0, 0.095, 0.996, 1.95, 1, 0, 0, -0.111, 0.994, 2.11667, 1, 0, 0, 0, 1, 2.71667, 1, 0, 0, 0.095, 0.996, 3.11667, 1, 0, 0, 0.095, 0.996, 3.33333, 1, 0, 0, 0, 1)
+tracks/2/keys = PackedFloat32Array(0, 1, 0, 0, 0.095, 0.995, 0.133333, 1, 0, 0, -0.111, 0.994, 0.266667, 1, 0, 0, -0.111, 0.994, 0.366667, 1, 0, 0, 0, 1, 0.783333, 1, 0, 0, 0.095, 0.995, 0.983333, 1, 0, 0, -0.111, 0.994, 1.15, 1, 0, 0, 0, 1, 1.75, 1, 0, 0, 0.095, 0.995, 1.95, 1, 0, 0, -0.111, 0.994, 2.11667, 1, 0, 0, 0, 1, 2.71667, 1, 0, 0, 0.095, 0.995, 3.11667, 1, 0, 0, 0.095, 0.995, 3.33333, 1, 0, 0, 0, 1)
 tracks/3/type = "position_3d"
 tracks/3/imported = false
 tracks/3/enabled = true
@@ -5034,7 +5034,7 @@ tracks/10/keys = {
 _data = {
 "intro_left": SubResource("Animation_on8na"),
 "intro_right": SubResource("Animation_mo8k0"),
-"round_win_left": SubResource("Animation_ftlgv"),
+"round_win_left": SubResource("Animation_k1jma"),
 "round_win_right": SubResource("Animation_gabpl"),
 "set_win_left": SubResource("Animation_wcq0f"),
 "set_win_right": SubResource("Animation_2jqtj")
@@ -5417,8 +5417,8 @@ collision_mask = 0
 monitorable = false
 
 [node name="HurtboxShape" type="CollisionShape3D" parent="Hurtbox"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.007, 0)
-shape = ExtResource("2_ahw0y")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.642, 0)
+shape = ExtResource("3_8q5n8")
 
 [node name="Node3D" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.273207, 0.781501, 0)
@@ -5432,13 +5432,11 @@ texture = ExtResource("14_03fpi")
 [node name="SpriteAttack" type="Sprite3D" parent="."]
 transform = Transform3D(0.362995, 0, 0, 0, 0.362995, 0, 0, 0, 1, 0.157, 0.371, 0.04)
 visible = false
-modulate = Color(1, 1, 1, 0)
 no_depth_test = true
 texture = ExtResource("14_03fpi")
 
 [node name="SpriteBlock" type="Sprite3D" parent="."]
-transform = Transform3D(0.363, 0, 0, 0, 0.363, 0, 0, 0, 1, 0.017, 0.518, 0.04)
+transform = Transform3D(0.363, 0, 0, 0, 0.363, 0, 0, 0, 1, -0.422, 0.307, 0.04)
 visible = false
-modulate = Color(1, 1, 1, 0)
 no_depth_test = true
 texture = ExtResource("14_03fpi")
