@@ -1,0 +1,58 @@
+[gd_scene load_steps=9 format=3 uid="uid://56a0waewlr2t"]
+
+[ext_resource type="Script" path="res://GodotGuy/scenes/ProjectileStraight.gd" id="1_up6mg"]
+[ext_resource type="Texture2D" uid="uid://dnp3cp2qqpsg1" path="res://GodotGuy/icon.svg" id="2_1jtyo"]
+[ext_resource type="Script" path="res://GodotGuy/scenes/HitboxScript.gd" id="3_08xxv"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qatpa"]
+size = Vector3(1.5, 1.5, 1)
+
+[sub_resource type="Animation" id="Animation_33uao"]
+resource_name = "start"
+length = 0.250002
+step = 0.0166667
+
+[sub_resource type="Animation" id="Animation_f425l"]
+resource_name = "loop"
+length = 0.250002
+step = 0.0166667
+
+[sub_resource type="Animation" id="Animation_bxiyh"]
+resource_name = "end"
+length = 0.250002
+step = 0.0166667
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_vwb2q"]
+_data = {
+"end": SubResource("Animation_bxiyh"),
+"loop": SubResource("Animation_f425l"),
+"start": SubResource("Animation_33uao")
+}
+
+[node name="ProjectileStraight" type="CharacterBody3D" node_paths=PackedStringArray("hitbox")]
+motion_mode = 1
+script = ExtResource("1_up6mg")
+hitbox = NodePath("Hitbox")
+start_anim = &"start"
+loop_anim = &"loop"
+end_anim = &"end"
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+texture = ExtResource("2_1jtyo")
+
+[node name="Hitbox" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+script = ExtResource("3_08xxv")
+lifetime = -2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
+shape = SubResource("BoxShape3D_qatpa")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_vwb2q")
+}
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

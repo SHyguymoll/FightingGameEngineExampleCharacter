@@ -5503,22 +5503,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0157823, 0)
 collision_layer = 0
 axis_lock_linear_z = true
 script = ExtResource("53")
-char_name = null
-health = null
-walk_speed = null
-jump_total = null
-jump_height = null
-gravity = null
-min_fall_vel = null
 animate = NodePath("AnimationPlayer")
-attack_ended = null
-dash_ended = null
-current_state = null
-basic_anim_state_dict = null
-move_left_anim = null
-move_right_anim = null
-dash_left_anim = null
-dash_right_anim = null
 
 [node name="DebugData" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.03479, 0)
