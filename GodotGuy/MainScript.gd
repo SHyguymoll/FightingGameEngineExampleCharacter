@@ -17,8 +17,8 @@ const BUTTONCOUNT : int = 3
 var attack_connected : bool
 var attack_hurt : bool
 
-signal projectile_created
 signal hitbox_created
+signal projectile_created
 
 # this block of variables isn't required, but generally used by a typical fighter
 @export var walk_speed : float = 2
