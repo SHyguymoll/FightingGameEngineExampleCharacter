@@ -163,16 +163,16 @@ func create_projectile(pos : Vector3, projectile_ind : int, speed : float,
 	new_projectile.set_position(pos + global_position)
 	new_projectile.right_facing = right_facing
 	new_projectile.speed = speed
-	new_projectile.hitbox.collision_layer = hitbox_layermask
-	new_projectile.hitbox.collision_mask = hitbox_layermask
-	new_projectile.hitbox.damage_hit = damage_hit
-	new_projectile.hitbox.damage_block = damage_block * damage_mult
-	new_projectile.hitbox.stun_hit = stun_hit
-	new_projectile.hitbox.stun_block = stun_block
-	new_projectile.hitbox.kback_hit = kback_hit
-	new_projectile.hitbox.kback_block = kback_block
-	new_projectile.hitbox.hit_priority = hit_priority
-	new_projectile.hitbox.type = type
+	new_projectile.get_node(^"Hitbox").collision_layer = hitbox_layermask
+	new_projectile.get_node(^"Hitbox").collision_mask = hitbox_layermask
+	new_projectile.get_node(^"Hitbox").damage_hit = damage_hit
+	new_projectile.get_node(^"Hitbox").damage_block = damage_block * damage_mult
+	new_projectile.get_node(^"Hitbox").stun_hit = stun_hit
+	new_projectile.get_node(^"Hitbox").stun_block = stun_block
+	new_projectile.get_node(^"Hitbox").kback_hit = kback_hit
+	new_projectile.get_node(^"Hitbox").kback_block = kback_block
+	new_projectile.get_node(^"Hitbox").hit_priority = hit_priority
+	new_projectile.get_node(^"Hitbox").type = type
 	game.register_projectile(new_projectile)
 
 # Functions used within this script and by the game, mostly for checks

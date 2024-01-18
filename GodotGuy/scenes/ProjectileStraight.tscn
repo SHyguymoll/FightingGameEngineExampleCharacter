@@ -5,39 +5,105 @@
 [ext_resource type="Script" path="res://GodotGuy/scenes/HitboxScript.gd" id="3_08xxv"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_qatpa"]
-size = Vector3(1.5, 1.5, 1)
-
-[sub_resource type="Animation" id="Animation_33uao"]
-resource_name = "start"
-length = 0.250002
-step = 0.0166667
+size = Vector3(1.18335, 1.0791, 1)
 
 [sub_resource type="Animation" id="Animation_f425l"]
 resource_name = "loop"
 length = 0.250002
 step = 0.0166667
+tracks/0/type = "rotation_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite3D")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.116667, 1, 0, 0, 1, -4.37114e-08, 0.183334, 1, 0, 0, 0.707107, 0.707106, 0.25, 1, 0, 0, 0, 1)
+tracks/1/type = "scale_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite3D")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, 1, 1, 1, 0.116667, 1, 0.719086, 0.719085, 1, 0.25, 1, 1, 1, 1)
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite3D:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.116667, 0.25),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(0, 1, 1, 1), Color(0, 1, 1, 0.431373), Color(0, 1, 1, 1)]
+}
 
-[sub_resource type="Animation" id="Animation_bxiyh"]
+[sub_resource type="Animation" id="Animation_33uao"]
+resource_name = "start"
+length = 0.250002
+step = 0.0166667
+tracks/0/type = "scale_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite3D")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 1.44575, 1.44575, 1.003, 0.25, 1, 1, 1, 1)
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite3D:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.25),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 1, 1, 0), Color(0, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_k5wla"]
 resource_name = "end"
 length = 0.250002
 step = 0.0166667
+tracks/0/type = "scale_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite3D")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 1, 1, 1, 0.25, 1, 1.44575, 1.44575, 1.003)
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite3D:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.25),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 1, 1, 1), Color(0, 1, 1, 0)]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_vwb2q"]
 _data = {
-"end": SubResource("Animation_bxiyh"),
+"end": SubResource("Animation_k5wla"),
 "loop": SubResource("Animation_f425l"),
 "start": SubResource("Animation_33uao")
 }
 
-[node name="ProjectileStraight" type="CharacterBody3D" node_paths=PackedStringArray("hitbox")]
+[node name="ProjectileStraight" type="CharacterBody3D"]
+collision_layer = 0
+collision_mask = 0
 motion_mode = 1
 script = ExtResource("1_up6mg")
-hitbox = NodePath("Hitbox")
 start_anim = &"start"
 loop_anim = &"loop"
 end_anim = &"end"
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
+modulate = Color(0, 1, 1, 1)
 texture = ExtResource("2_1jtyo")
 
 [node name="Hitbox" type="Area3D" parent="."]

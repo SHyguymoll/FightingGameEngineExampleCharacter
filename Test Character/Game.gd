@@ -312,7 +312,12 @@ func register_hitbox(hitbox):
 	add_child(hitbox, true)
 
 func register_projectile(projectile):
+	projectile.game = self
 	add_child(projectile, true)
+	projectiles.append(projectile)
+
+func delete_projectile(projectile):
+	projectiles.erase(projectile)
 
 func _physics_process(_delta):
 	camera_control(cameraMode)
