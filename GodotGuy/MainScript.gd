@@ -37,6 +37,8 @@ const GROUND_SLIDE_FRICTION : float = 0.97
 var damage_mult : float = 1.0
 var defense_mult : float = 1.0
 
+@onready var projectiles = [preload("res://GodotGuy/scenes/ProjectileStraight.tscn")]
+
 # these are guard clause variables, and may be removed
 @export var attack_ended = true
 @export var dash_ended = true
@@ -151,11 +153,11 @@ func create_hitbox(pos : Vector3, shape : Shape3D,
 	new_hitbox.type = type
 	game.register_hitbox(new_hitbox)
 
-func create_projectile(pos : Vector3, projectile : Projectile, speed : float,
+func create_projectile(pos : Vector3, projectile_ind : int, speed : float,
 				damage_hit : float, damage_block : float,
 				stun_hit : int, stun_block : int, hit_priority : int,
 				kback_hit : Vector3, kback_block : Vector3, type : String):
-	var new_projectile := (projectile.instantiate() as Projectile)
+	var new_projectile := (projectiles[projectile_ind].instantiate() as Projectile)
 	if not right_facing:
 		pos.x *= -1
 	new_projectile.set_position(pos + global_position)
