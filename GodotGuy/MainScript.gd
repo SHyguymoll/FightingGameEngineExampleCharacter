@@ -395,23 +395,7 @@ func motion_input_check() -> bool:
 		return true
 	return false
 
-func slice_input_dictionary(from: int, to: int):
-	var ret_dict = {
-		up=inputs["up"].slice(from, to),
-		down=inputs["down"].slice(from, to),
-		left=inputs["left"].slice(from, to),
-		right=inputs["right"].slice(from, to),
-	}
-	var ret_dict_button_count = len(inputs) - 4
-	for i in range(ret_dict_button_count):
-		ret_dict["button" + str(i)] = inputs["button" + str(i)].slice(from, to)
-	return ret_dict
-
-func latest_input():
-	return slice_input_dictionary(len(inputs.up) - 1, len(inputs.up))
-
 func handle_input() -> void:
-	var input = latest_input()
 	var decision : states = current_state
 	match current_state:
 # Priority order, from least to most: Walk, Backdash, Dash, Crouch, Jump, Attack, Block/Hurt (handled elsewhere)
@@ -721,7 +705,7 @@ func try_block(attack : Hitbox,
 # Only runs when a hitbox is overlapping, return rules explained above
 func damage_step(attack : Hitbox) -> bool:
 	attack.queue_free()
-	var input = slice_input_dictionary(len(inputs.up) - 1, len(inputs.up))
+	
 	match attack["type"]:
 		"mid":
 			return try_block(attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, states.hurt_high, states.hurt_crouch, states.hurt_fall)
