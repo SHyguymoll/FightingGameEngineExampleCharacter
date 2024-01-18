@@ -617,13 +617,6 @@ func update_character_animation():
 			_:
 				animate.play(basic_anim_state_dict[current_state] + (anim_right_suf if right_facing else anim_left_suf))
 
-func action() -> void:
-	if GlobalKnowledge.global_hitstop == 0:
-		resolve_state_transitions()
-	handle_input()
-	if GlobalKnowledge.global_hitstop == 0:
-		update_character_state()
-
 func reset_facing():
 	if distance < 0:
 		right_facing = true
@@ -640,7 +633,11 @@ const FRAMERATE = 1.0/60.0
 
 func input_step(recv_inputs) -> void:
 	inputs = recv_inputs
-	action()
+	if GlobalKnowledge.global_hitstop == 0:
+		resolve_state_transitions()
+	handle_input()
+	if GlobalKnowledge.global_hitstop == 0:
+		update_character_state()
 	animate.speed_scale = float(GlobalKnowledge.global_hitstop == 0)
 
 func set_stun_time(value):
