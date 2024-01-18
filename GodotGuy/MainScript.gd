@@ -270,8 +270,8 @@ func handle_attack(cur_state: states) -> states:
 	previous_state = cur_state
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
-			#if motion_input_check(QUARTER_CIRCLE_FORWARD):
-			if button_just_pressed("button1") and button_just_pressed("button2"):
+			if motion_input_check(QUARTER_CIRCLE_FORWARD):
+			#if button_just_pressed("button1") and button_just_pressed("button2"):
 				update_attack("attack_command/attack_projectile")
 				return states.attack_command
 			if button_just_pressed("button0"):
@@ -384,6 +384,7 @@ func convert_directions_into_numpad_notation(up, down, back, forward) -> int:
 			return 1
 		if forward:
 			return 3
+		return 2
 	if back:
 		return 4
 	if forward:
@@ -403,10 +404,16 @@ func convert_inputs_into_numpad_notation() -> Array:
 		)
 	return numpad_buffer
 
-func motion_input_check() -> bool:
+func motion_input_check(motion_to_check) -> bool:
 	var buffer_as_numpad = convert_inputs_into_numpad_notation()
-	if buffer_as_numpad.slice(len(buffer_as_numpad) - len(inputs)) == inputs:
-		return true
+	print_debug(buffer_as_numpad)
+	buffer_as_numpad = buffer_as_numpad.slice((len(buffer_as_numpad)) - (len(motion_to_check) + 2))
+	print_debug(buffer_as_numpad)
+	for i in range(len(motion_to_check)):
+		var buffer_slice = buffer_as_numpad.slice(i, i + len(motion_to_check))
+		print_debug(buffer_slice)
+		if buffer_slice == motion_to_check:
+			return true
 	return false
 
 func handle_input() -> void:
