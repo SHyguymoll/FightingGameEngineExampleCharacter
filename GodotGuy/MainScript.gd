@@ -39,6 +39,13 @@ const GROUND_SLIDE_FRICTION : float = 0.97
 var damage_mult : float = 1.0
 var defense_mult : float = 1.0
 
+# extremely important, how the character gets the inputs from the game in this implementation.
+# Dictionary with 4 entries for each directional input, plus the number of buttons (buttonX).
+# each entry holds an array made up of tuples of a boolean and an int, representing how long the
+# input was held/not held.
+# saved here as the alternative was copying potentially large blocks of data for each use case.
+var inputs
+
 @onready var projectiles = [preload("res://GodotGuy/scenes/ProjectileStraight.tscn")]
 
 # these are guard clause variables, and may be removed
@@ -224,86 +231,86 @@ func update_attack(new_attack: String) -> void:
 enum actions {set, add, remove}
 enum buttons {Up = 1, Down = 2, Left = 4, Right = 8, A = 16, B = 32, C = 64}
 
-func button_pressed_at_ind(inputs: Dictionary, input: String, ind: int):
+func button_pressed_at_ind(input: String, ind: int):
 	return inputs[input][ind][1]
 
-func button_pressed(inputs: Dictionary, input: String):
-	return button_pressed_at_ind(inputs, input, -1)
+func button_pressed(input: String):
+	return button_pressed_at_ind(input, -1)
 
-func button_just_pressed(inputs: Dictionary, input: String):
-	return button_pressed_at_ind_under_duration(inputs, input, -1, JUST_PRESSED_BUFFER)
+func button_just_pressed(input: String):
+	return button_pressed_at_ind_under_duration(input, -1, JUST_PRESSED_BUFFER)
 
-func button_pressed_at_ind_under_duration(inputs: Dictionary, input: String, ind: int, duration: int):
-	return inputs[input][ind][0] < duration and button_pressed_at_ind(inputs, input, ind)
+func button_pressed_at_ind_under_duration(input: String, ind: int, duration: int):
+	return inputs[input][ind][0] < duration and button_pressed_at_ind(input, ind)
 
-func button_held_over_duration(inputs: Dictionary, input: String, duration: int):
-	return inputs[input][-1][0] >= duration and button_pressed(inputs, input)
+func button_held_over_duration(input: String, duration: int):
+	return inputs[input][-1][0] >= duration and button_pressed(input)
 
-func handle_attack(buffer: Dictionary, cur_state: states) -> states:
+func handle_attack(cur_state: states) -> states:
 	if (
-		!button_just_pressed(buffer, "button0") and
-		!button_just_pressed(buffer, "button1") and
-		!button_just_pressed(buffer, "button2")
+		!button_just_pressed("button0") and
+		!button_just_pressed("button1") and
+		!button_just_pressed("button2")
 		):
 		return cur_state
 	previous_state = cur_state
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
-			#if motion_input_check(buffer, QUARTER_CIRCLE_FORWARD):
-			if button_just_pressed(buffer, "button1") and button_just_pressed(buffer, "button2"):
+			#if motion_input_check(QUARTER_CIRCLE_FORWARD):
+			if button_just_pressed("button1") and button_just_pressed("button2"):
 				update_attack("attack_command/attack_projectile")
 				return states.attack_command
-			if button_just_pressed(buffer, "button0"):
+			if button_just_pressed("button0"):
 				update_attack("attack_normal/stand_a")
 				return states.attack
-			if button_just_pressed(buffer, "button1"):
+			if button_just_pressed("button1"):
 				update_attack("attack_normal/stand_b")
 				return states.attack
-			if button_just_pressed(buffer, "button2"):
+			if button_just_pressed("button2"):
 				update_attack("attack_normal/stand_c")
 				return states.attack
 		states.crouch:
-			if button_just_pressed(buffer, "button0"):
+			if button_just_pressed("button0"):
 				update_attack("attack_command/crouch_a")
 				return states.attack_command
-			if button_just_pressed(buffer, "button1"):
+			if button_just_pressed("button1"):
 				update_attack("attack_command/crouch_b")
 				return states.attack_command
-			if button_just_pressed(buffer, "button2"):
+			if button_just_pressed("button2"):
 				update_attack("attack_command/crouch_c")
 				return states.attack_command
 		states.jump_neutral, states.jump_left, states.jump_right, states.jump_neutral_air_init, states.jump_left_air_init, states.jump_right_air_init:
-			if button_just_pressed(buffer, "button0"):
+			if button_just_pressed("button0"):
 				update_attack("attack_jumping/a")
 				return states.jump_attack
-			if button_just_pressed(buffer, "button1"):
+			if button_just_pressed("button1"):
 				update_attack("attack_jumping/b")
 				return states.jump_attack
-			if button_just_pressed(buffer, "button2"):
+			if button_just_pressed("button2"):
 				update_attack("attack_jumping/c")
 				return states.jump_attack
 	# how did we get here, something has gone terribly wrong
 	return states.intro
 
-func magic_series(buffer: Dictionary, level: int):
+func magic_series(level: int):
 	if level == 3:
 		return
-	if level == 1 and button_just_pressed(buffer, "button1"):
+	if level == 1 and button_just_pressed("button1"):
 		update_attack("attack_normal/stand_b")
 		update_character_animation()
-	if button_just_pressed(buffer, "button2"):
+	if button_just_pressed("button2"):
 		update_attack("attack_normal/stand_c")
 		update_character_animation()
 
 #returns -1 (walk away), 0 (neutral), and 1 (walk towards)
-func walk_value(input: Dictionary) -> int:
-	return int((button_pressed(input, "right") and right_facing) or (button_pressed(input, "left") and !right_facing)) +\
-		-1 * int((button_pressed(input, "left") and right_facing) or (button_pressed(input, "right") and !right_facing))
+func walk_value() -> int:
+	return int((button_pressed("right") and right_facing) or (button_pressed("left") and !right_facing)) +\
+		-1 * int((button_pressed("left") and right_facing) or (button_pressed("right") and !right_facing))
 
 enum walk_directions {back = -1, neutral = 0, forward = 1}
 
-func walk_check(input : Dictionary, exclude, cur_state: states) -> states:
-	var walk = walk_value(input)
+func walk_check(exclude, cur_state: states) -> states:
+	var walk = walk_value()
 	if walk != exclude:
 		match walk:
 			walk_directions.forward:
@@ -315,21 +322,21 @@ func walk_check(input : Dictionary, exclude, cur_state: states) -> states:
 					return states.walk_back
 	return cur_state
 
-func dash_check(buffer : Dictionary, input: String, success_state: states, cur_state: states) -> states:
+func dash_check(input: String, success_state: states, cur_state: states) -> states:
 # we only need the last three inputs
 	var walks = [
-		button_pressed_at_ind_under_duration(buffer, input, -3, MOTION_INPUT_LENIENCY),
-		button_pressed_at_ind_under_duration(buffer, input, -2, MOTION_INPUT_LENIENCY),
-		button_pressed_at_ind_under_duration(buffer, input, -1, MOTION_INPUT_LENIENCY)
+		button_pressed_at_ind_under_duration(input, -3, MOTION_INPUT_LENIENCY),
+		button_pressed_at_ind_under_duration(input, -2, MOTION_INPUT_LENIENCY),
+		button_pressed_at_ind_under_duration(input, -1, MOTION_INPUT_LENIENCY)
 	]
 	if walks == [true, false, true]:
 		dash_ended = false
 		return success_state
 	return cur_state
 
-func jump_check(input: Dictionary, exclude, cur_state: states, grounded := true) -> states:
-	if (button_pressed(input, "up") and grounded) or (button_just_pressed(input, "up") and not grounded) and jump_count > 0:
-		var dir = walk_value(input)
+func jump_check(exclude, cur_state: states, grounded := true) -> states:
+	if (button_pressed("up") and grounded) or (button_just_pressed("up") and not grounded) and jump_count > 0:
+		var dir = walk_value()
 		if dir != exclude:
 			match dir:
 				walk_directions.forward:
@@ -369,98 +376,98 @@ func convert_directions_into_numpad_notation(up, down, back, forward) -> int:
 		return 6
 	return 5
 
-func convert_buffer_inputs_into_numpad_notation(buffer: Dictionary) -> Array:
+func convert_inputs_into_numpad_notation() -> Array:
 	var numpad_buffer = []
-	for i in range(len(buffer.up)):
+	for i in range(len(inputs.up)):
 		numpad_buffer.append(
 			convert_directions_into_numpad_notation(
-				button_pressed_at_ind(buffer, "up", i),
-				button_pressed_at_ind(buffer, "down", i),
-				button_pressed_at_ind(buffer, "left", i),
-				button_pressed_at_ind(buffer, "right", i)
+				button_pressed_at_ind("up", i),
+				button_pressed_at_ind("down", i),
+				button_pressed_at_ind("left", i),
+				button_pressed_at_ind("right", i)
 			)
 		)
 	return numpad_buffer
 
-func motion_input_check(buffer : Dictionary, inputs : Array) -> bool:
-	var buffer_as_numpad = convert_buffer_inputs_into_numpad_notation(buffer)
+func motion_input_check() -> bool:
+	var buffer_as_numpad = convert_inputs_into_numpad_notation()
 	if buffer_as_numpad.slice(len(buffer_as_numpad) - len(inputs)) == inputs:
 		return true
 	return false
 
-func slice_input_dictionary(input_dict: Dictionary, from: int, to: int):
+func slice_input_dictionary(from: int, to: int):
 	var ret_dict = {
-		up=input_dict["up"].slice(from, to),
-		down=input_dict["down"].slice(from, to),
-		left=input_dict["left"].slice(from, to),
-		right=input_dict["right"].slice(from, to),
+		up=inputs["up"].slice(from, to),
+		down=inputs["down"].slice(from, to),
+		left=inputs["left"].slice(from, to),
+		right=inputs["right"].slice(from, to),
 	}
-	var ret_dict_button_count = len(input_dict) - 4
+	var ret_dict_button_count = len(inputs) - 4
 	for i in range(ret_dict_button_count):
-		ret_dict["button" + str(i)] = input_dict["button" + str(i)].slice(from, to)
+		ret_dict["button" + str(i)] = inputs["button" + str(i)].slice(from, to)
 	return ret_dict
 
-func latest_input_from_buffer(buffer):
-	return slice_input_dictionary(buffer, len(buffer.up) - 1, len(buffer.up))
+func latest_input():
+	return slice_input_dictionary(len(inputs.up) - 1, len(inputs.up))
 
-func handle_input(buffer: Dictionary) -> void:
-	var input = latest_input_from_buffer(buffer)
+func handle_input() -> void:
+	var input = latest_input()
 	var decision : states = current_state
 	match current_state:
 # Priority order, from least to most: Walk, Backdash, Dash, Crouch, Jump, Attack, Block/Hurt (handled elsewhere)
 		states.idle, states.walk_back, states.walk_forward:
 			match current_state:
 				states.idle:
-					decision = walk_check(input, walk_directions.neutral, decision)
-					if len(buffer.up) > 3:
+					decision = walk_check(walk_directions.neutral, decision)
+					if len(inputs.up) > 3:
 						if right_facing:
-							decision = dash_check(buffer, "left", states.dash_back, decision)
-							decision = dash_check(buffer, "right", states.dash_forward, decision)
+							decision = dash_check("left", states.dash_back, decision)
+							decision = dash_check("right", states.dash_forward, decision)
 						else:
-							decision = dash_check(buffer, "left", states.dash_forward, decision)
-							decision = dash_check(buffer, "right", states.dash_back, decision)
+							decision = dash_check("left", states.dash_forward, decision)
+							decision = dash_check("right", states.dash_back, decision)
 				states.walk_back:
-					decision = walk_check(input, walk_directions.back, decision)
+					decision = walk_check(walk_directions.back, decision)
 				states.walk_forward:
-					decision = walk_check(input, walk_directions.forward, decision)
-			decision = states.crouch if button_pressed(input, "down") else decision
-			decision = jump_check(input, null, decision)
-			decision = handle_attack(buffer, decision)
+					decision = walk_check(walk_directions.forward, decision)
+			decision = states.crouch if button_pressed("down") else decision
+			decision = jump_check(null, decision)
+			decision = handle_attack(decision)
 # Order: release down, attack, b/h
 		states.crouch:
-			decision = walk_check(input, null, decision) if !button_pressed(input, "down") else decision
-			decision = handle_attack(buffer, decision)
+			decision = walk_check(null, decision) if !button_pressed("down") else decision
+			decision = handle_attack(decision)
 # Order: jump, attack, b/h
 		states.jump_neutral, states.jump_left, states.jump_right, states.jump_neutral_air_init, states.jump_left_air_init, states.jump_right_air_init:
-			decision = jump_check(input, null, decision, false)
-			decision = handle_attack(buffer, decision)
+			decision = jump_check(null, decision, false)
+			decision = handle_attack(decision)
 # Special cases for attack canceling
 		states.attack:
 			if attack_connected: #if the attack landed at all
 				# jump canceling normals
-				decision = jump_check(input, null, decision)
+				decision = jump_check(null, decision)
 				# magic series
 				if decision == states.attack:
 					match current_attack:
 						"attack_normal/stand_a":
-							magic_series(buffer, 1)
+							magic_series(1)
 						"attack_normal/stand_b":
-							magic_series(buffer, 2)
+							magic_series(2)
 						"attack_normal/stand_c":
-							magic_series(buffer, 3)
+							magic_series(3)
 	update_state(decision)
 
-func standable_stun_check(buffer):
+func standable_stun_check():
 	if stun_time_current == 0:
-		var new_walk = walk_check(latest_input_from_buffer(buffer), null, current_state)
+		var new_walk = walk_check(null, current_state)
 		update_state(new_walk)
 
-func aerial_stun_check(buffer):
+func aerial_stun_check():
 	if stun_time_current > 0:
 		return
 	if is_on_floor():
 #		standable_stun_check(buffer)
-		var new_walk = walk_check(latest_input_from_buffer(buffer), null, current_state)
+		var new_walk = walk_check(null, current_state)
 		update_state(new_walk)
 
 var record_y
@@ -517,7 +524,7 @@ func update_character_state():
 	if velocity.y < 0 and is_on_floor():
 		velocity.y = 0
 
-func resolve_state_transitions(buffer : Dictionary):
+func resolve_state_transitions():
 	match current_state:
 		states.intro:
 			if not animate.is_playing():
@@ -540,19 +547,19 @@ func resolve_state_transitions(buffer : Dictionary):
 			if not is_on_floor(): update_state(states.jump_neutral)
 		states.jump_right, states.jump_left, states.jump_neutral:
 			if is_on_floor():
-				var new_walk = walk_check(latest_input_from_buffer(buffer), null, current_state)
+				var new_walk = walk_check(null, current_state)
 				update_state(new_walk)
 		states.block_air:
 			stun_time_current -= 1
 			if is_on_floor():
 				stun_time_current = 0
-			aerial_stun_check(buffer)
+			aerial_stun_check()
 		states.hurt_high, states.hurt_low, states.hurt_crouch, states.block_high, states.block_low:
 			stun_time_current -= 1
-			standable_stun_check(buffer)
+			standable_stun_check()
 		states.hurt_fall:
 			stun_time_current -= 1
-			aerial_stun_check(buffer)
+			aerial_stun_check()
 		states.hurt_bounce:
 			stun_time_current -= 1
 			if check_true:
@@ -576,7 +583,7 @@ func resolve_state_transitions(buffer : Dictionary):
 				else:
 					update_state(previous_state)
 			elif is_on_floor():
-				var new_walk = walk_check(latest_input_from_buffer(buffer), null, current_state)
+				var new_walk = walk_check(null, current_state)
 				update_state(new_walk)
 			match previous_state:
 				states.jump_neutral_init, states.jump_neutral_air_init:
@@ -610,10 +617,10 @@ func update_character_animation():
 			_:
 				animate.play(basic_anim_state_dict[current_state] + (anim_right_suf if right_facing else anim_left_suf))
 
-func action(buffer : Dictionary) -> void:
+func action() -> void:
 	if GlobalKnowledge.global_hitstop == 0:
-		resolve_state_transitions(buffer)
-	handle_input(buffer)
+		resolve_state_transitions()
+	handle_input()
 	if GlobalKnowledge.global_hitstop == 0:
 		update_character_state()
 
@@ -631,8 +638,9 @@ func return_attacker():
 
 const FRAMERATE = 1.0/60.0
 
-func input_step(inputs : Dictionary) -> void:
-	action(inputs)
+func input_step(recv_inputs) -> void:
+	inputs = recv_inputs
+	action()
 	animate.speed_scale = float(GlobalKnowledge.global_hitstop == 0)
 
 func set_stun_time(value):
@@ -659,7 +667,7 @@ const BLOCK_UNBLOCKABLE = [-1, -1. -1, -1]
 
 # If attack is blocked, return false
 # If attack isn't blocked, return true
-func try_block(input : Dictionary, attack : Hitbox,
+func try_block(attack : Hitbox,
 			ground_block_rules : Array, air_block_rules : Array,
 			fs_stand : states, fs_crouch : states, fs_air : states) -> bool:
 	# still in hitstun, can't block
@@ -679,11 +687,11 @@ func try_block(input : Dictionary, attack : Hitbox,
 			update_state(fs_air)
 			return true
 	# Try to block
-	var directions
-	if right_facing:
-		directions = [button_pressed(input, "up"),button_pressed(input, "down"),button_pressed(input, "left"),button_pressed(input, "right")]
-	else:
-		directions = [button_pressed(input, "up"),button_pressed(input, "down"),button_pressed(input, "right"),button_pressed(input, "left")]
+	var directions = [button_pressed("up"),button_pressed("down"),button_pressed("left"),button_pressed("right")]
+	if not right_facing:
+		var temp = directions[2]
+		directions[2] = directions[3]
+		directions[3] = temp
 	if not is_in_air_state():
 		for check_input in range(len(directions)):
 			if (directions[check_input] == true and ground_block_rules[check_input] == -1) or (directions[check_input] == false and ground_block_rules[check_input] == 1):
@@ -695,7 +703,7 @@ func try_block(input : Dictionary, attack : Hitbox,
 					take_damage(attack, false)
 					update_state(fs_stand)
 					return true
-		if button_pressed(input, "down"):
+		if button_pressed("down"):
 			take_damage(attack, true)
 			update_state(states.block_low)
 			return false
@@ -714,21 +722,21 @@ func try_block(input : Dictionary, attack : Hitbox,
 		return false
 
 # Only runs when a hitbox is overlapping, return rules explained above
-func damage_step(inputs : Dictionary, attack : Hitbox) -> bool:
+func damage_step(attack : Hitbox) -> bool:
 	attack.queue_free()
-	var input = slice_input_dictionary(inputs, len(inputs.up) - 1, len(inputs.up))
+	var input = slice_input_dictionary(len(inputs.up) - 1, len(inputs.up))
 	match attack["type"]:
 		"mid":
-			return try_block(input, attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, states.hurt_high, states.hurt_crouch, states.hurt_fall)
+			return try_block(attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, states.hurt_high, states.hurt_crouch, states.hurt_fall)
 		"high":
-			return try_block(input, attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, states.hurt_high, states.hurt_crouch, states.hurt_bounce)
+			return try_block(attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, states.hurt_high, states.hurt_crouch, states.hurt_bounce)
 		"low":
-			return try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_low, states.hurt_crouch, states.hurt_fall)
+			return try_block(attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_low, states.hurt_crouch, states.hurt_fall)
 		"launch":
-			return try_block(input, attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, states.hurt_fall, states.hurt_fall, states.hurt_fall)
+			return try_block(attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, states.hurt_fall, states.hurt_fall, states.hurt_fall)
 		"sweep":
-			return try_block(input, attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_lie, states.hurt_lie, states.hurt_fall)
+			return try_block(attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_lie, states.hurt_lie, states.hurt_fall)
 		"slam":
-			return try_block(input, attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, states.hurt_bounce, states.hurt_bounce, states.hurt_fall)
+			return try_block(attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, states.hurt_bounce, states.hurt_bounce, states.hurt_fall)
 		_: # this will definitely not be a bug in the future
-			return try_block(input, attack, BLOCK_UNBLOCKABLE, BLOCK_UNBLOCKABLE, states.hurt_high, states.hurt_crouch, states.hurt_fall)
+			return try_block(attack, BLOCK_UNBLOCKABLE, BLOCK_UNBLOCKABLE, states.hurt_high, states.hurt_crouch, states.hurt_fall)

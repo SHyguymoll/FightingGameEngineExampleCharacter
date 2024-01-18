@@ -278,7 +278,7 @@ func handle_inputs():
 	build_inputs_tracked(p1_buf, p2_buf)
 	
 	if p1.return_overlaps():
-		if p1.damage_step(p1_buf, p1.return_attacker()):
+		if p1.damage_step(p1.return_attacker()):
 			p2.attack_connected = true
 			p2.attack_hurt = true
 			p2_combo += 1
@@ -286,7 +286,7 @@ func handle_inputs():
 			p2.attack_connected = true
 			p2.attack_hurt = false
 	if p2.return_overlaps():
-		if p2.damage_step(p2_buf, p2.return_attacker()):
+		if p2.damage_step(p2.return_attacker()):
 			p1.attack_connected = true
 			p1.attack_hurt = true
 			p1_combo += 1
