@@ -6,17 +6,19 @@ extends CharacterBody3D
 # input_step() is called with the latest buffer of inputs
 # damage_step() is called with the details of the attack, if it happened
 
-# this block of variables is accessed by the game for various reasons
+# this block of variables and signals are accessed by the game for various reasons
 @export var char_name : String = "Godot Guy"
 @export var health : float = 100
 var player_number : int #this is set by the game, don't change this
 var distance : float #ditto
-var game #ditto
 var input_buffer_len : int = 10
 var start_x_offset : float = 2
 const BUTTONCOUNT : int = 3
 var attack_connected : bool
 var attack_hurt : bool
+
+signal projectile_created
+signal hitbox_created
 
 # this block of variables isn't required, but generally used by a typical fighter
 @export var walk_speed : float = 2
@@ -151,7 +153,7 @@ func create_hitbox(pos : Vector3, shape : Shape3D,
 	new_hitbox.kback_block = kback_block
 	new_hitbox.hit_priority = hit_priority
 	new_hitbox.type = type
-	game.register_hitbox(new_hitbox)
+	emit_signal(&"hitbox_created", new_hitbox)
 
 func create_projectile(pos : Vector3, projectile_ind : int, speed : float,
 				damage_hit : float, damage_block : float,
@@ -173,7 +175,7 @@ func create_projectile(pos : Vector3, projectile_ind : int, speed : float,
 	new_projectile.get_node(^"Hitbox").kback_block = kback_block
 	new_projectile.get_node(^"Hitbox").hit_priority = hit_priority
 	new_projectile.get_node(^"Hitbox").type = type
-	game.register_projectile(new_projectile)
+	emit_signal(&"projectile_created", new_projectile)
 
 # Functions used within this script and by the game, mostly for checks
 func is_in_air_state() -> bool:

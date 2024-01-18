@@ -1,6 +1,8 @@
 class_name Projectile
 extends CharacterBody3D
 
+signal projectile_ended(proj)
+
 @export var start_anim : StringName
 @export var loop_anim : StringName
 @export var end_anim : StringName
@@ -33,4 +35,4 @@ func _on_animation_player_animation_finished(anim_name):
 			$AnimationPlayer.play(loop_anim)
 		end_anim:
 			queue_free()
-			game.delete_projectile(self)
+			emit_signal(&"projectile_ended", self)
