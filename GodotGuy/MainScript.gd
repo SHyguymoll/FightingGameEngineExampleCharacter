@@ -114,7 +114,21 @@ var anim_right_suf = "_right"
 func _ready():
 	animate.play(basic_anim_state_dict[current_state] + (anim_right_suf if right_facing else anim_left_suf))
 func _process(_delta):
-	$DebugData.text = "Right Facing: %s\nCurrent State: %s\nLast State: %s\nAttack Finished: %s\nStun: %s:%s\nKnockback: %s" % [right_facing, states.keys()[current_state], states.keys()[previous_state], attack_ended, stun_time_current, stun_time_start, kback]
+	$DebugData.text = """Right Facing: %s
+	Current State: %s
+	Last State: %s
+	Attack Finished: %s
+	Stun: %s:%s
+	Knockback: %s
+	%s""" % [
+		right_facing,
+		states.keys()[current_state],
+		states.keys()[previous_state],
+		attack_ended,
+		stun_time_current,
+		stun_time_start,
+		kback,
+		convert_inputs_into_numpad_notation()[-1]]
 
 var attack_return_state := {
 	"attack_normal/stand_a": states.idle,
