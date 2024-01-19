@@ -294,6 +294,10 @@ func handle_inputs():
 			p1.attack_connected = true
 			p1.attack_hurt = false
 	
+	for prot in projectiles:
+		if prot.return_overlaps():
+			prot.destroy()
+	
 	p1.input_step(p1_buf)
 	p2.input_step(p2_buf)
 	

@@ -24,7 +24,15 @@ func tick():
 	
 	#TODO also check if it's hit the bounds of the level
 
+func return_overlaps():
+	if get_node_or_null(^"ProjectileContact"):
+		return $ProjectileContact.get_overlapping_areas()
+	return null
+
 func destroy():
+	if get_node_or_null(^"Hitbox"):
+		$Hitbox.queue_free()
+	velocity = Vector3.ZERO
 	$AnimationPlayer.play(end_anim)
 
 func _on_animation_player_animation_finished(anim_name):
