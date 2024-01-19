@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://56a0waewlr2t"]
+[gd_scene load_steps=10 format=3 uid="uid://56a0waewlr2t"]
 
 [ext_resource type="Script" path="res://GodotGuy/scenes/ProjectileStraight.gd" id="1_up6mg"]
 [ext_resource type="Texture2D" uid="uid://dnp3cp2qqpsg1" path="res://GodotGuy/icon.svg" id="2_1jtyo"]
@@ -93,6 +93,9 @@ _data = {
 "start": SubResource("Animation_33uao")
 }
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_3mt4j"]
+size = Vector3(0.823242, 0.738281, 1)
+
 [node name="ProjectileStraight" type="CharacterBody3D"]
 collision_layer = 0
 collision_mask = 0
@@ -123,9 +126,9 @@ libraries = {
 
 [node name="ProjectileContact" type="Area3D" parent="."]
 collision_layer = 16
-collision_mask = 16
+collision_mask = 17
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="ProjectileContact"]
-shape = SubResource("BoxShape3D_qatpa")
+shape = SubResource("BoxShape3D_3mt4j")
 
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

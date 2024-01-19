@@ -25,6 +25,7 @@ size = Vector3(1.569, 95, 1)
 
 [node name="Ground" type="StaticBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+collision_mask = 0
 script = ExtResource("1_25b8i")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
@@ -40,12 +41,14 @@ mesh = SubResource("3")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.49292, 4.1, 0)
+collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 shape = SubResource("5")
 
 [node name="StaticBody2" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.493, 4.1, 0)
+collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody2"]
 shape = SubResource("5")

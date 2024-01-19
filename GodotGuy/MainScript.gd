@@ -141,7 +141,7 @@ var attack_return_state := {
 	"attack_command/attack_projectile": states.idle,
 }
 
-var hitbox_layermask : int
+var hitbox_layer : int
 
 # Functions used by the AnimationPlayer to perform actions within animations
 
@@ -164,8 +164,7 @@ func create_hitbox(pos : Vector3, shape : Shape3D,
 		pos.x *= -1
 	new_hitbox.set_position(pos + global_position)
 	(new_hitbox.get_node("CollisionShape3D") as CollisionShape3D).set_shape(shape)
-	new_hitbox.collision_layer = hitbox_layermask
-	new_hitbox.collision_mask = hitbox_layermask
+	new_hitbox.collision_layer = hitbox_layer
 	new_hitbox.lifetime = lifetime
 	new_hitbox.damage_hit = damage_hit * damage_mult
 	new_hitbox.damage_block = damage_block * damage_mult
@@ -187,8 +186,7 @@ func create_projectile(pos : Vector3, projectile_ind : int, speed : float,
 	new_projectile.set_position(pos + global_position)
 	new_projectile.right_facing = right_facing
 	new_projectile.speed = speed
-	new_projectile.get_node(^"Hitbox").collision_layer = hitbox_layermask
-	new_projectile.get_node(^"Hitbox").collision_mask = hitbox_layermask
+	new_projectile.get_node(^"Hitbox").collision_layer = hitbox_layer
 	new_projectile.get_node(^"Hitbox").damage_hit = damage_hit
 	new_projectile.get_node(^"Hitbox").damage_block = damage_block * damage_mult
 	new_projectile.get_node(^"Hitbox").stun_hit = stun_hit
@@ -222,13 +220,11 @@ func update_state(new_state: states):
 
 func initialize_boxes(player: bool) -> void:
 	if player:
-		$Hurtbox.collision_layer = 2
 		$Hurtbox.collision_mask = 2
-		hitbox_layermask = 4
+		hitbox_layer = 4
 	else:
-		$Hurtbox.collision_layer = 4
 		$Hurtbox.collision_mask = 4
-		hitbox_layermask = 2
+		hitbox_layer = 2
 
 # Functions used only in this script
 
