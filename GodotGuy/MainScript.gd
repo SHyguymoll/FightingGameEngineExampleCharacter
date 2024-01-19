@@ -33,7 +33,8 @@ var stun_time_start : int = 0
 var stun_time_current : int = 0
 @onready var hitbox = preload("res://GodotGuy/scenes/Hitbox.tscn")
 const JUST_PRESSED_BUFFER : int = 2
-const MOTION_INPUT_LENIENCY : int = 6
+const DASH_INPUT_LENIENCY : int = 6
+const MOTION_INPUT_LENIENCY : int = 9
 const GROUND_SLIDE_FRICTION : float = 0.97
 @export var animate : AnimationPlayer
 var damage_mult : float = 1.0
@@ -260,6 +261,14 @@ func button_pressed_at_ind_under_duration(input: String, ind: int, duration: int
 func button_held_over_duration(input: String, duration: int):
 	return inputs[input][-1][0] >= duration and button_pressed(input)
 
+func handle_special_attack(cur_state: states) -> states:
+	match current_state:
+		states.idle, states.walk_back, states.walk_forward:
+			if motion_input_check(QUARTER_CIRCLE_FORWARD):
+				update_attack("attack_command/attack_projectile")
+				return states.attack_command
+	return cur_state
+
 func handle_attack(cur_state: states) -> states:
 	if (
 		!button_just_pressed("button0") and
@@ -268,12 +277,11 @@ func handle_attack(cur_state: states) -> states:
 		):
 		return cur_state
 	previous_state = cur_state
+	var special_attack = handle_special_attack(cur_state)
+	if special_attack != cur_state:
+		return special_attack
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
-			if motion_input_check(QUARTER_CIRCLE_FORWARD):
-			#if button_just_pressed("button1") and button_just_pressed("button2"):
-				update_attack("attack_command/attack_projectile")
-				return states.attack_command
 			if button_just_pressed("button0"):
 				update_attack("attack_normal/stand_a")
 				return states.attack
@@ -339,9 +347,9 @@ func walk_check(exclude, cur_state: states) -> states:
 func dash_check(input: String, success_state: states, cur_state: states) -> states:
 # we only need the last three inputs
 	var walks = [
-		button_pressed_at_ind_under_duration(input, -3, MOTION_INPUT_LENIENCY),
-		button_pressed_at_ind_under_duration(input, -2, MOTION_INPUT_LENIENCY),
-		button_pressed_at_ind_under_duration(input, -1, MOTION_INPUT_LENIENCY)
+		button_pressed_at_ind_under_duration(input, -3, DASH_INPUT_LENIENCY),
+		button_pressed_at_ind_under_duration(input, -2, DASH_INPUT_LENIENCY),
+		button_pressed_at_ind_under_duration(input, -1, DASH_INPUT_LENIENCY)
 	]
 	if walks == [true, false, true]:
 		dash_ended = false
@@ -374,20 +382,20 @@ const Z_MOTION_BACK = [4,2,1]
 
 func convert_directions_into_numpad_notation(up, down, back, forward) -> int:
 	if up:
-		if back:
+		if back and right_facing or forward and not right_facing:
 			return 7
-		if forward:
+		if forward and right_facing or back and not right_facing:
 			return 9
 		return 8
 	if down:
-		if back:
+		if back and right_facing or forward and not right_facing:
 			return 1
-		if forward:
+		if forward and right_facing or back and not right_facing:
 			return 3
 		return 2
-	if back:
+	if back and right_facing or forward and not right_facing:
 		return 4
-	if forward:
+	if forward and right_facing or back and not right_facing:
 		return 6
 	return 5
 
