@@ -242,8 +242,11 @@ func update_attack(new_attack: String) -> void:
 enum actions {set, add, remove}
 enum buttons {Up = 1, Down = 2, Left = 4, Right = 8, A = 16, B = 32, C = 64}
 
+func button_state(input: String, ind: int):
+	return inputs[input][ind]
+
 func button_pressed_at_ind(input: String, ind: int):
-	return inputs[input][ind][1]
+	return button_state(input, ind)[1]
 
 func button_pressed(input: String):
 	return button_pressed_at_ind(input, -1)
@@ -252,10 +255,10 @@ func button_just_pressed(input: String):
 	return button_pressed_at_ind_under_duration(input, -1, JUST_PRESSED_BUFFER)
 
 func button_pressed_at_ind_under_duration(input: String, ind: int, duration: int):
-	return inputs[input][ind][0] < duration and button_pressed_at_ind(input, ind)
+	return button_state(input, ind)[0] < duration and button_pressed_at_ind(input, ind)
 
 func button_held_over_duration(input: String, duration: int):
-	return inputs[input][-1][0] >= duration and button_pressed(input)
+	return button_state(input, -1)[0] >= duration and button_pressed(input)
 
 func handle_special_attack(cur_state: states) -> states:
 	match current_state:
@@ -397,25 +400,29 @@ func convert_directions_into_numpad_notation(up, down, back, forward) -> int:
 
 func convert_inputs_into_numpad_notation() -> Array:
 	var numpad_buffer = []
-	for i in range(len(inputs.up)):
+	for i in range(len(inputs.up) - 1):
 		numpad_buffer.append(
 			convert_directions_into_numpad_notation(
-				button_pressed_at_ind_under_duration("up", i, MOTION_INPUT_LENIENCY),
-				button_pressed_at_ind_under_duration("down", i, MOTION_INPUT_LENIENCY),
-				button_pressed_at_ind_under_duration("left", i, MOTION_INPUT_LENIENCY),
-				button_pressed_at_ind_under_duration("right", i, MOTION_INPUT_LENIENCY)
+				button_pressed_at_ind("up", i),
+				button_pressed_at_ind("down", i),
+				button_pressed_at_ind("left", i),
+				button_pressed_at_ind("right", i)
 			)
 		)
+	numpad_buffer.append(
+		convert_directions_into_numpad_notation(
+			button_pressed_at_ind_under_duration("up", -1, MOTION_INPUT_LENIENCY),
+			button_pressed_at_ind_under_duration("down", -1, MOTION_INPUT_LENIENCY),
+			button_pressed_at_ind_under_duration("left", -1, MOTION_INPUT_LENIENCY),
+			button_pressed_at_ind_under_duration("right", -1, MOTION_INPUT_LENIENCY)
+		)
+	)
 	return numpad_buffer
+
 
 func motion_input_check(motion_to_check) -> bool:
 	var buffer_as_numpad = convert_inputs_into_numpad_notation()
-	buffer_as_numpad = buffer_as_numpad.slice((len(buffer_as_numpad)) - (len(motion_to_check) + 2))
-	for i in range(len(motion_to_check)):
-		var buffer_slice = buffer_as_numpad.slice(i, i + len(motion_to_check))
-		if buffer_slice == motion_to_check:
-			return true
-	return false
+	return buffer_as_numpad.slice((len(buffer_as_numpad)) - (len(motion_to_check) + 1), -1) == motion_to_check
 
 func handle_input() -> void:
 	var decision : states = current_state
