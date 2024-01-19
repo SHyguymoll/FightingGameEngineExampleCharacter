@@ -396,10 +396,10 @@ func convert_inputs_into_numpad_notation() -> Array:
 	for i in range(len(inputs.up)):
 		numpad_buffer.append(
 			convert_directions_into_numpad_notation(
-				button_pressed_at_ind("up", i),
-				button_pressed_at_ind("down", i),
-				button_pressed_at_ind("left", i),
-				button_pressed_at_ind("right", i)
+				button_pressed_at_ind_under_duration("up", i, MOTION_INPUT_LENIENCY),
+				button_pressed_at_ind_under_duration("down", i, MOTION_INPUT_LENIENCY),
+				button_pressed_at_ind_under_duration("left", i, MOTION_INPUT_LENIENCY),
+				button_pressed_at_ind_under_duration("right", i, MOTION_INPUT_LENIENCY)
 			)
 		)
 	return numpad_buffer
