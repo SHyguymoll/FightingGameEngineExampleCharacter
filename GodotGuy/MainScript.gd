@@ -372,7 +372,7 @@ func jump_check(exclude, cur_state: states, grounded := true) -> states:
 	return cur_state
 
 const QUARTER_CIRCLE_FORWARD = [2,3,6]
-const QUARTER_CIRCLE_BACK = [2,3,6]
+const QUARTER_CIRCLE_BACK = [2,1,4]
 const Z_MOTION_FORWARD = [6,2,3]
 const Z_MOTION_BACK = [4,2,1]
 
