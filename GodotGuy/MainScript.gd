@@ -406,12 +406,9 @@ func convert_inputs_into_numpad_notation() -> Array:
 
 func motion_input_check(motion_to_check) -> bool:
 	var buffer_as_numpad = convert_inputs_into_numpad_notation()
-	print_debug(buffer_as_numpad)
 	buffer_as_numpad = buffer_as_numpad.slice((len(buffer_as_numpad)) - (len(motion_to_check) + 2))
-	print_debug(buffer_as_numpad)
 	for i in range(len(motion_to_check)):
 		var buffer_slice = buffer_as_numpad.slice(i, i + len(motion_to_check))
-		print_debug(buffer_slice)
 		if buffer_slice == motion_to_check:
 			return true
 	return false
