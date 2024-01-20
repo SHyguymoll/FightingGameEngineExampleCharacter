@@ -30,13 +30,6 @@ func tick():
 		move_and_slide()
 	else:
 		destroy()
-	
-	#TODO also check if it's hit the bounds of the level
-
-func return_overlaps():
-	if get_node_or_null(^"ProjectileContact"):
-		return $ProjectileContact.get_overlapping_areas()
-	return null
 
 func destroy():
 	if get_node_or_null(^"Hitbox"):
@@ -53,3 +46,6 @@ func _on_animation_player_animation_finished(anim_name):
 		end_anim:
 			queue_free()
 			emit_signal(&"projectile_ended", self)
+
+func _on_projectile_contact(_contacter):
+	destroy()
