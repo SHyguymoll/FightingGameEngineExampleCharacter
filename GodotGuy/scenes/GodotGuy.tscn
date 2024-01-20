@@ -5902,17 +5902,17 @@ tracks/1/path = NodePath(".")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.233334, 0.25, 0.283334),
+"times": PackedFloat32Array(0, 0.183334, 0.25),
 "transitions": PackedFloat32Array(1, 1, 1),
 "values": [{
-"args": [Vector3(-3, 0, 0), 1],
+"args": [Vector3(-5, 0, 0), 1],
 "method": &"update_velocity"
-}, {
-"args": [Vector3(0.931, 1.279, 0), ExtResource("5_3uiqp"), 2, 8.0, 2.0, 20, 0, 3, Vector3(0.4, 5, 0), Vector3(0.1, 0, 0), "launch"],
-"method": &"create_hitbox"
 }, {
 "args": [Vector3(0, 0, 0), 1],
 "method": &"update_velocity"
+}, {
+"args": [Vector3(0.931, 1.279, 0), ExtResource("5_3uiqp"), 2, 8.0, 2.0, 20, 0, 3, Vector3(0.4, 10, 0), Vector3(0.8, 0, 0), "launch"],
+"method": &"create_hitbox"
 }]
 }
 
@@ -5942,10 +5942,10 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0.2505, 0.334),
 "transitions": PackedFloat32Array(1, 1),
 "values": [{
-"args": [Vector3(0, 7, 0), 3],
+"args": [Vector3(0, 12, 0), 3],
 "method": &"update_velocity"
 }, {
-"args": [Vector3(0.366665, 0.683781, 0), ExtResource("7_0yens"), 6, 13.0, 5.0, 70, 10, 0, Vector3(0.6, 10, 0), Vector3(3, 0, 0), "launch"],
+"args": [Vector3(0.580425, 0.683781, 0), ExtResource("7_0yens"), 6, 13.0, 5.0, 70, 10, 0, Vector3(0.6, 10, 0), Vector3(3, 0, 0), "launch"],
 "method": &"create_hitbox"
 }]
 }
@@ -6231,21 +6231,21 @@ collision_mask = 0
 monitorable = false
 
 [node name="HurtboxShape" type="CollisionShape3D" parent="Hurtbox"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.642, 0)
-shape = ExtResource("3_8q5n8")
-disabled = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.007, 0)
+shape = ExtResource("2_ahw0y")
 
 [node name="Node3D" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.273207, 0.781501, 0)
 
 [node name="SpriteMain" type="Sprite3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67, 0)
+transform = Transform3D(1, 0, 0, 0, 0.381826, 0, 0, 0, 1, 0, 0.275214, 0)
 rotation_edit_mode = 1
 no_depth_test = true
 texture = ExtResource("14_03fpi")
 
 [node name="SpriteAttack" type="Sprite3D" parent="."]
-transform = Transform3D(0.302649, 0, 0, 0, 0.302649, 0, 0, 0, 1, -0.647207, 0.728664, 0.04)
+transform = Transform3D(0.371134, 0, 0, 0, 0.29402, 0, 0, 0, 1, -0.977845, 0.177954, 0.04)
+modulate = Color(1, 1, 0.750001, 1)
 no_depth_test = true
 texture = ExtResource("14_03fpi")
 
