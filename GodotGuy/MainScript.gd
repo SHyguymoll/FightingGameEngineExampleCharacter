@@ -145,15 +145,19 @@ var hitbox_layer : int
 
 # Functions used by the AnimationPlayer to perform actions within animations
 
-enum av_effects {ADD = 0, SET = 1}
+enum av_effects {ADD = 0, SET = 1, SET_X = 2, SET_Y = 3}
 
 func update_velocity(vel : Vector3, how : av_effects):
 	if not right_facing: vel.x *= -1
 	match how:
-		av_effects.SET:
-			velocity = vel
 		av_effects.ADD:
 			velocity += vel
+		av_effects.SET:
+			velocity = vel
+		av_effects.SET_X:
+			velocity.x = vel.x
+		av_effects.SET_Y:
+			velocity.y = vel.y
 
 func create_hitbox(pos : Vector3, shape : Shape3D,
 				lifetime : int, damage_hit : float, damage_block : float,
