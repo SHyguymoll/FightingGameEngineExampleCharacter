@@ -288,6 +288,7 @@ func handle_special_attack(cur_state: states) -> states:
 			if motion_input_check(QUARTER_CIRCLE_FORWARD) and any_attack_button_just_pressed():
 				update_attack("attack_command/attack_projectile")
 				return states.attack_command
+		states.crouch:
 			if motion_input_check(Z_MOTION_FORWARD) and any_attack_button_just_pressed():
 				update_attack("attack_command/attack_uppercut")
 				jump_count = 0
@@ -462,7 +463,8 @@ func convert_inputs_into_numpad_notation() -> Array:
 
 func motion_input_check(motion_to_check) -> bool:
 	var buffer_as_numpad = convert_inputs_into_numpad_notation()
-	return buffer_as_numpad.slice((len(buffer_as_numpad)) - (len(motion_to_check) + 1), -1) == motion_to_check
+	var buffer_sliced = buffer_as_numpad.slice((len(buffer_as_numpad)) - (len(motion_to_check) + 1), -1)
+	return buffer_sliced == motion_to_check
 
 func handle_input() -> void:
 	var decision : states = current_state
