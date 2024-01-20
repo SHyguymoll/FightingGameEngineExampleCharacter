@@ -42,10 +42,10 @@ var damage_mult : float = 1.0
 var defense_mult : float = 1.0
 
 # extremely important, how the character gets the inputs from the game in this implementation.
-# Dictionary with 4 entries for each directional input, plus the number of buttons (buttonX).
+# Dictionary with 4 entries for each cardinal directional input, plus the number of buttons (buttonX).
 # each entry holds an array made up of tuples of a boolean and an int, representing how long the
 # input was held/not held.
-# saved here as the alternative was copying potentially large blocks of data for each use case.
+# saved here as the alternative was copying potentially large blocks of data for many functions.
 var inputs
 
 @onready var projectiles = [preload("res://GodotGuy/scenes/ProjectileStraight.tscn")]
@@ -114,7 +114,8 @@ var anim_right_suf = "_right"
 # nothing should modify the fighter's state here, this is purely for real-time effects
 # and starting the animation player
 func _ready():
-	animate.play(basic_anim_state_dict[current_state] + (anim_right_suf if right_facing else anim_left_suf))
+	animate.play(basic_anim_state_dict[current_state] + 
+		(anim_right_suf if right_facing else anim_left_suf))
 func _process(_delta):
 	$DebugData.text = """Right Facing: %s
 	Current State: %s
@@ -210,7 +211,11 @@ func post_intro() -> bool:
 	return current_state != states.intro
 
 func is_in_air_state() -> bool:
-	return current_state in [states.jump_attack, states.jump_left, states.jump_neutral, states.jump_right, states.block_air, states.hurt_bounce, states.hurt_fall]
+	return current_state in [
+		states.jump_attack,
+		states.jump_left, states.jump_neutral, states.jump_right,
+		states.block_air, states.hurt_bounce, states.hurt_fall
+	]
 
 func is_in_crouch_state() -> bool:
 	return current_state in [states.crouch, states.hurt_crouch, states.block_low]
@@ -222,7 +227,10 @@ func is_in_attacking_state() -> bool:
 	return current_state in [states.attack, states.attack_command, states.jump_attack]
 
 func is_in_hurting_state() -> bool:
-	return current_state in [states.hurt_high, states.hurt_low, states.hurt_crouch, states.hurt_fall, states.hurt_bounce]
+	return current_state in [
+		states.hurt_high, states.hurt_low, states.hurt_crouch,
+		states.hurt_fall, states.hurt_bounce
+	]
 
 func update_state(new_state: states):
 	if current_state != new_state:
