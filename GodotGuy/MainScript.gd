@@ -260,6 +260,17 @@ func button_pressed_at_ind_under_duration(input: String, ind: int, duration: int
 func button_held_over_duration(input: String, duration: int):
 	return button_state(input, -1)[0] >= duration and button_pressed(input)
 
+func any_attack_button_just_pressed():
+	return button_just_pressed("button0") or button_just_pressed("button1") or button_just_pressed("button2")
+
+func all_attack_buttons_just_pressed():
+	return button_just_pressed("button0") and button_just_pressed("button1") and button_just_pressed("button2")
+
+func two_attack_buttons_just_pressed():
+	return int(button_just_pressed("button0")) + \
+			int(button_just_pressed("button1")) + \
+			int(button_just_pressed("button2")) == 2 
+
 func handle_special_attack(cur_state: states) -> states:
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
