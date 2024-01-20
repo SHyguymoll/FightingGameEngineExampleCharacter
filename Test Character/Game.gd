@@ -206,7 +206,10 @@ func build_inputs_tracked(p1_buf : Dictionary, p2_buf : Dictionary) -> void:
 		$HUD/P1Inputs.text += "\t"
 		for button in p1_buf:
 			if button in dirs:
-				$HUD/P1Inputs.text += str([directionDictionary[button], p1_buf[button][i][1]])
+				if p1_buf[button][i][1]:
+					$HUD/P1Inputs.text += ("[%s, %s]" % [str(p1_buf[button][i][0]), directionDictionary[button]])
+				else:
+					$HUD/P1Inputs.text += ("[%s, x]" % [str(p1_buf[button][i][0])])
 			else:
 				$HUD/P1Inputs.text += str(p1_buf[button][i])
 		$HUD/P1Inputs.text += "\n"
@@ -222,7 +225,10 @@ func build_inputs_tracked(p1_buf : Dictionary, p2_buf : Dictionary) -> void:
 		$HUD/P2Inputs.text += "\t"
 		for button in p2_buf:
 			if button in dirs:
-				$HUD/P2Inputs.text += str([directionDictionary[button], p2_buf[button][i][1]])
+				if p2_buf[button][i][1]:
+					$HUD/P2Inputs.text += ("[%s, %s]" % [str(p2_buf[button][i][0]), directionDictionary[button]])
+				else:
+					$HUD/P2Inputs.text += ("[%s, x]" % [str(p2_buf[button][i][0])])
 			else:
 				$HUD/P2Inputs.text += str(p2_buf[button][i])
 		$HUD/P2Inputs.text += "\n"
