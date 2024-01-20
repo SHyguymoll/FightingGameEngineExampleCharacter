@@ -9,11 +9,16 @@ signal projectile_ended(proj)
 var right_facing : bool
 var type : int
 
+enum types {
+	STRAIGHT = 0,
+	DIAGONAL_DOWN = 1
+}
+
 func _ready():
 	match type:
-		0:
+		types.STRAIGHT:
 			velocity = Vector3.RIGHT * 3.5
-		1:
+		types.DIAGONAL_DOWN:
 			velocity = (Vector3.RIGHT * 2.5) + (Vector3.DOWN * 1.5)
 	velocity.x *= 1 if right_facing else -1
 	$AnimationPlayer.play(start_anim)
