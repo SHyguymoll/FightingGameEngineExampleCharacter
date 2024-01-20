@@ -332,16 +332,23 @@ func move_inputs_and_iterate():
 	)
 	build_inputs_tracked(p1_buf, p2_buf)
 	
-	if p1.return_overlaps():
-		if p1.damage_step(p1.return_attacker()):
+	var p1_attackers = (p1.return_attackers() as Array[Hitbox])
+	for p1_attacker in p1_attackers:
+		var hit = p1.damage_step(p1_attacker)
+		p1_attacker.queue_free()
+		if hit:
 			p2.attack_connected = true
 			p2.attack_hurt = true
 			p2_combo += 1
 		else:
 			p2.attack_connected = true
 			p2.attack_hurt = false
-	if p2.return_overlaps():
-		if p2.damage_step(p2.return_attacker()):
+	
+	var p2_attackers = (p2.return_attackers() as Array[Hitbox])
+	for p2_attacker in p2_attackers:
+		var hit = p2.damage_step(p2_attacker)
+		p2_attacker.queue_free()
+		if hit:
 			p1.attack_connected = true
 			p1.attack_hurt = true
 			p1_combo += 1

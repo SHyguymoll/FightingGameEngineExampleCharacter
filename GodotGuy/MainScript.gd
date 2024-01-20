@@ -688,11 +688,8 @@ func reset_facing():
 	else:
 		right_facing = false
 
-func return_overlaps():
-	return $Hurtbox.get_overlapping_areas()
-
-func return_attacker():
-	return ($Hurtbox.get_overlapping_areas()[0] as Hitbox)
+func return_attackers():
+	return $Hurtbox.get_overlapping_areas() as Array[Hitbox]
 
 const FRAMERATE = 1.0/60.0
 
@@ -785,8 +782,6 @@ func try_block(attack : Hitbox,
 
 # Only runs when a hitbox is overlapping, return rules explained above
 func damage_step(attack : Hitbox) -> bool:
-	attack.queue_free()
-	
 	match attack["type"]:
 		"mid":
 			return try_block(attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, states.hurt_high, states.hurt_crouch, states.hurt_fall)
