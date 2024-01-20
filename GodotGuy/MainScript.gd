@@ -274,8 +274,12 @@ func two_attack_buttons_just_pressed():
 func handle_special_attack(cur_state: states) -> states:
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
-			if motion_input_check(QUARTER_CIRCLE_FORWARD):
+			if motion_input_check(QUARTER_CIRCLE_FORWARD) and any_attack_button_just_pressed():
 				update_attack("attack_command/attack_projectile")
+				return states.attack_command
+		states.jump_neutral, states.jump_left, states.jump_right:
+			if motion_input_check(QUARTER_CIRCLE_FORWARD) and any_attack_button_just_pressed():
+				update_attack("attack_command/attack_projectile_air")
 				return states.attack_command
 	return cur_state
 
@@ -479,6 +483,8 @@ func handle_input() -> void:
 							magic_series(2)
 						"attack_normal/stand_c":
 							magic_series(3)
+					# special cancelling
+					decision = handle_special_attack(decision)
 	update_state(decision)
 
 func standable_stun_check():
