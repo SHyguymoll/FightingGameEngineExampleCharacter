@@ -27,6 +27,11 @@ var p2_inputs : Dictionary = {
 var p1_input_index : int = 0
 var p2_input_index : int = 0
 
+#specific to this testing area
+@export var player_test_one : PackedScene
+@export var player_test_two : PackedScene
+@export var scene_to_test : PackedScene
+
 #required variables and methods from Game.gd
 @export var cameraMode = 0
 const CAMERAMAXX = 6
@@ -35,9 +40,6 @@ const MOVEMENTBOUNDX = 8
 var p1_combo := 0
 var p2_combo := 0
 
-@export var player_test_one : PackedScene
-@export var player_test_two : PackedScene
-@export var scene_to_test : PackedScene
 
 func make_hud():
 	$HUD/P1Health.max_value = p1.health
