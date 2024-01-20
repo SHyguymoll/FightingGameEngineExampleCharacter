@@ -33,7 +33,7 @@ var p2_input_index : int = 0
 @export var scene_to_test : PackedScene
 
 #required variables and methods from Game.gd
-@export var cameraMode = 0
+@export var camera_mode = 0
 const CAMERAMAXX = 6
 const CAMERAMAXY = 10
 const MOVEMENTBOUNDX = 8
@@ -306,15 +306,15 @@ func create_inputs():
 	for button in range(p2.BUTTONCOUNT):
 		p2_buttons[button + 4] = Input.is_action_pressed("second_button" + str(button))
 	
-	var calcHashes = get_current_input_hashes()
+	var comp_hashes = get_current_input_hashes()
 	
-	if generate_prior_input_hash(p1_inputs) != calcHashes[0]:
+	if generate_prior_input_hash(p1_inputs) != comp_hashes[0]:
 		create_new_input_set(p1_inputs, p1_buttons)
 		p1_input_index += 1
 	else:
 		increment_inputs(p1_inputs)
 	
-	if generate_prior_input_hash(p2_inputs) != calcHashes[1]:
+	if generate_prior_input_hash(p2_inputs) != comp_hashes[1]:
 		create_new_input_set(p2_inputs, p2_buttons)
 		p2_input_index += 1
 	else:
@@ -385,7 +385,7 @@ func player_defeated(player: int):
 	pass
 
 func _physics_process(_delta):
-	camera_control(cameraMode)
+	camera_control(camera_mode)
 	
 	match moment:
 		moments.INTRO:
