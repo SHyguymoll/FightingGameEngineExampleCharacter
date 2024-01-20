@@ -294,16 +294,20 @@ func handle_special_attack(cur_state: states) -> states:
 	return cur_state
 
 func handle_attack(cur_state: states) -> states:
+	
 	if (
 		!button_just_pressed("button0") and
 		!button_just_pressed("button1") and
 		!button_just_pressed("button2")
 		):
 		return cur_state
+	
 	previous_state = cur_state
+	
 	var special_attack = handle_special_attack(cur_state)
 	if special_attack != cur_state:
 		return special_attack
+	
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
 			if button_just_pressed("button0"):
@@ -335,23 +339,28 @@ func handle_attack(cur_state: states) -> states:
 			if button_just_pressed("button2"):
 				update_attack("attack_jumping/c")
 				return states.jump_attack
+	
 	# how did we get here, something has gone terribly wrong
 	return states.intro
 
 func magic_series(level: int):
 	if level == 3:
 		return
+	
 	if level == 1 and button_just_pressed("button1"):
 		update_attack("attack_normal/stand_b")
 		update_character_animation()
+	
 	if button_just_pressed("button2"):
 		update_attack("attack_normal/stand_c")
 		update_character_animation()
 
 #returns -1 (walk away), 0 (neutral), and 1 (walk towards)
 func walk_value() -> int:
-	return int((button_pressed("right") and right_facing) or (button_pressed("left") and !right_facing)) +\
-		-1 * int((button_pressed("left") and right_facing) or (button_pressed("right") and !right_facing))
+	return (int((button_pressed("right") and right_facing) or
+			(button_pressed("left") and !right_facing))) + \
+			(-1 * int((button_pressed("left") and right_facing) or
+			(button_pressed("right") and !right_facing)))
 
 enum walk_directions {back = -1, neutral = 0, forward = 1}
 
