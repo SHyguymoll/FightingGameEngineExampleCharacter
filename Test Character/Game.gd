@@ -96,6 +96,7 @@ func init_fighters():
 	p1.char_name += " p1"
 	p1.hitbox_created.connect(register_hitbox)
 	p1.projectile_created.connect(register_projectile)
+	p1.defeated.connect(player_defeated)
 	
 	for i in range(p2.BUTTONCOUNT):
 		p2_inputs["button" + str(i)] = [[0, false]]
@@ -107,6 +108,7 @@ func init_fighters():
 	p2.char_name += " p2"
 	p2.hitbox_created.connect(register_hitbox)
 	p2.projectile_created.connect(register_projectile)
+	p2.defeated.connect(player_defeated)
 
 func reset_hitstop():
 	GlobalKnowledge.global_hitstop = 0
@@ -344,6 +346,9 @@ func register_projectile(projectile):
 
 func delete_projectile(projectile):
 	projectiles.erase(projectile)
+
+func player_defeated(player: int):
+	pass
 
 func _physics_process(_delta):
 	camera_control(cameraMode)
