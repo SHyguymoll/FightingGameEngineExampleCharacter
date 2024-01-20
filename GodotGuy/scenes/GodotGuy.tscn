@@ -5668,17 +5668,14 @@ tracks/1/path = NodePath(".")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.316667, 0.4509),
-"transitions": PackedFloat32Array(1, 1, 1),
+"times": PackedFloat32Array(0.2338, 0.316667),
+"transitions": PackedFloat32Array(1, 1),
 "values": [{
-"args": [Vector3(0, 0, 0), 1],
+"args": [Vector3(-1, 4, 0), 1],
 "method": &"update_velocity"
 }, {
 "args": [Vector3(0.875549, 0.685474, 0.04), 0, 1, 5.0, 1.0, 10, 5, 0, Vector3(4, 3, 0), Vector3(2, -2, 0), "mid"],
 "method": &"create_projectile"
-}, {
-"args": [Vector3(0, 0, 0), 0],
-"method": &"update_velocity"
 }]
 }
 
