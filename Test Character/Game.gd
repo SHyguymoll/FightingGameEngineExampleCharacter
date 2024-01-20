@@ -164,7 +164,12 @@ func camera_control(mode: int):
 		Vector3(CAMERAMAXX, CAMERAMAXY, $Camera3D.position.z)
 	)
 
-var directionDictionary = { 0: "x", 1: "↑", 2: "↓", 4: "←", 8: "→", 5: "↖", 6: "↙", 9: "↗", 10: "↘" }
+var directionDictionary = {
+	"": "x",
+	"up": "↑", "down": "↓", "left": "←", "right": "→",
+	"upleft": "↖", "downleft": "↙",
+	"upright": "↗", "downright": "↘"
+}
 
 func attack_value(attackHash: int) -> String:
 	return (" Ø" if bool(attackHash % 2) else " 0") + \
@@ -186,17 +191,40 @@ func slice_input_dictionary(input_dict: Dictionary, from: int, to: int):
 		ret_dict["button" + str(i)] = input_dict["button" + str(i)].slice(from, to)
 	return ret_dict
 
-func build_inputs_tracked(p1_buf, p2_buf) -> void:
+func build_inputs_tracked(p1_buf : Dictionary, p2_buf : Dictionary) -> void:
+	var lookup_string := ""
+	var dirs := ["up", "down", "left", "right"]
+	
 	$HUD/P1Inputs.text = ""
 	for i in range(len(p1_buf.up)):
+		lookup_string = ""
+		lookup_string += dirs[0] if p1_buf[dirs[0]][i][1] else ""
+		lookup_string += dirs[1] if p1_buf[dirs[1]][i][1] else ""
+		lookup_string += dirs[2] if p1_buf[dirs[2]][i][1] else ""
+		lookup_string += dirs[3] if p1_buf[dirs[3]][i][1] else ""
+		$HUD/P1Inputs.text += directionDictionary[lookup_string]
+		$HUD/P1Inputs.text += "\t"
 		for button in p1_buf:
-			$HUD/P1Inputs.text += str(p1_buf[button][i])
+			if button in dirs:
+				$HUD/P1Inputs.text += str([directionDictionary[button], p1_buf[button][i][1]])
+			else:
+				$HUD/P1Inputs.text += str(p1_buf[button][i])
 		$HUD/P1Inputs.text += "\n"
 	
 	$HUD/P2Inputs.text = ""
 	for i in range(len(p2_buf.up)):
+		lookup_string = ""
+		lookup_string += dirs[0] if p2_buf[dirs[0]][i][1] else ""
+		lookup_string += dirs[1] if p2_buf[dirs[1]][i][1] else ""
+		lookup_string += dirs[2] if p2_buf[dirs[2]][i][1] else ""
+		lookup_string += dirs[3] if p2_buf[dirs[3]][i][1] else ""
+		$HUD/P2Inputs.text += directionDictionary[lookup_string]
+		$HUD/P2Inputs.text += "\t"
 		for button in p2_buf:
-			$HUD/P2Inputs.text += str(p2_buf[button][i])
+			if button in dirs:
+				$HUD/P2Inputs.text += str([directionDictionary[button], p2_buf[button][i][1]])
+			else:
+				$HUD/P2Inputs.text += str(p2_buf[button][i])
 		$HUD/P2Inputs.text += "\n"
 
 #convert to hash to simplify comparisons

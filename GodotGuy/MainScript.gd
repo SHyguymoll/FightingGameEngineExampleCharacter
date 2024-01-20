@@ -416,8 +416,8 @@ func jump_check(exclude, cur_state: states, grounded := true) -> states:
 
 const QUARTER_CIRCLE_FORWARD = [2,3,6]
 const QUARTER_CIRCLE_BACK = [2,1,4]
-const Z_MOTION_FORWARD = [6,2,3]
-const Z_MOTION_BACK = [4,2,1]
+const Z_MOTION_FORWARD = [6,5,2,3]
+const Z_MOTION_BACK = [4,5,2,1]
 
 func convert_directions_into_numpad_notation(up, down, back, forward) -> int:
 	if up:
