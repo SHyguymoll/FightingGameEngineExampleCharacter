@@ -141,6 +141,7 @@ var attack_return_state := {
 	"attack_command/crouch_b": states.crouch,
 	"attack_command/crouch_c": states.crouch,
 	"attack_command/attack_projectile": states.idle,
+	"attack_command/attack_uppercut": states.jump_neutral,
 }
 
 var hitbox_layer : int
@@ -287,9 +288,14 @@ func handle_special_attack(cur_state: states) -> states:
 			if motion_input_check(QUARTER_CIRCLE_FORWARD) and any_attack_button_just_pressed():
 				update_attack("attack_command/attack_projectile")
 				return states.attack_command
+			if motion_input_check(Z_MOTION_FORWARD) and any_attack_button_just_pressed():
+				update_attack("attack_command/attack_uppercut")
+				jump_count = 0
+				return states.attack_command
 		states.jump_neutral, states.jump_left, states.jump_right:
 			if motion_input_check(QUARTER_CIRCLE_FORWARD) and any_attack_button_just_pressed():
 				update_attack("attack_command/attack_projectile_air")
+				jump_count = 0
 				return states.attack_command
 	return cur_state
 
