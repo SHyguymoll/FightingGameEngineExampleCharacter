@@ -6,12 +6,16 @@ signal projectile_ended(proj)
 @export var start_anim : StringName
 @export var loop_anim : StringName
 @export var end_anim : StringName
-var right_facing
-var speed
-var game
+var right_facing : bool
+var type : int
 
 func _ready():
-	velocity = Vector3.RIGHT * speed * (1 if right_facing else -1)
+	match type:
+		0:
+			velocity = Vector3.RIGHT * 3.5
+		1:
+			velocity = (Vector3.RIGHT * 2.5) + (Vector3.DOWN * 1.5)
+	velocity.x *= 1 if right_facing else -1
 	$AnimationPlayer.play(start_anim)
 
 func tick():

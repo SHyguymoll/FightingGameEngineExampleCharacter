@@ -176,16 +176,16 @@ func create_hitbox(pos : Vector3, shape : Shape3D,
 	new_hitbox.type = type
 	emit_signal(&"hitbox_created", new_hitbox)
 
-func create_projectile(pos : Vector3, projectile_ind : int, speed : float,
+func create_projectile(pos : Vector3, projectile_ind : int, type : int,
 				damage_hit : float, damage_block : float,
 				stun_hit : int, stun_block : int, hit_priority : int,
-				kback_hit : Vector3, kback_block : Vector3, type : String):
+				kback_hit : Vector3, kback_block : Vector3, hit_type : String):
 	var new_projectile := (projectiles[projectile_ind].instantiate() as Projectile)
 	if not right_facing:
 		pos.x *= -1
 	new_projectile.set_position(pos + global_position)
 	new_projectile.right_facing = right_facing
-	new_projectile.speed = speed
+	new_projectile.type = type
 	new_projectile.get_node(^"Hitbox").collision_layer = hitbox_layer
 	new_projectile.get_node(^"Hitbox").damage_hit = damage_hit
 	new_projectile.get_node(^"Hitbox").damage_block = damage_block * damage_mult
@@ -194,7 +194,7 @@ func create_projectile(pos : Vector3, projectile_ind : int, speed : float,
 	new_projectile.get_node(^"Hitbox").kback_hit = kback_hit
 	new_projectile.get_node(^"Hitbox").kback_block = kback_block
 	new_projectile.get_node(^"Hitbox").hit_priority = hit_priority
-	new_projectile.get_node(^"Hitbox").type = type
+	new_projectile.get_node(^"Hitbox").type = hit_type
 	emit_signal(&"projectile_created", new_projectile)
 
 # Functions used within this script and by the game, mostly for checks
