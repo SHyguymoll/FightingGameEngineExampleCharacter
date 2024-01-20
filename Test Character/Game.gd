@@ -257,6 +257,7 @@ func get_current_input_hashes() -> Array: return [
 	max(0, ((int(p2_buttons[9]) - int(p2.BUTTONCOUNT < 6)) * 512))
 ]
 
+#ditto, but for an already completed input
 func generate_prior_input_hash(player_inputs: Dictionary):
 	var val = 0
 	var multiplier = 1
