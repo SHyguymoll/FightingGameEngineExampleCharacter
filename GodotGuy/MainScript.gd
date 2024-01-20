@@ -19,6 +19,7 @@ var attack_hurt : bool
 
 signal hitbox_created
 signal projectile_created
+signal defeated
 
 # this block of variables isn't required, but generally used by a typical fighter
 @export var walk_speed : float = 2
@@ -121,7 +122,7 @@ func _process(_delta):
 	Attack Finished: %s
 	Stun: %s:%s
 	Knockback: %s
-	%s""" % [
+	""" % [
 		right_facing,
 		states.keys()[current_state],
 		states.keys()[previous_state],
@@ -129,7 +130,8 @@ func _process(_delta):
 		stun_time_current,
 		stun_time_start,
 		kback,
-		convert_inputs_into_numpad_notation()[-1]]
+	]
+	if len(inputs) != 0: $DebugData.text += str(convert_inputs_into_numpad_notation()[-1])
 
 var attack_return_state := {
 	"attack_normal/stand_a": states.idle,
@@ -202,6 +204,10 @@ func create_projectile(pos : Vector3, projectile_ind : int, type : int,
 	emit_signal(&"projectile_created", new_projectile)
 
 # Functions used within this script and by the game, mostly for checks
+
+func post_intro() -> bool:
+	return current_state != states.intro
+
 func is_in_air_state() -> bool:
 	return current_state in [states.jump_attack, states.jump_left, states.jump_neutral, states.jump_right, states.block_air, states.hurt_bounce, states.hurt_fall]
 

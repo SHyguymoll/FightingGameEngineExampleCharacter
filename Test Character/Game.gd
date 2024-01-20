@@ -39,22 +39,33 @@ const CAMERAMAXY = 10
 const MOVEMENTBOUNDX = 8
 var p1_combo := 0
 var p2_combo := 0
-
+enum moments {
+	INTRO,
+	GAME,
+	ROUND_END
+}
+var moment := moments.INTRO
 
 func make_hud():
+	# player 1
 	$HUD/P1Health.max_value = p1.health
 	$HUD/P1Health.value = p1.health
 	$HUD/P1Char.text = p1.char_name
 	$HUD/P1State.text = p1.states.keys()[p1.current_state]
 	$HUD/P1PosVel.text = str(p1.position) + "\n" + str(p1.velocity)
 	
+	# player 2
 	$HUD/P2Health.max_value = p2.health
 	$HUD/P2Health.value = p2.health
 	$HUD/P2Char.text = p2.char_name
 	$HUD/P2State.text = p2.states.keys()[p2.current_state]
 	$HUD/P2PosVel.text = str(p2.position) + "\n" + str(p2.velocity)
+	
+	# game itself
+	$HUD/Fight.visible = false
 
-func update_hud():
+func update_hud(game_start := true):
+	# player 1
 	$HUD/P1Health.value = p1.health
 	$HUD/P1State.text = p1.states.keys()[p1.current_state]
 	if "attack" in $HUD/P1State.text:
@@ -62,12 +73,17 @@ func update_hud():
 	$HUD/P1PosVel.text = str(p1.position) + "\n" + str(p1.velocity)
 	$HUD/P1Combo.text = str(p1_combo)
 	
+	# player 2
 	$HUD/P2Health.value = p2.health
 	$HUD/P2State.text = p2.states.keys()[p2.current_state]
 	if "attack" in $HUD/P2State.text:
 		$HUD/P2State.text += " : " + p2.current_attack
 	$HUD/P2PosVel.text = str(p2.position) + "\n" + str(p2.velocity)
 	$HUD/P2Combo.text = str(p2_combo)
+	
+	# game itself
+	if game_start:
+		$HUD/Fight.modulate.a8 -= 10
 
 func init_fighters():
 	for i in range(p1.BUTTONCOUNT):
@@ -227,7 +243,7 @@ func create_new_input_set(player_inputs: Dictionary, new_inputs: Array):
 			player_inputs[inp].append([1, new_inputs[ind]])
 		ind += 1
 
-func handle_inputs():
+func create_inputs():
 	p1_buttons[0] = Input.is_action_pressed("first_up")
 	p1_buttons[1] = Input.is_action_pressed("first_down")
 	if p1_buttons[0] == p1_buttons[1]: #no conflicting directions
@@ -267,7 +283,8 @@ func handle_inputs():
 		p2_input_index += 1
 	else:
 		increment_inputs(p2_inputs)
-	
+
+func move_inputs_and_iterate():
 	var p1_buf = slice_input_dictionary(
 		p1_inputs, max(0, p1_input_index - p1.input_buffer_len),
 		p1_input_index + 1
@@ -302,7 +319,8 @@ func handle_inputs():
 	
 	p1.input_step(p1_buf)
 	p2.input_step(p2_buf)
-	
+
+func check_combo():
 	if not p1.is_in_hurting_state():
 		p2_combo = 0
 	if not p2.is_in_hurting_state():
@@ -329,10 +347,24 @@ func delete_projectile(projectile):
 
 func _physics_process(_delta):
 	camera_control(cameraMode)
-	# handle projectiles
-	for proj in projectiles:
-		proj.tick()
 	
-	handle_inputs()
-	character_positioning()
-	update_hud()
+	match moment:
+		moments.INTRO:
+			move_inputs_and_iterate()
+			if p1.post_intro() and p2.post_intro():
+				moment = moments.GAME
+				$HUD/Fight.visible = true
+			check_combo()
+			update_hud(false)
+		moments.GAME:
+			# handle projectiles
+			for proj in projectiles:
+				proj.tick()
+			create_inputs()
+			move_inputs_and_iterate()
+			check_combo()
+			character_positioning()
+			update_hud()
+		moments.ROUND_END:
+			pass
+	
