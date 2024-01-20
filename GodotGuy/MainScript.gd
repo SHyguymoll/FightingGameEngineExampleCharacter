@@ -56,7 +56,7 @@ var inputs
 
 #State transitions are handled by a FSM implemented as match statements in the input_step
 enum states {
-	intro, round_win, set_win, #round stuff
+	intro, round_win, set_win, lose, #round stuff
 	idle, crouch, #basic basics
 	walk_forward, walk_back, dash_forward, dash_back, #lateral movement
 	jump_right_init, jump_neutral_init, jump_left_init, #jump from ground initial
