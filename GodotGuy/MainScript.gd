@@ -286,14 +286,18 @@ func all_attacks_just_pressed():
 	return btn_just_pressed("button0") and btn_just_pressed("button1") and btn_just_pressed("button2")
 
 func two_attacks_just_pressed():
-	return int(btn_just_pressed("button0")) + \
-			int(btn_just_pressed("button1")) + \
-			int(btn_just_pressed("button2")) == 2
+	return (
+		int(btn_just_pressed("button0")) +
+		int(btn_just_pressed("button1")) +
+		int(btn_just_pressed("button2")) == 2
+	)
 
 func one_attack_just_pressed():
-	return int(btn_just_pressed("button0")) + \
-			int(btn_just_pressed("button1")) + \
-			int(btn_just_pressed("button2")) == 1
+	return (
+		int(btn_just_pressed("button0")) + 
+		int(btn_just_pressed("button1")) + 
+		int(btn_just_pressed("button2")) == 1
+	)
 
 # defining the motion inputs, with some leniency
 const QUARTER_CIRCLE_FORWARD = [[2,3,6], [2,6]]
@@ -399,10 +403,13 @@ func magic_series(level: int):
 
 #returns -1 (walk away), 0 (neutral), and 1 (walk towards)
 func walk_value() -> int:
-	return (int((btn_pressed("right") and right_facing) or
-			(btn_pressed("left") and !right_facing))) + \
-			(-1 * int((btn_pressed("left") and right_facing) or
-			(btn_pressed("right") and !right_facing)))
+	return (
+		(1 * int((btn_pressed("right") and right_facing) or
+			(btn_pressed("left") and !right_facing))) +
+		(-1 * int((btn_pressed("left") and right_facing) or
+			(btn_pressed("right") and !right_facing))
+		)
+	)
 
 enum walk_directions {back = -1, neutral = 0, forward = 1}
 
