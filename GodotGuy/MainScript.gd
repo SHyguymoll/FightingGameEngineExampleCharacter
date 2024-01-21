@@ -128,7 +128,7 @@ func _process(_delta):
 		stun_time_start,
 		kback,
 	]
-	if len(inputs) != 0: $DebugData.text += str(convert_inputs_into_numpad_notation()[-1])
+	if len(inputs) != 0: $DebugData.text += str(inputs_as_numpad()[-1])
 
 var attack_return_state := {
 	"attack_normal/stand_a": states.idle,
@@ -469,7 +469,7 @@ func convert_directions_into_numpad_notation(up, down, back, forward) -> int:
 		return 6
 	return 5
 
-func convert_inputs_into_numpad_notation(timing := true) -> Array:
+func inputs_as_numpad(timing := true) -> Array:
 	var numpad_buffer = []
 	for i in range(len(inputs.up) - 1):
 		numpad_buffer.append(
@@ -502,7 +502,7 @@ func convert_inputs_into_numpad_notation(timing := true) -> Array:
 
 
 func motion_input_check(motions_to_check) -> bool:
-	var buffer_as_numpad = convert_inputs_into_numpad_notation()
+	var buffer_as_numpad = inputs_as_numpad()
 	for motion_to_check in motions_to_check:
 		var buffer_sliced = buffer_as_numpad.slice((len(buffer_as_numpad)) - (len(motion_to_check) + 1), -1)
 		if buffer_sliced == motion_to_check:
