@@ -32,6 +32,10 @@ var p2_input_index : int = 0
 @export var player_test_two : PackedScene
 @export var scene_to_test : PackedScene
 
+var reset_health_on_drop := true
+var p1_health_reset : float
+var p2_health_reset : float
+
 #required variables and methods from Game.gd
 @export var camera_mode = 0
 const CAMERAMAXX = 1.6
@@ -109,6 +113,9 @@ func init_fighters():
 	p2.hitbox_created.connect(register_hitbox)
 	p2.projectile_created.connect(register_projectile)
 	p2.defeated.connect(player_defeated)
+	
+	p1_health_reset = p1.health
+	p2_health_reset = p2.health
 
 func reset_hitstop():
 	GlobalKnowledge.global_hitstop = 0
@@ -397,6 +404,11 @@ func delete_projectile(projectile):
 func player_defeated(player: int):
 	moment = moments.ROUND_END
 
+func training_mode_settings():
+	if reset_health_on_drop:
+		p1.health = p1_health_reset
+		p2.health = p2_health_reset
+
 func _physics_process(_delta):
 	camera_control(camera_mode)
 	
@@ -415,6 +427,7 @@ func _physics_process(_delta):
 			create_inputs()
 			move_inputs_and_iterate()
 			check_combo()
+			training_mode_settings()
 			character_positioning()
 			update_hud()
 		moments.ROUND_END:
