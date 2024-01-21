@@ -41,7 +41,7 @@ const GROUND_SLIDE_FRICTION : float = 0.97
 var damage_mult : float = 1.0
 var defense_mult : float = 1.0
 
-# extremely important, how the character gets the inputs from the game in this implementation.
+# extremely important, how the character stores the inputs from the game.
 # Dictionary with 4 entries for each cardinal directional input, plus the number of buttons (buttonX).
 # each entry holds an array made up of tuples of a boolean and an int, representing how long the
 # input was held/not held.
