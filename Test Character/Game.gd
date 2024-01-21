@@ -52,42 +52,39 @@ var moment := moments.INTRO
 
 func make_hud():
 	# player 1
-	$HUD/P1Health.max_value = p1.health
-	$HUD/P1Health.value = p1.health
-	$HUD/P1Char.text = p1.char_name
-	$HUD/P1State.text = p1.states.keys()[p1.current_state]
-	$HUD/P1PosVel.text = str(p1.position) + "\n" + str(p1.velocity)
+	$HUD/HealthAndTime/P1Group/Health.max_value = p1.health
+	$HUD/HealthAndTime/P1Group/Health.value = p1.health
+	$HUD/HealthAndTime/P1Group/NameAndPosVel/Char.text = p1.char_name
+	$HUD/HealthAndTime/P1Group/NameAndPosVel/PosVel.text = str(p1.position) + "\n" + str(p1.velocity)
+	$HUD/P1Stats/State.text = p1.states.keys()[p1.current_state]
 	
 	# player 2
-	$HUD/P2Health.max_value = p2.health
-	$HUD/P2Health.value = p2.health
-	$HUD/P2Char.text = p2.char_name
-	$HUD/P2State.text = p2.states.keys()[p2.current_state]
-	$HUD/P2PosVel.text = str(p2.position) + "\n" + str(p2.velocity)
+	$HUD/HealthAndTime/P2Group/Health.max_value = p2.health
+	$HUD/HealthAndTime/P2Group/Health.value = p2.health
+	$HUD/HealthAndTime/P2Group/NameAndPosVel/Char.text = p2.char_name
+	$HUD/HealthAndTime/P2Group/NameAndPosVel/PosVel.text = str(p2.position) + "\n" + str(p2.velocity)
+	$HUD/P2Stats/State.text = p2.states.keys()[p2.current_state]
+	
 	
 	# game itself
 	$HUD/Fight.visible = false
 
-func update_hud(game_start := true):
+func update_hud():
 	# player 1
-	$HUD/P1Health.value = p1.health
-	$HUD/P1State.text = p1.states.keys()[p1.current_state]
-	if "attack" in $HUD/P1State.text:
-		$HUD/P1State.text += " : " + p1.current_attack
-	$HUD/P1PosVel.text = str(p1.position) + "\n" + str(p1.velocity)
-	$HUD/P1Combo.text = str(p1_combo)
+	$HUD/HealthAndTime/P1Group/Health.value = p1.health
+	$HUD/P1Stats/State.text = p1.states.keys()[p1.current_state]
+	if "attack" in $HUD/P1Stats/State.text:
+		$HUD/P1Stats/State.text += " : " + p1.current_attack
+	$HUD/HealthAndTime/P1Group/NameAndPosVel/PosVel.text = str(p1.position) + "\n" + str(p1.velocity)
+	$HUD/P1Stats/Combo.text = str(p1_combo)
 	
 	# player 2
-	$HUD/P2Health.value = p2.health
-	$HUD/P2State.text = p2.states.keys()[p2.current_state]
-	if "attack" in $HUD/P2State.text:
-		$HUD/P2State.text += " : " + p2.current_attack
-	$HUD/P2PosVel.text = str(p2.position) + "\n" + str(p2.velocity)
-	$HUD/P2Combo.text = str(p2_combo)
-	
-	# game itself
-	if game_start:
-		$HUD/Fight.modulate.a8 -= 10
+	$HUD/HealthAndTime/P2Group/Health.value = p2.health
+	$HUD/P2Stats/State.text = p2.states.keys()[p2.current_state]
+	if "attack" in $HUD/P2Stats/State.text:
+		$HUD/P2Stats/State.text += " : " + p2.current_attack
+	$HUD/HealthAndTime/P2Group/NameAndPosVel/PosVel.text = str(p2.position) + "\n" + str(p2.velocity)
+	$HUD/P2Stats/Combo.text = str(p2_combo)
 
 func init_fighters():
 	for i in range(p1.BUTTONCOUNT):
@@ -211,43 +208,43 @@ func build_input_tracker(p1_buf : Dictionary, p2_buf : Dictionary) -> void:
 	var lookup_string := ""
 	var dirs := ["up", "down", "left", "right"]
 	
-	$HUD/P1Inputs.text = ""
+	$HUD/P1Stats/Inputs.text = ""
 	for i in range(len(p1_buf.up)):
 		lookup_string = ""
 		lookup_string += dirs[0] if p1_buf[dirs[0]][i][1] else ""
 		lookup_string += dirs[1] if p1_buf[dirs[1]][i][1] else ""
 		lookup_string += dirs[2] if p1_buf[dirs[2]][i][1] else ""
 		lookup_string += dirs[3] if p1_buf[dirs[3]][i][1] else ""
-		$HUD/P1Inputs.text += directionDictionary[lookup_string]
-		$HUD/P1Inputs.text += "\t"
+		$HUD/P1Stats/Inputs.text += directionDictionary[lookup_string]
+		$HUD/P1Stats/Inputs.text += "\t"
 		for button in p1_buf:
 			if button in dirs:
 				if p1_buf[button][i][1]:
-					$HUD/P1Inputs.text += ("[%s, %s]" % [str(p1_buf[button][i][0]), directionDictionary[button]])
+					$HUD/P1Stats/Inputs.text += ("[%s, %s]" % [str(p1_buf[button][i][0]), directionDictionary[button]])
 				else:
-					$HUD/P1Inputs.text += ("[%s, x]" % [str(p1_buf[button][i][0])])
+					$HUD/P1Stats/Inputs.text += ("[%s, x]" % [str(p1_buf[button][i][0])])
 			else:
-				$HUD/P1Inputs.text += str(p1_buf[button][i])
-		$HUD/P1Inputs.text += "\n"
+				$HUD/P1Stats/Inputs.text += str(p1_buf[button][i])
+		$HUD/P1Stats/Inputs.text += "\n"
 	
-	$HUD/P2Inputs.text = ""
+	$HUD/P2Stats/Inputs.text = ""
 	for i in range(len(p2_buf.up)):
 		lookup_string = ""
 		lookup_string += dirs[0] if p2_buf[dirs[0]][i][1] else ""
 		lookup_string += dirs[1] if p2_buf[dirs[1]][i][1] else ""
 		lookup_string += dirs[2] if p2_buf[dirs[2]][i][1] else ""
 		lookup_string += dirs[3] if p2_buf[dirs[3]][i][1] else ""
-		$HUD/P2Inputs.text += directionDictionary[lookup_string]
-		$HUD/P2Inputs.text += "\t"
+		$HUD/P2Stats/Inputs.text += directionDictionary[lookup_string]
+		$HUD/P2Stats/Inputs.text += "\t"
 		for button in p2_buf:
 			if button in dirs:
 				if p2_buf[button][i][1]:
-					$HUD/P2Inputs.text += ("[%s, %s]" % [str(p2_buf[button][i][0]), directionDictionary[button]])
+					$HUD/P2Stats/Inputs.text += ("[%s, %s]" % [str(p2_buf[button][i][0]), directionDictionary[button]])
 				else:
-					$HUD/P2Inputs.text += ("[%s, x]" % [str(p2_buf[button][i][0])])
+					$HUD/P2Stats/Inputs.text += ("[%s, x]" % [str(p2_buf[button][i][0])])
 			else:
-				$HUD/P2Inputs.text += str(p2_buf[button][i])
-		$HUD/P2Inputs.text += "\n"
+				$HUD/P2Stats/Inputs.text += str(p2_buf[button][i])
+		$HUD/P2Stats/Inputs.text += "\n"
 
 #convert to hash to simplify comparisons
 func get_current_input_hashes() -> Array: return [
@@ -419,7 +416,7 @@ func _physics_process(_delta):
 				moment = moments.GAME
 				$HUD/Fight.visible = true
 			check_combo()
-			update_hud(false)
+			update_hud()
 		moments.GAME:
 			# handle projectiles
 			for proj in projectiles:
@@ -430,6 +427,7 @@ func _physics_process(_delta):
 			training_mode_settings()
 			character_positioning()
 			update_hud()
+			$HUD/Fight.modulate.a8 -= 10
 		moments.ROUND_END:
 			move_inputs_and_iterate()
 			check_combo()

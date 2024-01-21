@@ -24,27 +24,16 @@ size = 3.5
 [node name="HUD" type="CanvasLayer" parent="."]
 layer = 10
 
-[node name="Time" type="Label" parent="HUD"]
-offset_left = 908.0
-offset_top = 24.0
-offset_right = 1013.0
-offset_bottom = 107.0
-theme_override_fonts/font = ExtResource("2_jjmwk")
-theme_override_font_sizes/font_size = 64
-text = "999"
-horizontal_alignment = 1
-
 [node name="Fight" type="Label" parent="HUD"]
-visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -52.5
-offset_top = -41.5
-offset_right = 52.5
-offset_bottom = 41.5
+offset_left = -281.5
+offset_top = -135.0
+offset_right = 281.5
+offset_bottom = 135.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("2_jjmwk")
@@ -52,139 +41,134 @@ theme_override_font_sizes/font_size = 219
 text = "FIGHT"
 horizontal_alignment = 1
 
-[node name="P1Char" type="Label" parent="HUD"]
-offset_top = 113.0
-offset_right = 495.0
-offset_bottom = 196.0
-theme_override_fonts/font = ExtResource("2_jjmwk")
-theme_override_font_sizes/font_size = 64
-text = "Player 1 Character"
-
-[node name="P1Inputs" type="Label" parent="HUD"]
-offset_top = 292.0
-offset_right = 495.0
-offset_bottom = 356.0
-theme_override_fonts/font = ExtResource("2_jjmwk")
-theme_override_font_sizes/font_size = 24
-text = "inputs"
-
-[node name="P2Char" type="Label" parent="HUD"]
-anchors_preset = 1
-anchor_left = 1.0
+[node name="HealthAndTime" type="HBoxContainer" parent="HUD"]
+anchors_preset = 10
 anchor_right = 1.0
-offset_left = -495.0
-offset_top = 113.0
-offset_bottom = 196.0
-grow_horizontal = 0
-theme_override_fonts/font = ExtResource("2_jjmwk")
-theme_override_font_sizes/font_size = 64
-text = "Player 2 Character"
-horizontal_alignment = 2
-
-[node name="P2Inputs" type="Label" parent="HUD"]
-visible = false
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -490.0
-offset_top = 294.0
-offset_bottom = 358.0
-grow_horizontal = 0
-theme_override_fonts/font = ExtResource("2_jjmwk")
-theme_override_font_sizes/font_size = 24
-text = "inputs"
-horizontal_alignment = 2
-
-[node name="P1State" type="Label" parent="HUD"]
-offset_top = 196.0
-offset_right = 495.0
-offset_bottom = 260.0
-theme_override_fonts/font = ExtResource("2_jjmwk")
-theme_override_font_sizes/font_size = 24
-text = "state"
-
-[node name="P2State" type="Label" parent="HUD"]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -490.0
-offset_top = 198.0
-offset_bottom = 262.0
-grow_horizontal = 0
-theme_override_fonts/font = ExtResource("2_jjmwk")
-theme_override_font_sizes/font_size = 24
-text = "state"
-horizontal_alignment = 2
-
-[node name="P1PosVel" type="Label" parent="HUD"]
-offset_left = 528.0
-offset_top = 129.0
-offset_right = 1023.0
-offset_bottom = 193.0
-theme_override_fonts/font = ExtResource("2_jjmwk")
-theme_override_font_sizes/font_size = 24
-text = "position, velocity"
-horizontal_alignment = 1
-
-[node name="P2PosVel" type="Label" parent="HUD"]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -1013.0
-offset_top = 131.0
-offset_right = -523.0
-offset_bottom = 195.0
-grow_horizontal = 0
-theme_override_fonts/font = ExtResource("2_jjmwk")
-theme_override_font_sizes/font_size = 24
-text = "position, velocity"
-horizontal_alignment = 1
-
-[node name="P1Health" type="TextureProgressBar" parent="HUD"]
-offset_left = 384.0
-offset_right = 896.0
 offset_bottom = 128.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="P1Group" type="VBoxContainer" parent="HUD/HealthAndTime"]
+layout_mode = 2
+alignment = 2
+
+[node name="Health" type="TextureProgressBar" parent="HUD/HealthAndTime/P1Group"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 value = 10.0
 fill_mode = 1
 texture_under = ExtResource("3_fnmsh")
 texture_progress = ExtResource("4_7ll10")
 
-[node name="P2Health" type="TextureProgressBar" parent="HUD"]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -896.0
-offset_right = -384.0
-offset_bottom = 128.0
-grow_horizontal = 0
+[node name="NameAndPosVel" type="HBoxContainer" parent="HUD/HealthAndTime/P1Group"]
+layout_mode = 2
+alignment = 2
+
+[node name="Char" type="Label" parent="HUD/HealthAndTime/P1Group/NameAndPosVel"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_fonts/font = ExtResource("2_jjmwk")
+theme_override_font_sizes/font_size = 64
+text = "Player 1 Character"
+
+[node name="PosVel" type="Label" parent="HUD/HealthAndTime/P1Group/NameAndPosVel"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_jjmwk")
+theme_override_font_sizes/font_size = 24
+text = "position, velocity"
+horizontal_alignment = 1
+
+[node name="Time" type="Label" parent="HUD/HealthAndTime"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_jjmwk")
+theme_override_font_sizes/font_size = 64
+text = "999"
+horizontal_alignment = 1
+
+[node name="P2Group" type="VBoxContainer" parent="HUD/HealthAndTime"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="Health" type="TextureProgressBar" parent="HUD/HealthAndTime/P2Group"]
+layout_mode = 2
+size_flags_horizontal = 8
 value = 10.0
 texture_under = ExtResource("5_6q5w6")
 texture_progress = ExtResource("6_2k3f0")
 
-[node name="P1Combo" type="Label" parent="HUD"]
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_top = -11.5
-offset_right = 40.0
-offset_bottom = 11.5
+[node name="NameAndPosVel" type="HBoxContainer" parent="HUD/HealthAndTime/P2Group"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 10
+
+[node name="PosVel" type="Label" parent="HUD/HealthAndTime/P2Group/NameAndPosVel"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_jjmwk")
+theme_override_font_sizes/font_size = 24
+text = "position, velocity"
+horizontal_alignment = 1
+
+[node name="Char" type="Label" parent="HUD/HealthAndTime/P2Group/NameAndPosVel"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_jjmwk")
+theme_override_font_sizes/font_size = 64
+text = "Player 2 Character"
+horizontal_alignment = 2
+
+[node name="P1Stats" type="VBoxContainer" parent="HUD"]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 96.0
 grow_vertical = 2
+alignment = 1
+
+[node name="State" type="Label" parent="HUD/P1Stats"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_jjmwk")
+theme_override_font_sizes/font_size = 24
+text = "state"
+
+[node name="Combo" type="Label" parent="HUD/P1Stats"]
+layout_mode = 2
 theme_override_fonts/font = ExtResource("2_jjmwk")
 theme_override_font_sizes/font_size = 60
 text = "999"
 
-[node name="P2Combo" type="Label" parent="HUD"]
-anchors_preset = 6
+[node name="Inputs" type="Label" parent="HUD/P1Stats"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_jjmwk")
+theme_override_font_sizes/font_size = 24
+text = "inputs"
+
+[node name="P2Stats" type="VBoxContainer" parent="HUD"]
+anchors_preset = 11
 anchor_left = 1.0
-anchor_top = 0.5
 anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -40.0
-offset_top = -11.5
-offset_bottom = 11.5
+anchor_bottom = 1.0
+offset_left = -96.0
 grow_horizontal = 0
 grow_vertical = 2
+alignment = 1
+
+[node name="State" type="Label" parent="HUD/P2Stats"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_jjmwk")
+theme_override_font_sizes/font_size = 24
+text = "state"
+horizontal_alignment = 2
+
+[node name="Combo" type="Label" parent="HUD/P2Stats"]
+layout_mode = 2
 theme_override_fonts/font = ExtResource("2_jjmwk")
 theme_override_font_sizes/font_size = 60
 text = "999"
+horizontal_alignment = 2
+
+[node name="Inputs" type="Label" parent="HUD/P2Stats"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_jjmwk")
+theme_override_font_sizes/font_size = 24
+text = "inputs"
 horizontal_alignment = 2
