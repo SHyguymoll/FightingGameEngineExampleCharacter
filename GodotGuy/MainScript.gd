@@ -306,11 +306,16 @@ const Z_MOTION_BACK = [[4,2,1], [4,5,2,1], [6,3,2,3], [4,5,6,3,2,1], [4,1,2,3,2,
 func handle_special_attack(cur_state: states) -> states:
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
-			if motion_input_check(QUARTER_CIRCLE_FORWARD) and any_attack_button_just_pressed():
+			#check z_motion first since there's a lot of overlap with quarter_circle on extreme cases
+			if motion_input_check(Z_MOTION_FORWARD) and one_attack_button_just_pressed():
+				update_attack("attack_command/attack_uppercut")
+				jump_count = 0
+				return states.attack_command
+			if motion_input_check(QUARTER_CIRCLE_FORWARD) and one_attack_button_just_pressed():
 				update_attack("attack_command/attack_projectile")
 				return states.attack_command
 		states.crouch:
-			if motion_input_check(Z_MOTION_FORWARD) and any_attack_button_just_pressed():
+			if motion_input_check(Z_MOTION_FORWARD) and one_attack_button_just_pressed():
 				update_attack("attack_command/attack_uppercut")
 				jump_count = 0
 				return states.attack_command
