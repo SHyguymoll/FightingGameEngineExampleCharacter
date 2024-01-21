@@ -77,7 +77,7 @@ text = "Player 1 Character"
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_jjmwk")
 theme_override_font_sizes/font_size = 24
-text = "position, velocity"
+text = "p,v"
 horizontal_alignment = 1
 
 [node name="Time" type="Label" parent="HUD/HealthAndTime"]
@@ -107,7 +107,7 @@ size_flags_vertical = 10
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_jjmwk")
 theme_override_font_sizes/font_size = 24
-text = "position, velocity"
+text = "p,v"
 horizontal_alignment = 1
 
 [node name="Char" type="Label" parent="HUD/HealthAndTime/P2Group/NameAndPosVel"]
