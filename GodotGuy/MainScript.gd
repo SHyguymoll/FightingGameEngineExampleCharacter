@@ -594,6 +594,14 @@ func update_character_state():
 		velocity.y = 0
 
 func resolve_state_transitions():
+	# complete jump bug fix
+	match previous_state:
+		states.jump_neutral_init, states.jump_neutral_air_init:
+			previous_state = states.jump_neutral
+		states.jump_right_init, states.jump_right_air_init:
+			previous_state = states.jump_right
+		states.jump_left_init, states.jump_left_air_init:
+			previous_state = states.jump_left
 	match current_state:
 		states.intro:
 			if not animate.is_playing():
@@ -654,13 +662,7 @@ func resolve_state_transitions():
 			elif is_on_floor():
 				var new_walk = walk_check(null, current_state)
 				update_state(new_walk)
-			match previous_state:
-				states.jump_neutral_init, states.jump_neutral_air_init:
-					previous_state = states.jump_neutral
-				states.jump_right_init, states.jump_right_air_init:
-					previous_state = states.jump_right
-				states.jump_left_init, states.jump_left_air_init:
-					previous_state = states.jump_left
+		
 
 func update_character_animation():
 	if current_state in [states.attack, states.attack_command, states.jump_attack]:
