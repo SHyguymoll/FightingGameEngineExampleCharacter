@@ -717,6 +717,9 @@ func take_damage(attack : Hitbox, blocked : bool):
 		health -= attack.damage_hit * defense_mult
 		set_stun_time(attack.stun_hit)
 		kback = attack.kback_hit
+		if health <= 0:
+			update_state(states.hurt_lie)
+			emit_signal(&"defeated")
 	else:
 		health = max(health - attack.damage_block * defense_mult, 1)
 		set_stun_time(attack.stun_block)
@@ -739,12 +742,12 @@ func try_block(attack : Hitbox,
 	if is_in_hurting_state() or is_in_dashing_state() or is_in_attacking_state():
 		if not is_in_air_state():
 			if is_in_crouch_state():
-				take_damage(attack, false)
 				update_state(fs_crouch)
+				take_damage(attack, false)
 				return true
 			else:
-				take_damage(attack, false)
 				update_state(fs_stand)
+				take_damage(attack, false)
 				return true
 		else:
 			take_damage(attack, false)
@@ -760,12 +763,12 @@ func try_block(attack : Hitbox,
 		for check_input in range(len(directions)):
 			if (directions[check_input] == true and ground_block_rules[check_input] == -1) or (directions[check_input] == false and ground_block_rules[check_input] == 1):
 				if is_in_crouch_state():
-					take_damage(attack, false)
 					update_state(fs_crouch)
+					take_damage(attack, false)
 					return true
 				else:
-					take_damage(attack, false)
 					update_state(fs_stand)
+					take_damage(attack, false)
 					return true
 		if button_pressed("down"):
 			take_damage(attack, true)
