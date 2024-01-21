@@ -191,7 +191,7 @@ func slice_input_dictionary(input_dict: Dictionary, from: int, to: int):
 		ret_dict["button" + str(i)] = input_dict["button" + str(i)].slice(from, to)
 	return ret_dict
 
-func build_inputs_tracked(p1_buf : Dictionary, p2_buf : Dictionary) -> void:
+func build_input_tracker(p1_buf : Dictionary, p2_buf : Dictionary) -> void:
 	var lookup_string := ""
 	var dirs := ["up", "down", "left", "right"]
 	
@@ -331,7 +331,7 @@ func move_inputs_and_iterate():
 		max(0, p2_input_index - p2.input_buffer_len),
 		p2_input_index + 1
 	)
-	build_inputs_tracked(p1_buf, p2_buf)
+	build_input_tracker(p1_buf, p2_buf)
 	
 	var p1_attackers = (p1.return_attackers() as Array[Hitbox])
 	for p1_attacker in p1_attackers:
