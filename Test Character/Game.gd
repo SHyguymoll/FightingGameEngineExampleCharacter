@@ -129,33 +129,42 @@ const ORTH_DIST = 1.328125
 const CAMERA_PERSPECTIVE = 0
 const CAMERA_ORTH = 1
 
+enum camera_modes {
+	ORTH_BALANCED = 0,
+	ORTH_PLAYER1,
+	ORTH_PLAYER2,
+	PERS_BALANCED,
+	PERS_PLAYER1,
+	PERS_PLAYER2
+}
+
 func camera_control(mode: int):
-	$Camera3D.projection = CAMERA_ORTH if mode < 3 else CAMERA_PERSPECTIVE
+	$Camera3D.projection = CAMERA_ORTH if mode < camera_modes.PERS_BALANCED else CAMERA_PERSPECTIVE
 	match mode:
 		#2d modes
-		0: #default
+		camera_modes.ORTH_BALANCED:
 			$Camera3D.position.x = (p1.position.x + p2.position.x)/2
 			$Camera3D.position.y = max(p1.position.y + 1, p2.position.y + 1)
 			$Camera3D.position.z = ORTH_DIST
 			$Camera3D.size = clampf(abs(p1.position.x - p2.position.x)/2, 3.5, 6)
-		1: #focus player1
+		camera_modes.ORTH_PLAYER1:
 			$Camera3D.position.x = p1.position.x
 			$Camera3D.position.y = p1.position.y + 1
 			$Camera3D.position.z = ORTH_DIST
-		2: #focus player2
+		camera_modes.ORTH_PLAYER2:
 			$Camera3D.position.x = p2.position.x
 			$Camera3D.position.y = p2.position.y + 1
 			$Camera3D.position.z = ORTH_DIST
 		#3d modes
-		3: #default
+		camera_modes.PERS_BALANCED:
 			$Camera3D.position.x = (p1.position.x + p2.position.x)/2
 			$Camera3D.position.y = max(p1.position.y + 1, p2.position.y + 1)
 			$Camera3D.position.z = clampf(abs(p1.position.x - p2.position.x)/2, 1.5, 1.825) + 0.5
-		4: #focus player1
+		camera_modes.PERS_PLAYER1:
 			$Camera3D.position.x = p1.position.x
 			$Camera3D.position.y = p1.position.y + 1
 			$Camera3D.position.z = 1.5
-		5: #focus player2
+		camera_modes.PERS_PLAYER2:
 			$Camera3D.position.x = p2.position.x
 			$Camera3D.position.y = p2.position.y + 1
 			$Camera3D.position.z = 1.5
