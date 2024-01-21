@@ -167,7 +167,7 @@ func create_hitbox(pos : Vector3, shape : Shape3D,
 	if not right_facing:
 		pos.x *= -1
 	new_hitbox.set_position(pos + global_position)
-	(new_hitbox.get_node("CollisionShape3D") as CollisionShape3D).set_shape(shape)
+	(new_hitbox.get_node(^"CollisionShape3D") as CollisionShape3D).set_shape(shape)
 	new_hitbox.collision_layer = hitbox_layer
 	new_hitbox.lifetime = lifetime
 	new_hitbox.damage_hit = damage_hit * damage_mult
