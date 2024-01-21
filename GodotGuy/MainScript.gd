@@ -293,6 +293,8 @@ func two_attack_buttons_just_pressed():
 # defining the motion inputs, with some leniency
 const QUARTER_CIRCLE_FORWARD = [[2,3,6], [2,6]]
 const QUARTER_CIRCLE_BACK = [[2,1,4], [2,4]]
+const TIGER_KNEE_FORWARD = [[2,3,6,9]]
+const TIGER_KNEE_BACK = [[2,1,4,7]]
 const Z_MOTION_FORWARD = [[6,2,3], [6,5,2,3], [6,3,2,3], [6,5,4,1,2,3], [6,3,2,1,2,3]]
 const Z_MOTION_BACK = [[4,2,1], [4,5,2,1], [6,3,2,3], [4,5,6,3,2,1], [4,1,2,3,2,1]]
 
@@ -308,7 +310,7 @@ func handle_special_attack(cur_state: states) -> states:
 				jump_count = 0
 				return states.attack_command
 		states.jump_neutral, states.jump_left, states.jump_right:
-			if motion_input_check(QUARTER_CIRCLE_FORWARD) and any_attack_button_just_pressed():
+			if motion_input_check(QUARTER_CIRCLE_FORWARD + TIGER_KNEE_FORWARD) and any_attack_button_just_pressed():
 				update_attack("attack_command/attack_projectile_air")
 				jump_count = 0
 				return states.attack_command
