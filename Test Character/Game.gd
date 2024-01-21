@@ -32,7 +32,8 @@ var p2_input_index : int = 0
 @export var player_test_two : PackedScene
 @export var scene_to_test : PackedScene
 
-var reset_health_on_drop := true
+var p1_reset_health_on_drop := true
+var p2_reset_health_on_drop := true
 var p1_health_reset : float
 var p2_health_reset : float
 
@@ -402,8 +403,9 @@ func player_defeated(player: int):
 	moment = moments.ROUND_END
 
 func training_mode_settings():
-	if reset_health_on_drop:
+	if p1_reset_health_on_drop and not p2_combo:
 		p1.health = p1_health_reset
+	if p2_reset_health_on_drop and not p1_combo:
 		p2.health = p2_health_reset
 
 func _physics_process(_delta):
