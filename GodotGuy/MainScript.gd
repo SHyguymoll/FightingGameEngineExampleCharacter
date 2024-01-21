@@ -288,7 +288,12 @@ func all_attack_buttons_just_pressed():
 func two_attack_buttons_just_pressed():
 	return int(button_just_pressed("button0")) + \
 			int(button_just_pressed("button1")) + \
-			int(button_just_pressed("button2")) == 2 
+			int(button_just_pressed("button2")) == 2
+
+func one_attack_button_just_pressed():
+	return int(button_just_pressed("button0")) + \
+			int(button_just_pressed("button1")) + \
+			int(button_just_pressed("button2")) == 1
 
 # defining the motion inputs, with some leniency
 const QUARTER_CIRCLE_FORWARD = [[2,3,6], [2,6]]
