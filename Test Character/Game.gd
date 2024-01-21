@@ -34,7 +34,7 @@ var p2_input_index : int = 0
 
 #required variables and methods from Game.gd
 @export var camera_mode = 0
-const CAMERAMAXX = 6
+const CAMERAMAXX = 1.6
 const CAMERAMAXY = 10
 const MOVEMENTBOUNDX = 8
 var p1_combo := 0
@@ -159,7 +159,7 @@ func camera_control(mode: int):
 			$Camera3D.position.x = p2.position.x
 			$Camera3D.position.y = p2.position.y + 1
 			$Camera3D.position.z = 1.5
-	$Camera3D.position.clamp(
+	$Camera3D.position = $Camera3D.position.clamp(
 		Vector3(-CAMERAMAXX, 0, $Camera3D.position.z),
 		Vector3(CAMERAMAXX, CAMERAMAXY, $Camera3D.position.z)
 	)
