@@ -61,7 +61,8 @@ enum states {
 	walk_forward, walk_back, dash_forward, dash_back, #lateral movement
 	jump_right_init, jump_neutral_init, jump_left_init, #jump from ground initial
 	jump_right_air_init, jump_neutral_air_init, jump_left_air_init, #jump from air initial
-	jump_right, jump_neutral, jump_left, #aerial movement
+	jump_right, jump_neutral, jump_left, #aerial actionable
+	jump_right_no_act, jump_neutral_no_act, jump_left_no_act, #aerial not actionable
 	attack, attack_command, jump_attack, special_attack, #handling attacks
 	block_high, block_low, block_air, get_up, #handling getting attacked well
 	hurt_high, hurt_low, hurt_crouch, #not handling getting attacked well
@@ -83,15 +84,10 @@ var anim_right_suf = "_right"
 	states.set_win : "other/set_win",
 	states.idle : "basic/idle",
 	states.crouch : "basic/crouch",
-	states.jump_right_init : "basic/jump",
-	states.jump_left_init : "basic/jump",
-	states.jump_neutral_init : "basic/jump",
-	states.jump_right_air_init : "basic/jump",
-	states.jump_left_air_init : "basic/jump",
-	states.jump_neutral_air_init : "basic/jump",
-	states.jump_right : "basic/jump",
-	states.jump_left : "basic/jump",
-	states.jump_neutral : "basic/jump",
+	states.jump_right_init : "basic/jump", states.jump_left_init : "basic/jump", states.jump_neutral_init : "basic/jump",
+	states.jump_right_air_init : "basic/jump", states.jump_neutral_air_init : "basic/jump", states.jump_left_air_init : "basic/jump",
+	states.jump_right : "basic/jump", states.jump_left : "basic/jump", states.jump_neutral : "basic/jump",
+	states.jump_right_no_act : "basic/jump", states.jump_left_no_act : "basic/jump", states.jump_neutral_no_act : "basic/jump",
 	states.hurt_high : "hurting/high",
 	states.hurt_low : "hurting/low",
 	states.hurt_crouch : "hurting/crouch",
@@ -142,7 +138,7 @@ var attack_return_state := {
 	"attack_command/crouch_b": states.crouch,
 	"attack_command/crouch_c": states.crouch,
 	"attack_command/attack_projectile": states.idle,
-	"attack_command/attack_uppercut": states.jump_neutral,
+	"attack_command/attack_uppercut": states.jump_neutral_no_act,
 }
 
 var hitbox_layer : int
@@ -214,6 +210,7 @@ func is_in_air_state() -> bool:
 	return current_state in [
 		states.jump_attack,
 		states.jump_left, states.jump_neutral, states.jump_right,
+		states.jump_right_no_act, states.jump_neutral_no_act, states.jump_left_no_act,
 		states.block_air, states.hurt_bounce, states.hurt_fall
 	]
 
@@ -573,11 +570,11 @@ func update_character_state():
 		states.jump_right_init, states.jump_left_init, states.jump_neutral_init, states.jump_neutral_air_init, states.jump_left_air_init, states.jump_right_air_init:
 			jump_count -= 1
 			velocity.y = jump_height
-		states.jump_right:
+		states.jump_right, states.jump_right_no_act:
 			velocity.x = walk_speed
-		states.jump_left:
+		states.jump_left, states.jump_left_no_act:
 			velocity.x = -1 * walk_speed
-		states.jump_neutral:
+		states.jump_neutral, states.jump_neutral_no_act:
 			velocity.x = 0
 		states.hurt_high, states.hurt_low, states.hurt_crouch, states.block_high, states.block_low:
 			if stun_time_current == stun_time_start:
@@ -624,7 +621,7 @@ func resolve_state_transitions():
 			if not is_on_floor(): update_state(states.jump_left)
 		states.jump_neutral_init, states.jump_neutral_air_init:
 			if not is_on_floor(): update_state(states.jump_neutral)
-		states.jump_right, states.jump_left, states.jump_neutral:
+		states.jump_right, states.jump_left, states.jump_neutral, states.jump_right_no_act, states.jump_neutral_no_act, states.jump_left_no_act:
 			if is_on_floor():
 				var new_walk = walk_check(null, current_state)
 				update_state(new_walk)
