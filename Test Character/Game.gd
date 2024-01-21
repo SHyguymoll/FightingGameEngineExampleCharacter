@@ -409,5 +409,6 @@ func _physics_process(_delta):
 			character_positioning()
 			update_hud()
 		moments.ROUND_END:
-			pass
-	
+			move_inputs_and_iterate()
+			check_combo()
+			character_positioning()
