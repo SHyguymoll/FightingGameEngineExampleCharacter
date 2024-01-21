@@ -469,7 +469,7 @@ func convert_directions_into_numpad_notation(up, down, back, forward) -> int:
 		return 6
 	return 5
 
-func convert_inputs_into_numpad_notation() -> Array:
+func convert_inputs_into_numpad_notation(timing := true) -> Array:
 	var numpad_buffer = []
 	for i in range(len(inputs.up) - 1):
 		numpad_buffer.append(
@@ -480,14 +480,24 @@ func convert_inputs_into_numpad_notation() -> Array:
 				button_pressed_at_ind("right", i)
 			)
 		)
-	numpad_buffer.append(
-		convert_directions_into_numpad_notation(
-			button_pressed_at_ind_under_duration("up", -1, MOTION_INPUT_LENIENCY),
-			button_pressed_at_ind_under_duration("down", -1, MOTION_INPUT_LENIENCY),
-			button_pressed_at_ind_under_duration("left", -1, MOTION_INPUT_LENIENCY),
-			button_pressed_at_ind_under_duration("right", -1, MOTION_INPUT_LENIENCY)
+	if timing:
+		numpad_buffer.append(
+			convert_directions_into_numpad_notation(
+				button_pressed_at_ind_under_duration("up", -1, MOTION_INPUT_LENIENCY),
+				button_pressed_at_ind_under_duration("down", -1, MOTION_INPUT_LENIENCY),
+				button_pressed_at_ind_under_duration("left", -1, MOTION_INPUT_LENIENCY),
+				button_pressed_at_ind_under_duration("right", -1, MOTION_INPUT_LENIENCY)
+			)
 		)
-	)
+	else:
+		numpad_buffer.append(
+			convert_directions_into_numpad_notation(
+				button_pressed_at_ind("up", -1),
+				button_pressed_at_ind("down", -1),
+				button_pressed_at_ind("left", -1),
+				button_pressed_at_ind("right", -1)
+			)
+		)
 	return numpad_buffer
 
 
