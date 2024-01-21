@@ -420,7 +420,6 @@ func training_mode_settings():
 
 func _physics_process(_delta):
 	camera_control(camera_mode)
-	
 	match moment:
 		moments.INTRO:
 			move_inputs_and_iterate()
@@ -444,6 +443,8 @@ func _physics_process(_delta):
 			move_inputs_and_iterate()
 			check_combo()
 			character_positioning()
+			if p1.post_outro():
+				get_tree().reload_current_scene()
 
 func _on_p1_health_reset_switch_toggled(toggled_on):
 	p1_reset_health_on_drop = toggled_on
