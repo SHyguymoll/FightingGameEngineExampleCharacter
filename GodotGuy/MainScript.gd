@@ -290,6 +290,12 @@ func two_attack_buttons_just_pressed():
 			int(button_just_pressed("button1")) + \
 			int(button_just_pressed("button2")) == 2 
 
+# defining the motion inputs, with some leniency
+const QUARTER_CIRCLE_FORWARD = [[2,3,6], [2,6]]
+const QUARTER_CIRCLE_BACK = [[2,1,4], [2,4]]
+const Z_MOTION_FORWARD = [[6,2,3], [6,5,2,3], [6,3,2,3], [6,5,4,1,2,3], [6,3,2,1,2,3]]
+const Z_MOTION_BACK = [[4,2,1], [4,5,2,1], [6,3,2,3], [4,5,6,3,2,1], [4,1,2,3,2,1]]
+
 func handle_special_attack(cur_state: states) -> states:
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
@@ -423,11 +429,6 @@ func jump_check(exclude, cur_state: states, grounded := true) -> states:
 					return states.jump_neutral_init if grounded else states.jump_neutral_air_init
 	return cur_state
 
-const QUARTER_CIRCLE_FORWARD = [2,3,6]
-const QUARTER_CIRCLE_BACK = [2,1,4]
-const Z_MOTION_FORWARD = [6,5,2,3]
-const Z_MOTION_BACK = [4,5,2,1]
-
 func convert_directions_into_numpad_notation(up, down, back, forward) -> int:
 	if up:
 		if back and right_facing or forward and not right_facing:
@@ -469,10 +470,13 @@ func convert_inputs_into_numpad_notation() -> Array:
 	return numpad_buffer
 
 
-func motion_input_check(motion_to_check) -> bool:
+func motion_input_check(motions_to_check) -> bool:
 	var buffer_as_numpad = convert_inputs_into_numpad_notation()
-	var buffer_sliced = buffer_as_numpad.slice((len(buffer_as_numpad)) - (len(motion_to_check) + 1), -1)
-	return buffer_sliced == motion_to_check
+	for motion_to_check in motions_to_check:
+		var buffer_sliced = buffer_as_numpad.slice((len(buffer_as_numpad)) - (len(motion_to_check) + 1), -1)
+		if buffer_sliced == motion_to_check:
+			return true
+	return false
 
 func handle_input() -> void:
 	var decision : states = current_state
