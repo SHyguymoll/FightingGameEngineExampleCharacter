@@ -386,7 +386,7 @@ func delete_projectile(projectile):
 	projectiles.erase(projectile)
 
 func player_defeated(player: int):
-	pass
+	moment = moments.ROUND_END
 
 func _physics_process(_delta):
 	camera_control(camera_mode)
