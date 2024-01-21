@@ -300,8 +300,17 @@ const QUARTER_CIRCLE_FORWARD = [[2,3,6], [2,6]]
 const QUARTER_CIRCLE_BACK = [[2,1,4], [2,4]]
 const TIGER_KNEE_FORWARD = [[2,3,6,9]]
 const TIGER_KNEE_BACK = [[2,1,4,7]]
-const Z_MOTION_FORWARD = [[6,2,3], [6,5,2,3], [6,3,2,3], [6,5,4,1,2,3], [6,3,2,1,2,3]]
-const Z_MOTION_BACK = [[4,2,1], [4,5,2,1], [6,3,2,3], [4,5,6,3,2,1], [4,1,2,3,2,1]]
+const Z_MOTION_FORWARD = [
+	[6,2,3], #canonical
+	[6,5,2,3], #forward then down
+	[6,2,3,6], #overshot a little
+	[6,3,2,3], #rolling method
+	[6,3,2,1,2,3], #super rolling method
+	[6,5,1,2,3], #forward to two away from a half circle
+	[6,5,4,1,2,3], #forward to one away from a half circle
+	[6,5,4,1,2,3,6], #forward to a half circle, maximumly lenient
+]
+const Z_MOTION_BACK = [[4,2,1], [4,5,2,1], [4,1,2,3], [4,1,2,3,2,1], [4,5,3,2,1], [4,5,6,3,2,1], [4,5,6,3,2,1,4]]
 
 func handle_special_attack(cur_state: states) -> states:
 	match current_state:
