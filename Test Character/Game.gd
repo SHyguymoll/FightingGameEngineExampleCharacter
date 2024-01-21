@@ -418,7 +418,7 @@ func register_projectile(projectile):
 func delete_projectile(projectile):
 	projectiles.erase(projectile)
 
-func player_defeated(player: int):
+func player_defeated(one_two):
 	moment = moments.ROUND_END
 
 func training_mode_settings():
@@ -452,7 +452,7 @@ func _physics_process(_delta):
 			move_inputs_and_iterate()
 			check_combo()
 			character_positioning()
-			if p1.post_outro():
+			if p1.post_outro() and p2.post_outro():
 				get_tree().reload_current_scene()
 
 func _on_p1_health_reset_switch_toggled(toggled_on):

@@ -207,7 +207,7 @@ func post_intro() -> bool:
 	return current_state != states.intro
 
 func post_outro() -> bool:
-	return current_state in [states.round_win, states.set_win] and not animate.is_playing()
+	return (current_state in [states.round_win, states.set_win] and not animate.is_playing()) or current_state == states.hurt_lie
 
 func is_in_air_state() -> bool:
 	return current_state in [
