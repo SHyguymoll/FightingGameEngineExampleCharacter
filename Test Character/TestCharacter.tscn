@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cd77r01gxs0ud"]
+[gd_scene load_steps=10 format=3 uid="uid://cd77r01gxs0ud"]
 
 [ext_resource type="Script" path="res://Test Character/Game.gd" id="1_a16kr"]
 [ext_resource type="FontFile" uid="uid://b3yiy4ulnirtc" path="res://Test Character/TestHUD/PlayerFont.ttf" id="2_jjmwk"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://bxt6h5ot7vf65" path="res://Test Character/TestHUD/Player1Bar.png" id="4_7ll10"]
 [ext_resource type="Texture2D" uid="uid://c2t6vti0ip1cs" path="res://Test Character/TestHUD/Player2Background.png" id="5_6q5w6"]
 [ext_resource type="Texture2D" uid="uid://cefvd3dg6571h" path="res://Test Character/TestHUD/Player2Bar.png" id="6_2k3f0"]
+[ext_resource type="Theme" uid="uid://dqy1w1gb4mp1b" path="res://Test Character/TestHUD/HUD_TrainingSectionTheme.tres" id="9_agrsw"]
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_a16kr")
@@ -172,3 +173,68 @@ theme_override_fonts/font = ExtResource("2_jjmwk")
 theme_override_font_sizes/font_size = 24
 text = "inputs"
 horizontal_alignment = 2
+
+[node name="TrainingModeControls" type="HBoxContainer" parent="HUD"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="P1Controls" type="PanelContainer" parent="HUD/TrainingModeControls"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD/TrainingModeControls/P1Controls"]
+layout_mode = 2
+
+[node name="HealthReset" type="HSlider" parent="HUD/TrainingModeControls/P1Controls/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+tick_count = 10
+ticks_on_borders = true
+
+[node name="HealthResetSwitch" type="CheckButton" parent="HUD/TrainingModeControls/P1Controls/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme = ExtResource("9_agrsw")
+text = "Reset P1 Health"
+alignment = 2
+
+[node name="Reset" type="Button" parent="HUD/TrainingModeControls"]
+layout_mode = 2
+theme = ExtResource("9_agrsw")
+text = "Reset"
+
+[node name="P2Controls" type="PanelContainer" parent="HUD/TrainingModeControls"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD/TrainingModeControls/P2Controls"]
+layout_mode = 2
+
+[node name="HealthResetSwitch" type="CheckButton" parent="HUD/TrainingModeControls/P2Controls/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme = ExtResource("9_agrsw")
+text = "Reset P2 Health"
+
+[node name="HealthReset" type="HSlider" parent="HUD/TrainingModeControls/P2Controls/HBoxContainer"]
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+tick_count = 10
+ticks_on_borders = true
+
+[connection signal="drag_ended" from="HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthReset" to="." method="_on_p1_health_reset_drag_ended"]
+[connection signal="toggled" from="HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthResetSwitch" to="." method="_on_p1_health_reset_switch_toggled"]
+[connection signal="button_up" from="HUD/TrainingModeControls/Reset" to="." method="_on_reset_button_up"]
+[connection signal="toggled" from="HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthResetSwitch" to="." method="_on_p2_health_reset_switch_toggled"]
+[connection signal="drag_ended" from="HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthReset" to="." method="_on_p2_health_reset_drag_ended"]
