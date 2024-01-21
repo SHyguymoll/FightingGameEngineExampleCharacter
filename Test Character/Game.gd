@@ -259,26 +259,30 @@ func build_input_tracker(p1_buf : Dictionary, p2_buf : Dictionary) -> void:
 
 #convert to hash to simplify comparisons
 func get_current_input_hashes() -> Array: return [
-	(int(p1_buttons[0]) * 1) + \
-	(int(p1_buttons[1]) * 2) + \
-	(int(p1_buttons[2]) * 4) + \
-	(int(p1_buttons[3]) * 8) + \
-	max(0, ((int(p1_buttons[4]) - int(p1.BUTTONCOUNT < 1)) * 16)) + \
-	max(0, ((int(p1_buttons[5]) - int(p1.BUTTONCOUNT < 2)) * 32)) + \
-	max(0, ((int(p1_buttons[6]) - int(p1.BUTTONCOUNT < 3)) * 64)) + \
-	max(0, ((int(p1_buttons[7]) - int(p1.BUTTONCOUNT < 4)) * 128)) + \
-	max(0, ((int(p1_buttons[8]) - int(p1.BUTTONCOUNT < 5)) * 256)) + \
-	max(0, ((int(p1_buttons[9]) - int(p1.BUTTONCOUNT < 6)) * 512)),
-	(int(p2_buttons[0]) * 1) + \
-	(int(p2_buttons[1]) * 2) + \
-	(int(p2_buttons[2]) * 4) + \
-	(int(p2_buttons[3]) * 8) + \
-	max(0, ((int(p2_buttons[4]) - int(p2.BUTTONCOUNT < 1)) * 16)) + \
-	max(0, ((int(p2_buttons[5]) - int(p2.BUTTONCOUNT < 2)) * 32)) + \
-	max(0, ((int(p2_buttons[6]) - int(p2.BUTTONCOUNT < 3)) * 64)) + \
-	max(0, ((int(p2_buttons[7]) - int(p2.BUTTONCOUNT < 4)) * 128)) + \
-	max(0, ((int(p2_buttons[8]) - int(p2.BUTTONCOUNT < 5)) * 256)) + \
-	max(0, ((int(p2_buttons[9]) - int(p2.BUTTONCOUNT < 6)) * 512))
+	(
+		(int(p1_buttons[0]) * 1) +
+		(int(p1_buttons[1]) * 2) +
+		(int(p1_buttons[2]) * 4) +
+		(int(p1_buttons[3]) * 8) +
+		((int(p1.BUTTONCOUNT > 0 and p1_buttons[4])) * 16) +
+		((int(p1.BUTTONCOUNT > 1 and p1_buttons[5])) * 32) +
+		((int(p1.BUTTONCOUNT > 2 and p1_buttons[6])) * 64) +
+		((int(p1.BUTTONCOUNT > 3 and p1_buttons[7])) * 128) +
+		((int(p1.BUTTONCOUNT > 4 and p1_buttons[8])) * 256) +
+		((int(p1.BUTTONCOUNT > 5 and p1_buttons[9])) * 512)
+	),
+	(
+		(int(p2_buttons[0]) * 1) +
+		(int(p2_buttons[1]) * 2) +
+		(int(p2_buttons[2]) * 4) +
+		(int(p2_buttons[3]) * 8) +
+		((int(p2.BUTTONCOUNT > 0 and p2_buttons[4])) * 16) +
+		((int(p2.BUTTONCOUNT > 1 and p2_buttons[5])) * 32) +
+		((int(p2.BUTTONCOUNT > 2 and p2_buttons[6])) * 64) +
+		((int(p2.BUTTONCOUNT > 3 and p2_buttons[7])) * 128) +
+		((int(p2.BUTTONCOUNT > 4 and p2_buttons[8])) * 256) +
+		((int(p2.BUTTONCOUNT > 5 and p2_buttons[9])) * 512)
+	)
 ]
 
 #ditto, but for an already completed input
