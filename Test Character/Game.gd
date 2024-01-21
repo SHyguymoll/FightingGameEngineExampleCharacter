@@ -283,13 +283,20 @@ func get_current_input_hashes() -> Array: return [
 
 #ditto, but for an already completed input
 func generate_prior_input_hash(player_inputs: Dictionary):
-	var val = 0
-	var multiplier = 1
-	for inp in player_inputs:
-		if player_inputs[inp][-1][1]:
-			val += multiplier
-		multiplier *= 2
-	return val
+	var fail_case := [[0,false]]
+	return (
+		(int(player_inputs.get("up", fail_case)[-1][1]) * 1) +
+		(int(player_inputs.get("down", fail_case)[-1][1]) * 2) +
+		(int(player_inputs.get("left", fail_case)[-1][1]) * 4) +
+		(int(player_inputs.get("right", fail_case)[-1][1]) * 8) +
+		(int(player_inputs.get("button0", fail_case)[-1][1]) * 16) +
+		(int(player_inputs.get("button1", fail_case)[-1][1]) * 32) +
+		(int(player_inputs.get("button2", fail_case)[-1][1]) * 64) +
+		(int(player_inputs.get("button3", fail_case)[-1][1]) * 128) +
+		(int(player_inputs.get("button4", fail_case)[-1][1]) * 256) +
+		(int(player_inputs.get("button5", fail_case)[-1][1]) * 512)
+	)
+	
 
 func increment_inputs(player_inputs: Dictionary):
 	for inp in player_inputs:
