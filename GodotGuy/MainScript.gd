@@ -151,14 +151,14 @@ func _process(_delta):
 		$DebugData.text += str(inputs_as_numpad()[0])
 
 var attack_return_state := {
-	"attack_normal/stand_a": states.idle,
-	"attack_normal/stand_b": states.idle,
-	"attack_normal/stand_c": states.idle,
+	"attack_normal/a": states.idle,
+	"attack_normal/b": states.idle,
+	"attack_normal/c": states.idle,
 	"attack_command/crouch_a": states.crouch,
 	"attack_command/crouch_b": states.crouch,
 	"attack_command/crouch_c": states.crouch,
-	"attack_command/attack_projectile": states.idle,
-	"attack_command/attack_uppercut": states.jump_neutral_no_act,
+	"attack_motion/projectile": states.idle,
+	"attack_motion/uppercut": states.jump_neutral_no_act,
 }
 
 var hitbox_layer : int
@@ -183,7 +183,7 @@ func create_hitbox(pos : Vector3, shape : Shape3D,
 				lifetime : int, damage_hit : float, damage_block : float,
 				stun_hit : int, stun_block : int, hit_priority : int,
 				kback_hit : Vector3, kback_block : Vector3, type : String,
-				on_hit, on_block):
+				on_hit_data, on_block_data):
 	var new_hitbox := (hitbox.instantiate() as Hitbox)
 	if not right_facing:
 		pos.x *= -1
@@ -199,15 +199,15 @@ func create_hitbox(pos : Vector3, shape : Shape3D,
 	new_hitbox.kback_block = kback_block
 	new_hitbox.hit_priority = hit_priority
 	new_hitbox.type = type
-	new_hitbox.on_hit = on_hit
-	new_hitbox.on_block = on_block
+	new_hitbox.on_hit = on_hit_data
+	new_hitbox.on_block = on_block_data
 	emit_signal(&"hitbox_created", new_hitbox)
 
 func create_projectile(pos : Vector3, projectile_ind : int, type : int,
 				damage_hit : float, damage_block : float,
 				stun_hit : int, stun_block : int, hit_priority : int,
 				kback_hit : Vector3, kback_block : Vector3, hit_type : String,
-				on_hit, on_block):
+				on_hit_data, on_block_data):
 	var new_projectile := (projectiles[projectile_ind].instantiate() as Projectile)
 	if not right_facing:
 		pos.x *= -1
@@ -223,8 +223,8 @@ func create_projectile(pos : Vector3, projectile_ind : int, type : int,
 	new_projectile.get_node(^"Hitbox").kback_block = kback_block
 	new_projectile.get_node(^"Hitbox").hit_priority = hit_priority
 	new_projectile.get_node(^"Hitbox").type = hit_type
-	new_projectile.get_node(^"Hitbox").on_hit = on_hit
-	new_projectile.get_node(^"Hitbox").on_block = on_block
+	new_projectile.get_node(^"Hitbox").on_hit = on_hit_data
+	new_projectile.get_node(^"Hitbox").on_block = on_block_data
 	emit_signal(&"projectile_created", new_projectile)
 
 func add_meter(add_to_meter : float):
@@ -352,12 +352,12 @@ func try_super_attack(cur_state: states) -> states:
 		states.idle, states.walk_back, states.walk_forward:
 			if motion_input_check(QUARTER_CIRCLE_FORWARD) and two_attacks_just_pressed() and meter >= 50:
 				meter -= 50
-				update_attack("attack_command/attack_projectile")
+				update_attack("attack_super/projectile")
 				return states.attack_motion
 		states.jump_neutral, states.jump_left, states.jump_right:
 			if motion_input_check(QUARTER_CIRCLE_FORWARD) and two_attacks_just_pressed() and meter >= 50:
 				meter -= 50
-				update_attack("attack_command/attack_projectile_air")
+				update_attack("attack_super/projectile_air")
 				jump_count = 0
 				return states.attack_motion
 	return cur_state
@@ -367,20 +367,20 @@ func try_special_attack(cur_state: states) -> states:
 		states.idle, states.walk_back, states.walk_forward:
 			#check z_motion first since there's a lot of overlap with quarter_circle on extreme cases
 			if motion_input_check(Z_MOTION_FORWARD) and one_attack_just_pressed():
-				update_attack("attack_command/attack_uppercut")
+				update_attack("attack_motion/uppercut")
 				jump_count = 0
 				return states.attack_motion
 			if motion_input_check(QUARTER_CIRCLE_FORWARD) and one_attack_just_pressed():
-				update_attack("attack_command/attack_projectile")
+				update_attack("attack_motion/projectile")
 				return states.attack_motion
 		states.crouch:
 			if motion_input_check(Z_MOTION_FORWARD) and one_attack_just_pressed():
-				update_attack("attack_command/attack_uppercut")
+				update_attack("attack_motion/uppercut")
 				jump_count = 0
 				return states.attack_motion
 		states.jump_neutral, states.jump_left, states.jump_right:
 			if motion_input_check(QUARTER_CIRCLE_FORWARD + TIGER_KNEE_FORWARD) and one_attack_just_pressed():
-				update_attack("attack_command/attack_projectile_air")
+				update_attack("attack_motion/projectile_air")
 				jump_count = 0
 				return states.attack_motion
 	return cur_state
@@ -407,13 +407,13 @@ func try_attack(cur_state: states) -> states:
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
 			if btn_just_pressed("button0"):
-				update_attack("attack_normal/stand_a")
+				update_attack("attack_normal/a")
 				return states.attack_normal
 			if btn_just_pressed("button1"):
-				update_attack("attack_normal/stand_b")
+				update_attack("attack_normal/b")
 				return states.attack_normal
 			if btn_just_pressed("button2"):
-				update_attack("attack_normal/stand_c")
+				update_attack("attack_normal/c")
 				return states.attack_normal
 		states.crouch:
 			if btn_just_pressed("button0"):
@@ -444,11 +444,11 @@ func magic_series(level: int):
 		return
 	
 	if level == 1 and btn_just_pressed("button1"):
-		update_attack("attack_normal/stand_b")
+		update_attack("attack_normal/b")
 		update_character_animation()
 	
 	if btn_just_pressed("button2"):
-		update_attack("attack_normal/stand_c")
+		update_attack("attack_normal/c")
 		update_character_animation()
 
 #returns -1 (walk away), 0 (neutral), and 1 (walk towards)
@@ -607,11 +607,11 @@ func handle_input() -> void:
 				# magic series
 				if decision == states.attack_normal:
 					match current_attack:
-						"attack_normal/stand_a":
+						"attack_normal/a":
 							magic_series(1)
-						"attack_normal/stand_b":
+						"attack_normal/b":
 							magic_series(2)
-						"attack_normal/stand_c":
+						"attack_normal/c":
 							magic_series(3)
 					# special cancelling
 					decision = try_special_attack(decision)
