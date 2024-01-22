@@ -828,7 +828,7 @@ func handle_damage(attack : Hitbox, blocked : bool):
 		kback = attack.kback_hit
 		if health <= 0:
 			set_state(states.hurt_lie)
-			emit_signal(&"defeated")
+			emit_signal(&"defeated", player_number)
 	else:
 		health = max(health - attack.damage_block * defense_mult, 1)
 		set_stun(attack.stun_block)
