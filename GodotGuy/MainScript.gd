@@ -47,8 +47,8 @@ var stun_time_current : int = 0
 @onready var hitbox = preload("res://GodotGuy/scenes/Hitbox.tscn")
 
 const JUST_PRESSED_BUFFER : int = 2
-const DASH_INPUT_LENIENCY : int = 6
-const MOTION_INPUT_LENIENCY : int = 9
+const DASH_INPUT_LENIENCY : int = 15
+const MOTION_INPUT_LENIENCY : int = 12
 const GROUND_SLIDE_FRICTION : float = 0.97
 
 @export var animate : AnimationPlayer
@@ -146,7 +146,8 @@ func _process(_delta):
 		stun_time_start,
 		kback,
 	]
-	if len(inputs) != 0: $DebugData.text += str(inputs_as_numpad()[-1])
+	if len(inputs.up) > 0:
+		$DebugData.text += str(inputs_as_numpad()[0])
 
 var attack_return_state := {
 	"attack_normal/stand_a": states.idle,
@@ -457,11 +458,12 @@ func try_walk(exclude, cur_state: states) -> states:
 func try_dash(input: String, success_state: states, cur_state: states) -> states:
 # we only need the last three inputs
 	var walks = [
-		btn_pressed_ind_under_time(input, -3, DASH_INPUT_LENIENCY),
-		btn_pressed_ind_under_time(input, -2, DASH_INPUT_LENIENCY),
-		btn_pressed_ind_under_time(input, -1, DASH_INPUT_LENIENCY)
+		btn_pressed_ind(input, -3),
+		btn_pressed_ind(input, -2),
+		btn_pressed_ind(input, -1)
 	]
-	if walks == [true, false, true]:
+	var count_frames = btn_state(input, -3)[0] + btn_state(input, -2)[0] + btn_state(input, -1)[0]
+	if walks == [true, false, true] and count_frames <= DASH_INPUT_LENIENCY:
 		dash_ended = false
 		return success_state
 	return cur_state
@@ -506,7 +508,7 @@ func directions_as_numpad(up, down, back, forward) -> int:
 
 func inputs_as_numpad(timing := true) -> Array:
 	var numpad_buffer = []
-	for i in range(len(inputs.up) - 1):
+	for i in range(max(0, len(inputs.up) - 2)):
 		numpad_buffer.append(
 			directions_as_numpad(
 				btn_pressed_ind("up", i),
@@ -515,22 +517,24 @@ func inputs_as_numpad(timing := true) -> Array:
 				btn_pressed_ind("right", i)
 			)
 		)
+	if max(0, len(inputs.up) - 2) == 0:
+		return [5]
 	if timing:
 		numpad_buffer.append(
 			directions_as_numpad(
-				btn_pressed_ind_under_time("up", -1, MOTION_INPUT_LENIENCY),
-				btn_pressed_ind_under_time("down", -1, MOTION_INPUT_LENIENCY),
-				btn_pressed_ind_under_time("left", -1, MOTION_INPUT_LENIENCY),
-				btn_pressed_ind_under_time("right", -1, MOTION_INPUT_LENIENCY)
+				btn_pressed_ind_under_time("up", -2, MOTION_INPUT_LENIENCY),
+				btn_pressed_ind_under_time("down", -2, MOTION_INPUT_LENIENCY),
+				btn_pressed_ind_under_time("left", -2, MOTION_INPUT_LENIENCY),
+				btn_pressed_ind_under_time("right", -2, MOTION_INPUT_LENIENCY)
 			)
 		)
 	else:
 		numpad_buffer.append(
 			directions_as_numpad(
-				btn_pressed_ind("up", -1),
-				btn_pressed_ind("down", -1),
-				btn_pressed_ind("left", -1),
-				btn_pressed_ind("right", -1)
+				btn_pressed_ind("up", -2),
+				btn_pressed_ind("down", -2),
+				btn_pressed_ind("left", -2),
+				btn_pressed_ind("right", -2)
 			)
 		)
 	return numpad_buffer
@@ -539,7 +543,7 @@ func inputs_as_numpad(timing := true) -> Array:
 func motion_input_check(motions_to_check) -> bool:
 	var buffer_as_numpad = inputs_as_numpad()
 	for motion_to_check in motions_to_check:
-		var buffer_sliced = buffer_as_numpad.slice((len(buffer_as_numpad)) - (len(motion_to_check) + 1), -1)
+		var buffer_sliced = buffer_as_numpad.slice(len(buffer_as_numpad) - len(motion_to_check))
 		if buffer_sliced == motion_to_check:
 			return true
 	return false
