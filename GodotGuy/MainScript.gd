@@ -6,12 +6,12 @@ extends CharacterBody3D
 # input_step() is called with the latest buffer of inputs
 # damage_step() is called with the details of the attack, if it happened
 
-# this block of variables and signals are accessed by the game for various reasons
-@export var char_name : String = "Godot Guy"
-@export var health : float = 100
-var player_number : int #this is set by the game, don't change this
-var distance : float #ditto
-var input_buffer_len : int = 10
+# This block of variables and signals are accessed by the game for various reasons.
+@export var char_name : String
+@export var health : float
+var player_number : int # This is set by the game, don't change this
+var distance : float # Ditto
+var input_buffer_len : int = 10 # Must be a positive number.
 var start_x_offset : float = 2
 const BUTTONCOUNT : int = 3
 var attack_connected : bool
@@ -28,24 +28,29 @@ var jump_count : int = 0
 @export var jump_height : float = 11
 @export var gravity : float = -0.5
 @export var min_fall_vel : float = -6.5
+
 var right_facing : bool = true
+
 var kback : Vector3 = Vector3.ZERO
 var stun_time_start : int = 0
 var stun_time_current : int = 0
 @onready var hitbox = preload("res://GodotGuy/scenes/Hitbox.tscn")
+
 const JUST_PRESSED_BUFFER : int = 2
 const DASH_INPUT_LENIENCY : int = 6
 const MOTION_INPUT_LENIENCY : int = 9
 const GROUND_SLIDE_FRICTION : float = 0.97
+
 @export var animate : AnimationPlayer
+
 var damage_mult : float = 1.0
 var defense_mult : float = 1.0
 
-# extremely important, how the character stores the inputs from the game.
+# Extremely important, how the character stores the inputs from the game.
 # Dictionary with 4 entries for each cardinal directional input, plus the number of buttons (buttonX).
-# each entry holds an array made up of tuples of a boolean and an int, representing how long the
+# Each entry holds an array made up of tuples of a boolean and an int, representing how long the
 # input was held/not held.
-# saved here as the alternative was copying potentially large blocks of data for many functions.
+# Saved here as the alternative was copying potentially large blocks of data for many functions.
 var inputs
 
 @onready var projectiles = [preload("res://GodotGuy/scenes/ProjectileStraight.tscn")]
