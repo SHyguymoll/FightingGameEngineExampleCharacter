@@ -72,12 +72,10 @@ func make_hud():
 	$HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthReset.min_value = 1
 	$HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthReset.max_value = p1.health
 	$HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthReset.value = $HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthReset.max_value
-	$HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthReset.step = $HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthReset.max_value / 10
 	$HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthResetSwitch.set_pressed_no_signal(p1_reset_health_on_drop)
 	$HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthReset.min_value = 1
 	$HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthReset.max_value = p2.health
 	$HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthReset.value = $HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthReset.max_value
-	$HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthReset.step = $HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthReset.max_value / 10
 	$HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthResetSwitch.set_pressed_no_signal(p2_reset_health_on_drop)
 
 func update_hud():
@@ -423,7 +421,8 @@ func register_projectile(projectile):
 func delete_projectile(projectile):
 	projectiles.erase(projectile)
 
-func player_defeated(one_two):
+func player_defeated(player_number):
+	print(player_number)
 	moment = moments.ROUND_END
 
 func training_mode_settings():
@@ -465,13 +464,15 @@ func _on_p1_health_reset_switch_toggled(toggled_on):
 	p1_reset_health_on_drop = toggled_on
 
 func _on_p1_health_reset_drag_ended(value_changed):
-	p1_health_reset = value_changed
+	if value_changed and p1_reset_health_on_drop:
+		p1_health_reset = $HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthReset.value
 
 func _on_p2_health_reset_switch_toggled(toggled_on):
 	p1_reset_health_on_drop = toggled_on
 
 func _on_p2_health_reset_drag_ended(value_changed):
-	p2_health_reset = value_changed
+	if value_changed and p2_reset_health_on_drop:
+		p2_health_reset = $HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthReset.value
 
 func _on_reset_button_up():
 	get_tree().reload_current_scene()
