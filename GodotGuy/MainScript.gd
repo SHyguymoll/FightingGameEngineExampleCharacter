@@ -805,13 +805,13 @@ func input_step(recv_inputs) -> void:
 
 # This is called when a hitbox makes contact with the other fighter, after resolving that the fighter
 # was hit by the attack. A Variant is passed for maximum customizability.
-func on_hit(on_hit):
+func on_hit(on_hit_data):
 # For this fighter, the on_hit and on_block only store a single float, the meter to be gained.
-	add_meter(on_hit)
+	add_meter(on_hit_data)
 
 # Ditto, but for after resolving that the fighter blocked the attack.
-func on_block(on_block):
-	add_meter(on_block)
+func on_block(on_block_data):
+	add_meter(on_block_data)
 
 func handle_damage(attack : Hitbox, blocked : bool):
 	if not blocked:
