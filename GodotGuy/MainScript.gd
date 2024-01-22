@@ -718,26 +718,26 @@ func resolve_state_transitions():
 				var new_walk = try_walk(null, current_state)
 				set_state(new_walk)
 		states.block_air:
-			stun_time_current -= 1
+			reduce_stun()
 			if is_on_floor():
 				stun_time_current = 0
 			handle_air_stun()
 		states.hurt_high, states.hurt_low, states.hurt_crouch, states.block_high, states.block_low:
-			stun_time_current -= 1
+			reduce_stun()
 			handle_stand_stun()
 		states.hurt_fall:
-			stun_time_current -= 1
+			reduce_stun()
 			handle_air_stun()
 			if check_true and stun_time_current < stun_time_start:
 				set_state(states.hurt_lie)
 		states.hurt_bounce:
-			stun_time_current -= 1
+			reduce_stun()
 			if check_true:
 				set_state(states.hurt_fall)
 				set_stun(stun_time_start)
 				kback.y *= -1
 		states.hurt_lie:
-			stun_time_current -= 1
+			reduce_stun()
 			if stun_time_current == 0:
 				set_state(states.get_up)
 		states.attack_normal, states.attack_command, states.attack_motion:
@@ -780,10 +780,16 @@ func update_character_animation():
 			_:
 				animate.play(basic_anim_state_dict[current_state] + (anim_right_suf if right_facing else anim_left_suf))
 
+const INFINITE_STUN := -1
+
 func set_stun(value):
 	stun_time_start = value
 	GlobalKnowledge.global_hitstop = int(value/4)
 	stun_time_current = stun_time_start + 1
+
+func reduce_stun():
+	if stun_time_current != -1:
+		stun_time_current = max(0, stun_time_current - 1)
 
 func reset_facing():
 	if distance < 0:
