@@ -81,7 +81,7 @@ enum states {
 	jump_right_air_init, jump_neutral_air_init, jump_left_air_init, #jump from air initial
 	jump_right, jump_neutral, jump_left, #aerial actionable
 	jump_right_no_act, jump_neutral_no_act, jump_left_no_act, #aerial not actionable
-	attack, attack_command, jump_attack, special_attack, #handling attacks
+	attack_normal, attack_command, attack_motion, jump_attack, #handling attacks
 	block_high, block_low, block_air, get_up, #handling getting attacked well
 	hurt_high, hurt_low, hurt_crouch, #not handling getting attacked well
 	hurt_fall, hurt_lie, hurt_bounce, #REALLY not handling getting attacked well
@@ -254,7 +254,7 @@ func is_in_dashing_state() -> bool:
 	return current_state in [states.dash_back, states.dash_forward]
 
 func is_in_attacking_state() -> bool:
-	return current_state in [states.attack, states.attack_command, states.jump_attack]
+	return current_state in [states.attack_normal, states.attack_command, states.attack_motion, states.jump_attack]
 
 func is_in_hurting_state() -> bool:
 	return current_state in [
@@ -353,20 +353,20 @@ func try_special_attack(cur_state: states) -> states:
 			if motion_input_check(Z_MOTION_FORWARD) and one_attack_just_pressed():
 				update_attack("attack_command/attack_uppercut")
 				jump_count = 0
-				return states.attack_command
+				return states.attack_motion
 			if motion_input_check(QUARTER_CIRCLE_FORWARD) and one_attack_just_pressed():
 				update_attack("attack_command/attack_projectile")
-				return states.attack_command
+				return states.attack_motion
 		states.crouch:
 			if motion_input_check(Z_MOTION_FORWARD) and one_attack_just_pressed():
 				update_attack("attack_command/attack_uppercut")
 				jump_count = 0
-				return states.attack_command
+				return states.attack_motion
 		states.jump_neutral, states.jump_left, states.jump_right:
-			if motion_input_check(QUARTER_CIRCLE_FORWARD + TIGER_KNEE_FORWARD) and any_attack_just_pressed():
+			if motion_input_check(QUARTER_CIRCLE_FORWARD + TIGER_KNEE_FORWARD) and one_attack_just_pressed():
 				update_attack("attack_command/attack_projectile_air")
 				jump_count = 0
-				return states.attack_command
+				return states.attack_motion
 	return cur_state
 
 func try_attack(cur_state: states) -> states:
@@ -388,13 +388,13 @@ func try_attack(cur_state: states) -> states:
 		states.idle, states.walk_back, states.walk_forward:
 			if btn_just_pressed("button0"):
 				update_attack("attack_normal/stand_a")
-				return states.attack
+				return states.attack_normal
 			if btn_just_pressed("button1"):
 				update_attack("attack_normal/stand_b")
-				return states.attack
+				return states.attack_normal
 			if btn_just_pressed("button2"):
 				update_attack("attack_normal/stand_c")
-				return states.attack
+				return states.attack_normal
 		states.crouch:
 			if btn_just_pressed("button0"):
 				update_attack("attack_command/crouch_a")
@@ -580,12 +580,12 @@ func handle_input() -> void:
 			decision = try_jump(null, decision, false)
 			decision = try_attack(decision)
 # Special cases for attack canceling
-		states.attack:
+		states.attack_normal:
 			if attack_connected: #if the attack landed at all
 				# jump canceling normals
 				decision = try_jump(null, decision)
 				# magic series
-				if decision == states.attack:
+				if decision == states.attack_normal:
 					match current_attack:
 						"attack_normal/stand_a":
 							magic_series(1)
@@ -718,7 +718,7 @@ func resolve_state_transitions():
 			stun_time_current -= 1
 			if stun_time_current == 0:
 				set_state(states.get_up)
-		states.attack, states.attack_command:
+		states.attack_normal, states.attack_command, states.attack_motion:
 			if attack_ended:
 				if attack_return_state.get(current_attack) != null:
 					set_state(attack_return_state[current_attack])
@@ -735,7 +735,7 @@ func resolve_state_transitions():
 				set_state(new_walk)
 
 func update_character_animation():
-	if current_state in [states.attack, states.attack_command, states.jump_attack]:
+	if current_state in [states.attack_normal, states.attack_command, states.attack_motion, states.jump_attack]:
 		animate.play(current_attack + (anim_right_suf if right_facing else anim_left_suf))
 	else:
 		match current_state:
