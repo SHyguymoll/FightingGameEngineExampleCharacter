@@ -5778,7 +5778,7 @@ tracks/1/keys = {
 "args": [Vector3(0, 0, 0), 1],
 "method": &"update_velocity"
 }, {
-"args": [Vector3(0.875549, 0.685474, 0.04), 0, 0, 5.0, 1.0, 10, 5, 0, Vector3(4, 3, 0), Vector3(2, -2, 0), "mid"],
+"args": [Vector3(0.875549, 0.685474, 0.04), 0, 0, 5.0, 1.0, 10, 5, 0, Vector3(4, 3, 0), Vector3(2, -2, 0), "mid", 8.0, 4.0],
 "method": &"create_projectile"
 }]
 }
@@ -5812,7 +5812,7 @@ tracks/1/keys = {
 "args": [Vector3(0, 5, 0), 3],
 "method": &"update_velocity"
 }, {
-"args": [Vector3(0.875549, 0.685474, 0.04), 0, 1, 5.0, 1.0, 10, 5, 0, Vector3(4, 3, 0), Vector3(2, -2, 0), "mid"],
+"args": [Vector3(0.875549, 0.685474, 0.04), 0, 1, 5.0, 1.0, 10, 5, 0, Vector3(4, 3, 0), Vector3(2, -2, 0), "mid", 8.0, 4.0],
 "method": &"create_projectile"
 }]
 }
@@ -5840,8 +5840,8 @@ tracks/1/path = NodePath(".")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.2505, 0.334, 0.433334),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.2505, 0.333334),
+"transitions": PackedFloat32Array(1, 1, 1),
 "values": [{
 "args": [5.0],
 "method": &"add_meter"
@@ -5849,11 +5849,8 @@ tracks/1/keys = {
 "args": [Vector3(0, 9, 0), 3],
 "method": &"update_velocity"
 }, {
-"args": [Vector3(0.580425, 0.683781, 0), ExtResource("7_0yens"), 6, 13.0, 5.0, 70, 10, 0, Vector3(0.6, 10, 0), Vector3(3, 0, 0), "launch"],
+"args": [Vector3(0.580425, 0.683781, 0), ExtResource("7_0yens"), 6, 13.0, 5.0, 70, 10, 0, Vector3(0.6, 10, 0), Vector3(3, 0, 0), "launch", 15.0, 5.0],
 "method": &"create_hitbox"
-}, {
-"args": [15.0],
-"method": &"add_meter_on_hit"
 }]
 }
 
@@ -5883,7 +5880,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0.0500001),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [Vector3(0.713, 0.254, 0), ExtResource("3_7yb5n"), 4, 3.0, 0.0, 6, 5, 1, Vector3(0.05, 0, 0), Vector3(0.3, 0, 0), "sweep"],
+"args": [Vector3(0.713, 0.254, 0), ExtResource("3_7yb5n"), 4, 3.0, 0.0, 6, 5, 1, Vector3(0.05, 0, 0), Vector3(0.3, 0, 0), "sweep", 2.0, 0.0],
 "method": &"create_hitbox"
 }]
 }
@@ -5914,7 +5911,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0.15),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [Vector3(0.226, 0.967, 0), ExtResource("4_wmro4"), 3, 8.0, 3.0, 10, 7, 3, Vector3(0.6, 4, 0), Vector3(1, 0, 0), "mid"],
+"args": [Vector3(0.226, 0.967, 0), ExtResource("4_wmro4"), 3, 8.0, 3.0, 10, 7, 3, Vector3(0.6, 4, 0), Vector3(1, 0, 0), "mid", 4.0, 1.0],
 "method": &"create_hitbox"
 }]
 }
@@ -5951,7 +5948,7 @@ tracks/1/keys = {
 "args": [Vector3(0, 0, 0), 1],
 "method": &"update_velocity"
 }, {
-"args": [Vector3(0.931, 1.279, 0), ExtResource("5_3uiqp"), 2, 8.0, 2.0, 20, 0, 3, Vector3(0.4, 10, 0), Vector3(0.8, 0, 0), "launch"],
+"args": [Vector3(0.931, 1.279, 0), ExtResource("5_3uiqp"), 2, 8.0, 2.0, 20, 0, 3, Vector3(0.4, 10, 0), Vector3(0.8, 0, 0), "launch", 5.0, 2.0],
 "method": &"create_hitbox"
 }]
 }
@@ -5992,7 +5989,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0.0500001),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [Vector3(0.53, 0.215, 0), ExtResource("7_g6kjg"), 3, 2.0, 0.0, 4, 2, 0, Vector3(1, 1, 0), Vector3(0.5, 0, 0), "mid"],
+"args": [Vector3(0.53, 0.215, 0), ExtResource("7_g6kjg"), 3, 2.0, 0.0, 4, 2, 0, Vector3(1, 1, 0), Vector3(0.5, 0, 0), "mid", 1.0, 0.0],
 "method": &"create_hitbox"
 }]
 }
@@ -6023,7 +6020,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [Vector3(0.363, 0.22, 0), ExtResource("8_i46wk"), 9, 6.0, 1.0, 10, 8, 2, Vector3(3, 0, 0), Vector3(1, 0, 0), "mid"],
+"args": [Vector3(0.363, 0.22, 0), ExtResource("8_i46wk"), 9, 6.0, 1.0, 10, 8, 2, Vector3(3, 0, 0), Vector3(1, 0, 0), "mid", 3.0, 0.0],
 "method": &"create_hitbox"
 }]
 }
@@ -6054,7 +6051,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0.2),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [Vector3(0.276, 0.562, 0), ExtResource("9_xagu3"), 5, 15.0, 7.0, 30, 3, 4, Vector3(0, -6.5, 0), Vector3(0, 0, 0), "slam"],
+"args": [Vector3(0.276, 0.562, 0), ExtResource("9_xagu3"), 5, 15.0, 7.0, 30, 3, 4, Vector3(0, -6.5, 0), Vector3(0, 0, 0), "slam", 6.0, 2.0],
 "method": &"create_hitbox"
 }]
 }
@@ -6089,17 +6086,14 @@ tracks/1/path = NodePath(".")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.0333334, 0.0666668),
-"transitions": PackedFloat32Array(1, 1, 1),
+"times": PackedFloat32Array(0, 0.0333334),
+"transitions": PackedFloat32Array(1, 1),
 "values": [{
 "args": [Vector3(0, 0, 0), 1],
 "method": &"update_velocity"
 }, {
-"args": [Vector3(0.137, 0.782, 0), ExtResource("10_fhhj4"), 2, 2.0, 0.0, 3, 0, 0, Vector3(0.2, 0.1, 0), Vector3(0.4, 0, 0), "mid"],
+"args": [Vector3(0.137, 0.782, 0), ExtResource("10_fhhj4"), 2, 2.0, 0.0, 3, 0, 0, Vector3(0.2, 0.1, 0), Vector3(0.4, 0, 0), "mid", 2.0, 0.0],
 "method": &"create_hitbox"
-}, {
-"args": [2.0],
-"method": &"add_meter_on_hit"
 }]
 }
 
@@ -6126,17 +6120,14 @@ tracks/1/path = NodePath(".")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.116667, 0.166667),
-"transitions": PackedFloat32Array(1, 1, 1),
+"times": PackedFloat32Array(0, 0.116667),
+"transitions": PackedFloat32Array(1, 1),
 "values": [{
 "args": [Vector3(0, 0, 0), 1],
 "method": &"update_velocity"
 }, {
-"args": [Vector3(1.409, 0.561, 0), ExtResource("11_5iab6"), 3, 4.0, 0.0, 12, 5, 2, Vector3(0.6, 0, 0), Vector3(-0.2, 0, 0), "mid"],
+"args": [Vector3(1.409, 0.561, 0), ExtResource("11_5iab6"), 3, 4.0, 0.0, 12, 5, 2, Vector3(0.6, 0, 0), Vector3(-0.2, 0, 0), "mid", 5.0, 2.0],
 "method": &"create_hitbox"
-}, {
-"args": [5.0],
-"method": &"add_meter_on_hit"
 }]
 }
 
@@ -6163,17 +6154,14 @@ tracks/1/path = NodePath(".")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.166667, 0.216667),
-"transitions": PackedFloat32Array(1, 1, 1),
+"times": PackedFloat32Array(0, 0.166667),
+"transitions": PackedFloat32Array(1, 1),
 "values": [{
 "args": [Vector3(0, 0, 0), 1],
 "method": &"update_velocity"
 }, {
-"args": [Vector3(0.705, 0.92, 0), ExtResource("12_qtwap"), 3, 15.0, 6.0, 15, 5, 3, Vector3(3, -2, 0), Vector3(1, 0, 0), "high"],
+"args": [Vector3(0.705, 0.92, 0), ExtResource("12_qtwap"), 3, 15.0, 6.0, 15, 5, 3, Vector3(3, -2, 0), Vector3(1, 0, 0), "high", 10.0, 2.0],
 "method": &"create_hitbox"
-}, {
-"args": [10.0],
-"method": &"add_meter_on_hit"
 }]
 }
 

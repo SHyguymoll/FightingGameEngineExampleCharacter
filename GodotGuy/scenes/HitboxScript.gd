@@ -10,6 +10,8 @@ extends Area3D
 @export var kback_block : Vector3
 @export var hit_priority : int
 @export var type : String
+var on_hit : Variant
+var on_block : Variant
 
 func _physics_process(_d):
 	if lifetime > 0:

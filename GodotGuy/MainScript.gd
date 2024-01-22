@@ -125,8 +125,8 @@ var anim_right_suf = "_right"
 @export var dash_left_anim : StringName = &"basic/dash"
 @export var dash_right_anim : StringName = &"basic/dash"
 
-# nothing should modify the fighter's state here, this is purely for real-time effects
-# and starting the animation player
+# Nothing should modify the fighter's state here, this is purely for real-time effects
+# and starting the animation player.
 func _ready():
 	animate.play(basic_anim_state_dict[current_state] + 
 		(anim_right_suf if right_facing else anim_left_suf))
@@ -180,7 +180,8 @@ func update_velocity(vel : Vector3, how : av_effects):
 func create_hitbox(pos : Vector3, shape : Shape3D,
 				lifetime : int, damage_hit : float, damage_block : float,
 				stun_hit : int, stun_block : int, hit_priority : int,
-				kback_hit : Vector3, kback_block : Vector3, type : String):
+				kback_hit : Vector3, kback_block : Vector3, type : String,
+				on_hit, on_block):
 	var new_hitbox := (hitbox.instantiate() as Hitbox)
 	if not right_facing:
 		pos.x *= -1
@@ -196,12 +197,15 @@ func create_hitbox(pos : Vector3, shape : Shape3D,
 	new_hitbox.kback_block = kback_block
 	new_hitbox.hit_priority = hit_priority
 	new_hitbox.type = type
+	new_hitbox.on_hit = on_hit
+	new_hitbox.on_block = on_block
 	emit_signal(&"hitbox_created", new_hitbox)
 
 func create_projectile(pos : Vector3, projectile_ind : int, type : int,
 				damage_hit : float, damage_block : float,
 				stun_hit : int, stun_block : int, hit_priority : int,
-				kback_hit : Vector3, kback_block : Vector3, hit_type : String):
+				kback_hit : Vector3, kback_block : Vector3, hit_type : String,
+				on_hit, on_block):
 	var new_projectile := (projectiles[projectile_ind].instantiate() as Projectile)
 	if not right_facing:
 		pos.x *= -1
@@ -217,15 +221,13 @@ func create_projectile(pos : Vector3, projectile_ind : int, type : int,
 	new_projectile.get_node(^"Hitbox").kback_block = kback_block
 	new_projectile.get_node(^"Hitbox").hit_priority = hit_priority
 	new_projectile.get_node(^"Hitbox").type = hit_type
+	new_projectile.get_node(^"Hitbox").on_hit = on_hit
+	new_projectile.get_node(^"Hitbox").on_block = on_block
 	emit_signal(&"projectile_created", new_projectile)
 
 func add_meter(add_to_meter : float):
 	meter = min(meter + add_to_meter, METER_MAX)
 	(ui_elements["player1" if player_number == 1 else "player2"][0] as TextureProgressBar).value = meter
-
-func add_meter_on_hit(add_to_meter : float):
-	if attack_connected:
-		add_meter(add_to_meter)
 
 # Functions used within this script and by the game, mostly for checks
 
@@ -751,6 +753,12 @@ func update_character_animation():
 			_:
 				animate.play(basic_anim_state_dict[current_state] + (anim_right_suf if right_facing else anim_left_suf))
 
+func set_stun(value):
+	stun_time_start = value
+	GlobalKnowledge.global_hitstop = int(value/4)
+	stun_time_current = stun_time_start + 1
+
+# Functions called directly by the game
 func reset_facing():
 	if distance < 0:
 		right_facing = true
@@ -769,10 +777,15 @@ func input_step(recv_inputs) -> void:
 		update_character_state()
 	animate.speed_scale = float(GlobalKnowledge.global_hitstop == 0)
 
-func set_stun(value):
-	stun_time_start = value
-	GlobalKnowledge.global_hitstop = int(value/4)
-	stun_time_current = stun_time_start + 1
+# This is called when a hitbox makes contact with the other fighter, after resolving that the fighter
+# was hit by the attack. A Variant is passed for maximum customizability.
+func on_hit(on_hit):
+# For this fighter, the on_hit and on_block only store a single float, the meter to be gained.
+	add_meter(on_hit)
+
+# Ditto, but for after resolving that the fighter blocked the attack.
+func on_block(on_block):
+	add_meter(on_block)
 
 func handle_damage(attack : Hitbox, blocked : bool):
 	if not blocked:
