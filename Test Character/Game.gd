@@ -102,7 +102,6 @@ func init_fighters():
 		p1_inputs["button" + str(i)] = [[0, false]]
 	p1.player_number = 1
 	p1.position = Vector3(p1.start_x_offset * -1,0,0)
-	p1.right_facing = true
 	p1.initialize_boxes(true)
 	p1.char_name += " p1"
 	p1.hitbox_created.connect(register_hitbox)
@@ -115,7 +114,6 @@ func init_fighters():
 		p2_inputs["button" + str(i)] = [[0, false]]
 	p2.player_number = 2
 	p2.position = Vector3(p2.start_x_offset,0,0)
-	p2.right_facing = false
 	p2.initialize_boxes(false)
 	p2.char_name += " p2"
 	p2.hitbox_created.connect(register_hitbox)
@@ -124,6 +122,7 @@ func init_fighters():
 	for element in p2.ui_elements.player2:
 		$HUD/SpecialElements/P2Group.add_child(element)
 	
+	character_positioning()
 	p1_health_reset = p1.health
 	p2_health_reset = p2.health
 
@@ -412,8 +411,6 @@ func character_positioning():
 	p2.position.x = clamp(p2.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
 	p1.distance = p1.position.x - p2.position.x
 	p2.distance = p2.position.x - p1.position.x
-	p1.reset_facing()
-	p2.reset_facing()
 
 func register_hitbox(hitbox):
 	add_child(hitbox, true)
@@ -444,6 +441,7 @@ func _physics_process(_delta):
 				moment = moments.GAME
 				$HUD/Fight.visible = true
 			check_combo()
+			character_positioning()
 			update_hud()
 		moments.GAME:
 			# handle projectiles

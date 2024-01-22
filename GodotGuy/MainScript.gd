@@ -128,6 +128,7 @@ var anim_right_suf = "_right"
 # Nothing should modify the fighter's state here, this is purely for real-time effects
 # and starting the animation player.
 func _ready():
+	reset_facing()
 	animate.play(basic_anim_state_dict[current_state] + 
 		(anim_right_suf if right_facing else anim_left_suf))
 func _process(_delta):
@@ -762,13 +763,13 @@ func set_stun(value):
 	GlobalKnowledge.global_hitstop = int(value/4)
 	stun_time_current = stun_time_start + 1
 
-# Functions called directly by the game
 func reset_facing():
 	if distance < 0:
 		right_facing = true
 	else:
 		right_facing = false
 
+# Functions called directly by the game
 func return_attackers():
 	return $Hurtbox.get_overlapping_areas() as Array[Hitbox]
 
@@ -780,6 +781,7 @@ func input_step(recv_inputs) -> void:
 	if GlobalKnowledge.global_hitstop == 0:
 		update_character_state()
 	animate.speed_scale = float(GlobalKnowledge.global_hitstop == 0)
+	reset_facing()
 
 # This is called when a hitbox makes contact with the other fighter, after resolving that the fighter
 # was hit by the attack. A Variant is passed for maximum customizability.
