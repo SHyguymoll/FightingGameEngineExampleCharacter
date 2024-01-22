@@ -289,11 +289,11 @@ func update_attack(new_attack: String) -> void:
 enum actions {set, add, remove}
 enum buttons {Up = 1, Down = 2, Left = 4, Right = 8, A = 16, B = 32, C = 64}
 
-func button_state(input: String, ind: int):
+func btn_state(input: String, ind: int):
 	return inputs[input][ind]
 
 func btn_pressed_ind(input: String, ind: int):
-	return button_state(input, ind)[1]
+	return btn_state(input, ind)[1]
 
 func btn_pressed(input: String):
 	return btn_pressed_ind(input, -1)
@@ -302,10 +302,10 @@ func btn_just_pressed(input: String):
 	return btn_pressed_ind_under_time(input, -1, JUST_PRESSED_BUFFER)
 
 func btn_pressed_ind_under_time(input: String, ind: int, duration: int):
-	return button_state(input, ind)[0] < duration and btn_pressed_ind(input, ind)
+	return btn_state(input, ind)[0] < duration and btn_pressed_ind(input, ind)
 
 func button_held_over_time(input: String, duration: int):
-	return button_state(input, -1)[0] >= duration and btn_pressed(input)
+	return btn_state(input, -1)[0] >= duration and btn_pressed(input)
 
 func any_attack_just_pressed():
 	return btn_just_pressed("button0") or btn_just_pressed("button1") or btn_just_pressed("button2")
