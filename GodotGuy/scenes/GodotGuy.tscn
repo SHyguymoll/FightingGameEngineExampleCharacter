@@ -1,4 +1,4 @@
-[gd_scene load_steps=97 format=3 uid="uid://kquoyj34deus"]
+[gd_scene load_steps=99 format=3 uid="uid://kquoyj34deus"]
 
 [ext_resource type="Shape3D" uid="uid://dlbbd7lyja2p6" path="res://GodotGuy/hurtbox_shapes/crouch_shape.tres" id="2_ahw0y"]
 [ext_resource type="Shape3D" uid="uid://b7ceg2vw62co2" path="res://GodotGuy/hitbox_shapes/CrouchA.tres" id="3_7yb5n"]
@@ -5840,14 +5840,20 @@ tracks/1/path = NodePath(".")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.2505, 0.334),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 0.2505, 0.334, 0.433334),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "values": [{
-"args": [Vector3(0, 12, 0), 3],
+"args": [5.0],
+"method": &"add_meter"
+}, {
+"args": [Vector3(0, 9, 0), 3],
 "method": &"update_velocity"
 }, {
 "args": [Vector3(0.580425, 0.683781, 0), ExtResource("7_0yens"), 6, 13.0, 5.0, 70, 10, 0, Vector3(0.6, 10, 0), Vector3(3, 0, 0), "launch"],
 "method": &"create_hitbox"
+}, {
+"args": [15.0],
+"method": &"add_meter_on_hit"
 }]
 }
 
@@ -6083,14 +6089,17 @@ tracks/1/path = NodePath(".")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.0333334),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 0.0333334, 0.0666668),
+"transitions": PackedFloat32Array(1, 1, 1),
 "values": [{
 "args": [Vector3(0, 0, 0), 1],
 "method": &"update_velocity"
 }, {
 "args": [Vector3(0.137, 0.782, 0), ExtResource("10_fhhj4"), 2, 2.0, 0.0, 3, 0, 0, Vector3(0.2, 0.1, 0), Vector3(0.4, 0, 0), "mid"],
 "method": &"create_hitbox"
+}, {
+"args": [2.0],
+"method": &"add_meter_on_hit"
 }]
 }
 
@@ -6117,14 +6126,17 @@ tracks/1/path = NodePath(".")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.116667),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 0.116667, 0.166667),
+"transitions": PackedFloat32Array(1, 1, 1),
 "values": [{
 "args": [Vector3(0, 0, 0), 1],
 "method": &"update_velocity"
 }, {
 "args": [Vector3(1.409, 0.561, 0), ExtResource("11_5iab6"), 3, 4.0, 0.0, 12, 5, 2, Vector3(0.6, 0, 0), Vector3(-0.2, 0, 0), "mid"],
 "method": &"create_hitbox"
+}, {
+"args": [5.0],
+"method": &"add_meter_on_hit"
 }]
 }
 
@@ -6151,14 +6163,17 @@ tracks/1/path = NodePath(".")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.166667),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 0.166667, 0.216667),
+"transitions": PackedFloat32Array(1, 1, 1),
 "values": [{
 "args": [Vector3(0, 0, 0), 1],
 "method": &"update_velocity"
 }, {
 "args": [Vector3(0.705, 0.92, 0), ExtResource("12_qtwap"), 3, 15.0, 6.0, 15, 5, 3, Vector3(3, -2, 0), Vector3(1, 0, 0), "high"],
 "method": &"create_hitbox"
+}, {
+"args": [10.0],
+"method": &"add_meter_on_hit"
 }]
 }
 
@@ -6167,6 +6182,45 @@ _data = {
 "stand_a": SubResource("Animation_1d2iv"),
 "stand_b": SubResource("Animation_n675a"),
 "stand_c": SubResource("Animation_bnkae")
+}
+
+[sub_resource type="Animation" id="Animation_egpij"]
+resource_name = "attack_projectile"
+length = 0.666668
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:attack_ended")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.650001),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.316667),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [Vector3(0, 0, 0), 1],
+"method": &"update_velocity"
+}, {
+"args": [Vector3(0.875549, 0.685474, 0.04), 0, 0, 5.0, 1.0, 10, 5, 0, Vector3(4, 3, 0), Vector3(2, -2, 0), "mid"],
+"method": &"create_projectile"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tgt1f"]
+_data = {
+"attack_projectile": SubResource("Animation_egpij")
 }
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_38jcs"]
@@ -6180,6 +6234,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0157823, 0)
 collision_layer = 0
 axis_lock_linear_z = true
 script = ExtResource("53")
+char_name = "Godot Guy"
+health = 100.0
 animate = NodePath("AnimationPlayer")
 
 [node name="DebugData" type="Label3D" parent="."]
@@ -6208,7 +6264,8 @@ libraries = {
 libraries = {
 "attack_command": SubResource("AnimationLibrary_ddds8"),
 "attack_jumping": SubResource("AnimationLibrary_ukvdc"),
-"attack_normal": SubResource("AnimationLibrary_bb75s")
+"attack_normal": SubResource("AnimationLibrary_bb75s"),
+"attack_super": SubResource("AnimationLibrary_tgt1f")
 }
 
 [node name="GroundCollision" type="CollisionShape3D" parent="."]

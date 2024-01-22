@@ -21,7 +21,17 @@ signal hitbox_created
 signal projectile_created
 signal defeated
 
-# this block of variables isn't required, but generally used by a typical fighter
+# Preload ui elements here for the game to add to the screen.
+var ui_elements = {
+	player1=[
+		preload("res://GodotGuy/scenes/SuperBarP1.tscn").instantiate()
+	],
+	player2=[
+		preload("res://GodotGuy/scenes/SuperBarP2.tscn").instantiate()
+	]
+}
+
+# this block of variables isn't required, but generally used by a typical fighter.
 @export var walk_speed : float = 2
 @export var jump_total : int = 2
 var jump_count : int = 0
@@ -42,6 +52,9 @@ const MOTION_INPUT_LENIENCY : int = 9
 const GROUND_SLIDE_FRICTION : float = 0.97
 
 @export var animate : AnimationPlayer
+
+@export var meter : float = 0
+const METER_MAX = 100
 
 var damage_mult : float = 1.0
 var defense_mult : float = 1.0
@@ -205,6 +218,14 @@ func create_projectile(pos : Vector3, projectile_ind : int, type : int,
 	new_projectile.get_node(^"Hitbox").hit_priority = hit_priority
 	new_projectile.get_node(^"Hitbox").type = hit_type
 	emit_signal(&"projectile_created", new_projectile)
+
+func add_meter(add_to_meter : float):
+	meter = min(meter + add_to_meter, METER_MAX)
+	(ui_elements["player1" if player_number == 1 else "player2"][0] as TextureProgressBar).value = meter
+
+func add_meter_on_hit(add_to_meter : float):
+	if attack_connected:
+		add_meter(add_to_meter)
 
 # Functions used within this script and by the game, mostly for checks
 
