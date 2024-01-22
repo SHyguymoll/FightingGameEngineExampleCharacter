@@ -728,6 +728,8 @@ func resolve_state_transitions():
 		states.hurt_fall:
 			stun_time_current -= 1
 			handle_air_stun()
+			if check_true and stun_time_current < stun_time_start:
+				set_state(states.hurt_lie)
 		states.hurt_bounce:
 			stun_time_current -= 1
 			if check_true:
