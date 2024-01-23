@@ -194,14 +194,6 @@ var directionDictionary = {
 	"upright": "↗", "downright": "↘"
 }
 
-func attack_value(attackHash: int) -> String:
-	return (" Ø" if bool(attackHash % 2) else " 0") + \
-	("Ø" if bool((attackHash >> 1) % 2) else "0") + \
-	("Ø" if bool((attackHash >> 2) % 2) else "0") + \
-	("Ø" if bool((attackHash >> 3) % 2) else "0") + \
-	("Ø" if bool((attackHash >> 4) % 2) else "0") + \
-	("Ø " if bool((attackHash >> 5) % 2) else "0 ")
-
 func slice_input_dictionary(input_dict: Dictionary, from: int, to: int):
 	var ret_dict = {
 		up=input_dict["up"].slice(from, to),
@@ -214,47 +206,32 @@ func slice_input_dictionary(input_dict: Dictionary, from: int, to: int):
 		ret_dict["button" + str(i)] = input_dict["button" + str(i)].slice(from, to)
 	return ret_dict
 
-func build_input_tracker(p1_buf : Dictionary, p2_buf : Dictionary) -> void:
+func generate_input_hud(buf : Dictionary, input_label : Label):
 	var lookup_string := ""
 	var dirs := ["up", "down", "left", "right"]
 	
-	$HUD/P1Stats/Inputs.text = ""
-	for i in range(len(p1_buf.up)):
+	input_label.text = ""
+	for i in range(len(buf.up)):
 		lookup_string = ""
-		lookup_string += dirs[0] if p1_buf[dirs[0]][i][1] else ""
-		lookup_string += dirs[1] if p1_buf[dirs[1]][i][1] else ""
-		lookup_string += dirs[2] if p1_buf[dirs[2]][i][1] else ""
-		lookup_string += dirs[3] if p1_buf[dirs[3]][i][1] else ""
-		$HUD/P1Stats/Inputs.text += directionDictionary[lookup_string]
-		$HUD/P1Stats/Inputs.text += "\t"
-		for button in p1_buf:
+		lookup_string += dirs[0] if buf[dirs[0]][i][1] else ""
+		lookup_string += dirs[1] if buf[dirs[1]][i][1] else ""
+		lookup_string += dirs[2] if buf[dirs[2]][i][1] else ""
+		lookup_string += dirs[3] if buf[dirs[3]][i][1] else ""
+		input_label.text += directionDictionary[lookup_string]
+		input_label.text += "\t"
+		for button in buf:
 			if button in dirs:
-				if p1_buf[button][i][1]:
-					$HUD/P1Stats/Inputs.text += ("[%s, %s]" % [str(p1_buf[button][i][0]), directionDictionary[button]])
+				if buf[button][i][1]:
+					input_label.text += ("| %s, %s " % [str(buf[button][i][0]), directionDictionary[button]])
 				else:
-					$HUD/P1Stats/Inputs.text += ("[%s, x]" % [str(p1_buf[button][i][0])])
+					input_label.text += ("| %s, x " % [str(buf[button][i][0])])
 			else:
-				$HUD/P1Stats/Inputs.text += str(p1_buf[button][i])
-		$HUD/P1Stats/Inputs.text += "\n"
-	
-	$HUD/P2Stats/Inputs.text = ""
-	for i in range(len(p2_buf.up)):
-		lookup_string = ""
-		lookup_string += dirs[0] if p2_buf[dirs[0]][i][1] else ""
-		lookup_string += dirs[1] if p2_buf[dirs[1]][i][1] else ""
-		lookup_string += dirs[2] if p2_buf[dirs[2]][i][1] else ""
-		lookup_string += dirs[3] if p2_buf[dirs[3]][i][1] else ""
-		$HUD/P2Stats/Inputs.text += directionDictionary[lookup_string]
-		$HUD/P2Stats/Inputs.text += "\t"
-		for button in p2_buf:
-			if button in dirs:
-				if p2_buf[button][i][1]:
-					$HUD/P2Stats/Inputs.text += ("[%s, %s]" % [str(p2_buf[button][i][0]), directionDictionary[button]])
-				else:
-					$HUD/P2Stats/Inputs.text += ("[%s, x]" % [str(p2_buf[button][i][0])])
-			else:
-				$HUD/P2Stats/Inputs.text += str(p2_buf[button][i])
-		$HUD/P2Stats/Inputs.text += "\n"
+				input_label.text += ("| %s, %s " % [buf[button][i][0], ("Ø" if buf[button][i][1] else "0")])
+		input_label.text += "\n"
+
+func build_input_tracker(p1_buf : Dictionary, p2_buf : Dictionary) -> void:
+	generate_input_hud(p1_buf, $HUD/P1Stats/Inputs)
+	generate_input_hud(p2_buf, $HUD/P2Stats/Inputs)
 
 #convert to hash to simplify comparisons
 func get_current_input_hashes() -> Array: return [
