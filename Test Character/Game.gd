@@ -355,7 +355,24 @@ func create_inputs():
 	else:
 		increment_inputs(p2_inputs)
 
-func move_inputs_and_iterate():
+func create_dummy_buffer(button_count : int):
+	var dummy_buffer = {
+		up=[[0,false]],
+		down=[[0,false]],
+		left=[[0,false]],
+		right=[[0,false]],
+	}
+	for i in range(button_count):
+		dummy_buffer["button" + str(i)] = [[0, false]]
+	
+	return dummy_buffer
+
+func move_inputs_and_iterate(fake_inputs := false):
+	if fake_inputs:
+		p1.input_step(create_dummy_buffer(p1.BUTTONCOUNT))
+		p2.input_step(create_dummy_buffer(p2.BUTTONCOUNT))
+		return
+	
 	var p1_buf = slice_input_dictionary(
 		p1_inputs, max(0, p1_input_index - p1.input_buffer_len),
 		p1_input_index + 1
@@ -454,7 +471,7 @@ func _physics_process(_delta):
 			update_hud()
 			$HUD/Fight.modulate.a8 -= 10
 		moments.ROUND_END:
-			move_inputs_and_iterate()
+			move_inputs_and_iterate(true)
 			check_combo()
 			character_positioning()
 			if p1.post_outro() and p2.post_outro():
