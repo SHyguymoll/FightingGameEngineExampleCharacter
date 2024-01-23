@@ -11,15 +11,22 @@ var type : int
 
 enum types {
 	STRAIGHT = 0,
-	DIAGONAL_DOWN = 1
+	DIAGONAL_DOWN = 1,
+	SUPER = 2,
+	DIAGONAL_DOWN_SUPER = 3,
 }
 
 func _ready():
 	match type:
 		types.STRAIGHT:
-			velocity = Vector3.RIGHT * 3.5
+			velocity = Vector3.RIGHT * 6
 		types.DIAGONAL_DOWN:
-			velocity = (Vector3.RIGHT * 2.5) + (Vector3.DOWN * 1.5)
+			velocity = (Vector3.RIGHT * 5) + (Vector3.DOWN * 1.5)
+		types.SUPER:
+			velocity = Vector3.RIGHT * 10
+		types.DIAGONAL_DOWN_SUPER:
+			print_debug($ProjectileContact.collision_mask)
+			velocity = (Vector3.RIGHT * 2) + (Vector3.DOWN * 4) + (Vector3(randf() * 2, -randf(), 0) * 10)
 	velocity.x *= 1 if right_facing else -1
 	$AnimationPlayer.play(start_anim)
 

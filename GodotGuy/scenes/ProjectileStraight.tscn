@@ -106,7 +106,8 @@ loop_anim = &"loop"
 end_anim = &"end"
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
-modulate = Color(0, 1, 1, 1)
+transform = Transform3D(1.44575, 0, 0, 0, 1.44575, 0, 0, 0, 1.003, 0, 0, 0)
+modulate = Color(0, 1, 1, 0)
 texture = ExtResource("2_1jtyo")
 
 [node name="Hitbox" type="Area3D" parent="."]
@@ -126,7 +127,6 @@ libraries = {
 
 [node name="ProjectileContact" type="Area3D" parent="."]
 collision_layer = 16
-collision_mask = 17
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="ProjectileContact"]
 shape = SubResource("BoxShape3D_3mt4j")

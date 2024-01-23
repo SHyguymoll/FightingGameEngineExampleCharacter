@@ -346,16 +346,17 @@ const Z_MOTION_FORWARD = [
 ]
 const Z_MOTION_BACK = [[4,2,1], [4,5,2,1], [4,1,2,3], [4,1,2,3,2,1], [4,5,3,2,1], [4,5,6,3,2,1], [4,5,6,3,2,1,4]]
 
+const GG_INPUT = [[6,3,2,1,4,6], [6,3,2,1,4,5,6]]
+
 func try_super_attack(cur_state: states) -> states:
-	return cur_state
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
-			if motion_input_check(QUARTER_CIRCLE_FORWARD) and two_attacks_just_pressed() and meter >= 50:
+			if motion_input_check(GG_INPUT) and one_attack_just_pressed() and meter >= 50:
 				meter -= 50
 				update_attack("attack_super/projectile")
 				return states.attack_motion
 		states.jump_neutral, states.jump_left, states.jump_right:
-			if motion_input_check(QUARTER_CIRCLE_FORWARD) and two_attacks_just_pressed() and meter >= 50:
+			if motion_input_check(GG_INPUT) and one_attack_just_pressed() and meter >= 50:
 				meter -= 50
 				update_attack("attack_super/projectile_air")
 				jump_count = 0
