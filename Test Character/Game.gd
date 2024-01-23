@@ -234,32 +234,19 @@ func build_input_tracker(p1_buf : Dictionary, p2_buf : Dictionary) -> void:
 	generate_input_hud(p2_buf, $HUD/P2Stats/Inputs)
 
 #convert to hash to simplify comparisons
-func get_current_input_hashes() -> Array: return [
-	(
-		(int(p1_buttons[0]) * 1) +
-		(int(p1_buttons[1]) * 2) +
-		(int(p1_buttons[2]) * 4) +
-		(int(p1_buttons[3]) * 8) +
-		((int(p1.BUTTONCOUNT > 0 and p1_buttons[4])) * 16) +
-		((int(p1.BUTTONCOUNT > 1 and p1_buttons[5])) * 32) +
-		((int(p1.BUTTONCOUNT > 2 and p1_buttons[6])) * 64) +
-		((int(p1.BUTTONCOUNT > 3 and p1_buttons[7])) * 128) +
-		((int(p1.BUTTONCOUNT > 4 and p1_buttons[8])) * 256) +
-		((int(p1.BUTTONCOUNT > 5 and p1_buttons[9])) * 512)
-	),
-	(
-		(int(p2_buttons[0]) * 1) +
-		(int(p2_buttons[1]) * 2) +
-		(int(p2_buttons[2]) * 4) +
-		(int(p2_buttons[3]) * 8) +
-		((int(p2.BUTTONCOUNT > 0 and p2_buttons[4])) * 16) +
-		((int(p2.BUTTONCOUNT > 1 and p2_buttons[5])) * 32) +
-		((int(p2.BUTTONCOUNT > 2 and p2_buttons[6])) * 64) +
-		((int(p2.BUTTONCOUNT > 3 and p2_buttons[7])) * 128) +
-		((int(p2.BUTTONCOUNT > 4 and p2_buttons[8])) * 256) +
-		((int(p2.BUTTONCOUNT > 5 and p2_buttons[9])) * 512)
+func generate_current_input_hash(buttons : Array, button_count : int) -> int:
+	return (
+		(int(buttons[0]) * 1) +
+		(int(buttons[1]) * 2) +
+		(int(buttons[2]) * 4) +
+		(int(buttons[3]) * 8) +
+		((int(button_count > 0 and buttons[4])) * 16) +
+		((int(button_count > 1 and buttons[5])) * 32) +
+		((int(button_count > 2 and buttons[6])) * 64) +
+		((int(button_count > 3 and buttons[7])) * 128) +
+		((int(button_count > 4 and buttons[8])) * 256) +
+		((int(button_count > 5 and buttons[9])) * 512)
 	)
-]
 
 #ditto, but for an already completed input
 func generate_prior_input_hash(player_inputs: Dictionary):
@@ -318,15 +305,13 @@ func create_inputs():
 	for button in range(p2.BUTTONCOUNT):
 		p2_buttons[button + 4] = Input.is_action_pressed("second_button" + str(button))
 	
-	var comp_hashes = get_current_input_hashes()
-	
-	if generate_prior_input_hash(p1_inputs) != comp_hashes[0]:
+	if generate_prior_input_hash(p1_inputs) != generate_current_input_hash(p1_buttons, p1.BUTTONCOUNT):
 		create_new_input_set(p1_inputs, p1_buttons)
 		p1_input_index += 1
 	else:
 		increment_inputs(p1_inputs)
 	
-	if generate_prior_input_hash(p2_inputs) != comp_hashes[1]:
+	if generate_prior_input_hash(p2_inputs) != generate_current_input_hash(p2_buttons, p2.BUTTONCOUNT):
 		create_new_input_set(p2_inputs, p2_buttons)
 		p2_input_index += 1
 	else:
