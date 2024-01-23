@@ -146,12 +146,17 @@ var anim_right_suf = "_right"
 @export var dash_left_anim : StringName = &"basic/dash"
 @export var dash_right_anim : StringName = &"basic/dash"
 
-# Nothing should modify the fighter's state here, this is purely for real-time effects
-# and starting the animation player.
-func _ready():
-	reset_facing()
+# Nothing should modify the fighter's state in _process or _ready, _process is purely for
+# real-time effects, and _ready for initializing the animation player.
+func initialize_animation_player():
+	
 	animate.play(basic_anim_state_dict[current_state] + 
 		(anim_right_suf if right_facing else anim_left_suf))
+
+func _ready():
+	reset_facing()
+	initialize_animation_player()
+
 func _process(_delta):
 	$DebugData.text = """Right Facing: %s
 	Current State: %s
