@@ -107,6 +107,9 @@ func init_fighters():
 	p1.defeated.connect(player_defeated)
 	for element in p1.ui_elements.player1:
 		$HUD/SpecialElements/P1Group.add_child(element)
+	for element in p1.ui_elements_training.player1:
+		$HUD/TrainingModeControlsSpecial/P1Controls.add_child(element)
+	p1.initialize_training_mode_elements()
 	
 	for i in range(p2.BUTTONCOUNT):
 		p2_inputs["button" + str(i)] = [[0, false]]
@@ -119,6 +122,9 @@ func init_fighters():
 	p2.defeated.connect(player_defeated)
 	for element in p2.ui_elements.player2:
 		$HUD/SpecialElements/P2Group.add_child(element)
+	for element in p2.ui_elements_training.player2:
+		$HUD/TrainingModeControlsSpecial/P2Controls.add_child(element)
+	p2.initialize_training_mode_elements()
 	
 	character_positioning()
 	p1_health_reset = p1.health

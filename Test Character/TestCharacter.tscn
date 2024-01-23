@@ -251,6 +251,26 @@ size_flags_vertical = 4
 tick_count = 10
 ticks_on_borders = true
 
+[node name="TrainingModeControlsSpecial" type="HBoxContainer" parent="HUD"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -108.0
+offset_bottom = -108.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="P1Controls" type="PanelContainer" parent="HUD/TrainingModeControlsSpecial"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="P2Controls" type="PanelContainer" parent="HUD/TrainingModeControlsSpecial"]
+layout_mode = 2
+size_flags_horizontal = 3
+
 [connection signal="drag_ended" from="HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthReset" to="." method="_on_p1_health_reset_drag_ended"]
 [connection signal="toggled" from="HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthResetSwitch" to="." method="_on_p1_health_reset_switch_toggled"]
 [connection signal="button_up" from="HUD/TrainingModeControls/Reset" to="." method="_on_reset_button_up"]
