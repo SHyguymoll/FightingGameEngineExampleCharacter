@@ -242,7 +242,8 @@ debug_hurt_bounce={
 3d_physics/layer_2="contact_with_player1"
 3d_physics/layer_3="contact_with_player_2"
 3d_physics/layer_4="player_intersection"
-3d_physics/layer_5="projectiles"
+3d_physics/layer_5="projectile_hits_p1"
+3d_physics/layer_6="projectile_hits_p2"
 
 [physics]
 

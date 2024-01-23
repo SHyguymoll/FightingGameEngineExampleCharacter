@@ -236,6 +236,8 @@ func create_projectile(pos : Vector3, projectile_ind : int, type : int,
 	new_projectile.right_facing = right_facing
 	new_projectile.type = type
 	new_projectile.get_node(^"Hitbox").collision_layer = hitbox_layer
+	if new_projectile.get_node_or_null(^"ProjectileContact"):
+		new_projectile.get_node(^"ProjectileContact").collision_mask += hitbox_layer * 8
 	new_projectile.get_node(^"Hitbox").damage_hit = damage_hit
 	new_projectile.get_node(^"Hitbox").damage_block = damage_block * damage_mult
 	new_projectile.get_node(^"Hitbox").stun_hit = stun_hit
