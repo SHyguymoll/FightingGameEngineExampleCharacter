@@ -37,6 +37,8 @@ var p2_reset_health_on_drop := true
 var p1_health_reset : float
 var p2_health_reset : float
 
+var player_record_buffer := {}
+
 #required variables and methods from Game.gd
 @export var camera_mode = 0
 const CAMERAMAXX = 1.6
@@ -335,7 +337,7 @@ func create_dummy_buffer(button_count : int):
 	
 	return dummy_buffer
 
-func move_inputs_and_iterate(fake_inputs := false):
+func move_inputs_and_iterate(fake_inputs, replay := false):
 	if fake_inputs:
 		p1.input_step(create_dummy_buffer(p1.BUTTONCOUNT))
 		p2.input_step(create_dummy_buffer(p2.BUTTONCOUNT))
@@ -420,7 +422,7 @@ func _physics_process(_delta):
 	camera_control(camera_mode)
 	match moment:
 		moments.INTRO:
-			move_inputs_and_iterate()
+			move_inputs_and_iterate(true)
 			if p1.post_intro() and p2.post_intro():
 				moment = moments.GAME
 				$HUD/Fight.visible = true
@@ -432,7 +434,7 @@ func _physics_process(_delta):
 			for proj in projectiles:
 				proj.tick()
 			create_inputs()
-			move_inputs_and_iterate()
+			move_inputs_and_iterate(false)
 			check_combo()
 			training_mode_settings()
 			character_positioning()
@@ -459,5 +461,12 @@ func _on_p2_health_reset_drag_ended(value_changed):
 	if value_changed and p2_reset_health_on_drop:
 		p2_health_reset = $HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthReset.value
 
+func _on_record_toggled(toggled_on):
+	if toggled_on:
+		pass
+	else:
+		pass
+
 func _on_reset_button_up():
 	get_tree().reload_current_scene()
+

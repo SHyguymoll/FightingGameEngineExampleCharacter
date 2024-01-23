@@ -251,6 +251,11 @@ size_flags_vertical = 4
 tick_count = 10
 ticks_on_borders = true
 
+[node name="Record" type="CheckButton" parent="HUD/TrainingModeControls/P2Controls/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("9_agrsw")
+text = "Record"
+
 [node name="TrainingModeControlsSpecial" type="HBoxContainer" parent="HUD"]
 anchors_preset = 12
 anchor_top = 1.0
@@ -276,3 +281,4 @@ size_flags_horizontal = 3
 [connection signal="button_up" from="HUD/TrainingModeControls/Reset" to="." method="_on_reset_button_up"]
 [connection signal="toggled" from="HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthResetSwitch" to="." method="_on_p2_health_reset_switch_toggled"]
 [connection signal="drag_ended" from="HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthReset" to="." method="_on_p2_health_reset_drag_ended"]
+[connection signal="toggled" from="HUD/TrainingModeControls/P2Controls/HBoxContainer/Record" to="." method="_on_record_toggled"]
