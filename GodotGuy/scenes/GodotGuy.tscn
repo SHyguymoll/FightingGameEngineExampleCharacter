@@ -3802,6 +3802,7 @@ texture = ExtResource("14_03fpi")
 
 [node name="SpriteAttack" type="Sprite3D" parent="."]
 transform = Transform3D(0.371845, 0, 0, 0, 0.371845, 0, 0, 0, 1, -0.565645, 1.36573, 0.04)
+visible = false
 no_depth_test = true
 texture = ExtResource("14_03fpi")
 
