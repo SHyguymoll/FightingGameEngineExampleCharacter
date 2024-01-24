@@ -4,10 +4,12 @@ extends CharacterBody3D
 signal projectile_ended(proj)
 
 @export var start_anim : StringName
-@export var loop_anim : StringName
+@export var loop_anim_left : StringName
+@export var loop_anim_right : StringName
 @export var end_anim : StringName
 var right_facing : bool
 var type : int
+var source : int
 
 enum types {
 	STRAIGHT = 0,
@@ -46,12 +48,15 @@ func destroy():
 func _on_animation_player_animation_finished(anim_name):
 	match anim_name:
 		start_anim:
-			$AnimationPlayer.play(loop_anim)
-		loop_anim:
-			$AnimationPlayer.play(loop_anim)
+			$AnimationPlayer.play(loop_anim_right if right_facing else loop_anim_left)
+		loop_anim_left:
+			$AnimationPlayer.play(loop_anim_left)
+		loop_anim_right:
+			$AnimationPlayer.play(loop_anim_right)
 		end_anim:
 			queue_free()
 			emit_signal(&"projectile_ended", self)
 
-func _on_projectile_contact(_contacter):
-	destroy()
+func _on_projectile_contact(other_projectile):
+	if source != (other_projectile.get_parent() as Projectile).source:
+		destroy()
