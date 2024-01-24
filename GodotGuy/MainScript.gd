@@ -44,15 +44,15 @@ var ui_elements_training = {
 func initialize_training_mode_elements():
 	match player_number:
 		1:
-			(ui_elements_training.player1[0] as HSlider).value_changed.connect(set_meter)
+			(ui_elements_training.player1[0] as HSlider).value_changed.connect(training_mode_set_meter)
 		2:
-			(ui_elements_training.player2[0] as HSlider).value_changed.connect(set_meter)
+			(ui_elements_training.player2[0] as HSlider).value_changed.connect(training_mode_set_meter)
 
-func set_meter(val):
+# this block of variables isn't required, but generally used by a typical fighter.
+func training_mode_set_meter(val):
 	meter = val
 	(ui_elements["player1" if player_number == 1 else "player2"][0] as TextureProgressBar).value = meter
 
-# this block of variables isn't required, but generally used by a typical fighter.
 @export var walk_speed : float = 2
 @export var jump_total : int = 2
 var jump_count : int = 0
