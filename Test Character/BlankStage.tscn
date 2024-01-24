@@ -10,7 +10,7 @@ material = SubResource("StandardMaterial3D_ssh77")
 size = Vector3(13, 0.4, 1)
 
 [sub_resource type="BoxShape3D" id="2"]
-size = Vector3(10, 0.2, 1)
+size = Vector3(10, 8.68921, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_skvje"]
 albedo_color = Color(1, 0.603922, 1, 1)
@@ -33,6 +33,7 @@ transform = Transform3D(1.25, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("1")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.2446, 0)
 shape = SubResource("2")
 
 [node name="MeshInstance2" type="MeshInstance3D" parent="."]
