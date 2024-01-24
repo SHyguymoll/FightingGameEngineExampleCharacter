@@ -157,7 +157,10 @@ func create_mirrored_animation(anim_to_mirror : Animation) -> Animation:
 		# only flip the position 3d and rotation 3d tracks
 		if (new_anim as Animation).track_get_type(track_ind) == Animation.TYPE_POSITION_3D:
 			for key_ind in range((new_anim as Animation).track_get_key_count(track_ind)):
-				(new_anim as Animation).track_set_key_value(track_ind, key_ind, ((new_anim as Animation).track_get_key_value(track_ind, key_ind) as Vector3) * POSITION_FLIP_X)
+				(new_anim as Animation).track_set_key_value(
+					track_ind,
+					key_ind,
+					(new_anim.track_get_key_value(track_ind, key_ind) as Vector3) * POSITION_FLIP_X)
 		if (new_anim as Animation).track_get_type(track_ind) == Animation.TYPE_ROTATION_3D:
 			for key_ind in range((new_anim as Animation).track_get_key_count(track_ind)):
 				(new_anim as Animation).track_set_key_value(
