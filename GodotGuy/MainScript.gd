@@ -415,7 +415,7 @@ const Z_MOTION_FORWARD = [
 ]
 const Z_MOTION_BACK = [[4,2,1], [4,5,2,1], [4,1,2,3], [4,1,2,3,2,1], [4,5,3,2,1], [4,5,6,3,2,1], [4,5,6,3,2,1,4]]
 
-const GG_INPUT = [[6,3,2,1,4,6], [6,3,2,1,4,5,6]]
+const GG_INPUT = [[6,3,2,1,4,6], [6,3,2,1,4,5,6], [6,2,1,4,6], [6,2,4,5,6], [6,2,1,4,5,6]]
 
 func try_super_attack(cur_state: states) -> states:
 	match current_state:
