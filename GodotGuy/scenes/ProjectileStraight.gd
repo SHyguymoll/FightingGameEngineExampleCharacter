@@ -25,7 +25,6 @@ func _ready():
 		types.SUPER:
 			velocity = Vector3.RIGHT * 10
 		types.DIAGONAL_DOWN_SUPER:
-			print_debug($ProjectileContact.collision_mask)
 			velocity = (Vector3.RIGHT * 2) + (Vector3.DOWN * 4) + (Vector3(randf() * 2, -randf(), 0) * 10)
 	velocity.x *= 1 if right_facing else -1
 	$AnimationPlayer.play(start_anim)
