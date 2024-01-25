@@ -361,7 +361,7 @@ func create_dummy_buffer(button_count : int):
 	
 	return dummy_buffer
 
-func move_inputs_and_iterate(fake_inputs, replay := false):
+func move_inputs_and_iterate(fake_inputs):
 	if fake_inputs:
 		p1.input_step(create_dummy_buffer(p1.BUTTONCOUNT))
 		p2.input_step(create_dummy_buffer(p2.BUTTONCOUNT))
