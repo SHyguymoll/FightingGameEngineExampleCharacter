@@ -320,7 +320,7 @@ func create_inputs():
 		p2_buttons[button + 4] = Input.is_action_pressed("second_button" + str(button))
 	
 	if record:
-		player_record_buffer.append(p2_buttons)
+		player_record_buffer.append(p2_buttons.duplicate())
 	
 	if not record and not replay and Input.is_action_just_pressed("training_replay"):
 		replay = true
@@ -345,9 +345,9 @@ func create_inputs():
 		if generate_prior_input_hash(p2_inputs) != generate_current_input_hash(player_record_buffer[record_buffer_current], p2.BUTTONCOUNT):
 			create_new_input_set(p2_inputs, player_record_buffer[record_buffer_current])
 			p2_input_index += 1
-			record_buffer_current += 1
 		else:
 			increment_inputs(p2_inputs)
+		record_buffer_current += 1
 
 func create_dummy_buffer(button_count : int):
 	var dummy_buffer = {
