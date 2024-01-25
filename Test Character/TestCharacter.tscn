@@ -256,6 +256,12 @@ layout_mode = 2
 theme = ExtResource("9_agrsw")
 text = "Record"
 
+[node name="RecordStatus" type="Label" parent="HUD/TrainingModeControls/P2Controls/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("9_agrsw")
+text = "9/9 STP"
+horizontal_alignment = 2
+
 [node name="TrainingModeControlsSpecial" type="HBoxContainer" parent="HUD"]
 anchors_preset = 12
 anchor_top = 1.0

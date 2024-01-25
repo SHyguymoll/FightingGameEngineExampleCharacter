@@ -3678,21 +3678,21 @@ collision_mask = 0
 monitorable = false
 
 [node name="HurtboxShape" type="CollisionShape3D" parent="Hurtbox"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.007, 0)
-shape = ExtResource("2_ahw0y")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.642, 0)
+shape = ExtResource("3_8q5n8")
+disabled = true
 
 [node name="Node3D" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.273207, 0.781501, 0)
 
 [node name="SpriteMain" type="Sprite3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.776615, 0, 0, 0, 1, 0, 0.529186, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67, 0)
 rotation_edit_mode = 1
 no_depth_test = true
 texture = ExtResource("14_03fpi")
 
 [node name="SpriteAttack" type="Sprite3D" parent="."]
-transform = Transform3D(0.212501, 0, 0, 0, 0.475225, 0, 0, 0, 1, 0.236201, 0.344891, 0.04)
-visible = false
+transform = Transform3D(0.302649, 0, 0, 0, 0.302649, 0, 0, 0, 1, -0.647207, 0.728664, 0.04)
 no_depth_test = true
 texture = ExtResource("14_03fpi")
 

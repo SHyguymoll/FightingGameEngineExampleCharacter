@@ -37,7 +37,10 @@ var p2_reset_health_on_drop := true
 var p1_health_reset : float
 var p2_health_reset : float
 
-var player_record_buffer := {}
+var player_record_buffer := []
+var record_buffer_current := 0
+var record := false
+var replay := false
 
 #required variables and methods from Game.gd
 @export var camera_mode = 0
@@ -96,6 +99,9 @@ func update_hud():
 		$HUD/P2Stats/State.text += " : " + p2.current_attack
 	$HUD/HealthAndTime/P2Group/NameAndPosVel/PosVel.text = str(p2.position) + "\n" + str(p2.velocity)
 	$HUD/P2Stats/Combo.text = str(p2_combo)
+	
+	# training
+	$HUD/TrainingModeControls/P2Controls/HBoxContainer/RecordStatus.text = "%s/%s %s" % [record_buffer_current, len(player_record_buffer), "PLY" if replay else ("REC" if record else "STP")]
 
 func init_fighters():
 	for i in range(p1.BUTTONCOUNT):
@@ -313,17 +319,35 @@ func create_inputs():
 	for button in range(p2.BUTTONCOUNT):
 		p2_buttons[button + 4] = Input.is_action_pressed("second_button" + str(button))
 	
+	if record:
+		player_record_buffer.append(p2_buttons)
+	
+	if not record and not replay and Input.is_action_just_pressed("training_replay"):
+		replay = true
+	
 	if generate_prior_input_hash(p1_inputs) != generate_current_input_hash(p1_buttons, p1.BUTTONCOUNT):
 		create_new_input_set(p1_inputs, p1_buttons)
 		p1_input_index += 1
 	else:
 		increment_inputs(p1_inputs)
 	
-	if generate_prior_input_hash(p2_inputs) != generate_current_input_hash(p2_buttons, p2.BUTTONCOUNT):
-		create_new_input_set(p2_inputs, p2_buttons)
-		p2_input_index += 1
+	if replay and record_buffer_current == len(player_record_buffer):
+		replay = false
+		record_buffer_current = 0
+	
+	if not replay:
+		if generate_prior_input_hash(p2_inputs) != generate_current_input_hash(p2_buttons, p2.BUTTONCOUNT):
+			create_new_input_set(p2_inputs, p2_buttons)
+			p2_input_index += 1
+		else:
+			increment_inputs(p2_inputs)
 	else:
-		increment_inputs(p2_inputs)
+		if generate_prior_input_hash(p2_inputs) != generate_current_input_hash(player_record_buffer[record_buffer_current], p2.BUTTONCOUNT):
+			create_new_input_set(p2_inputs, player_record_buffer[record_buffer_current])
+			p2_input_index += 1
+			record_buffer_current += 1
+		else:
+			increment_inputs(p2_inputs)
 
 func create_dummy_buffer(button_count : int):
 	var dummy_buffer = {
@@ -463,10 +487,9 @@ func _on_p2_health_reset_drag_ended(value_changed):
 
 func _on_record_toggled(toggled_on):
 	if toggled_on:
-		pass
-	else:
-		pass
+		player_record_buffer.clear()
+		record_buffer_current = 0
+	record = toggled_on
 
 func _on_reset_button_up():
 	get_tree().reload_current_scene()
-
