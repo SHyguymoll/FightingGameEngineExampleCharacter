@@ -308,7 +308,7 @@ func post_intro() -> bool:
 func post_outro() -> bool:
 	return (current_state in [states.round_win, states.set_win] and not animate.is_playing()) or current_state == states.hurt_lie
 
-func is_in_air_state() -> bool:
+func in_air_state() -> bool:
 	return current_state in [
 		states.jump_attack,
 		states.jump_left, states.jump_neutral, states.jump_right,
@@ -316,16 +316,16 @@ func is_in_air_state() -> bool:
 		states.block_air, states.hurt_bounce, states.hurt_fall
 	]
 
-func is_in_crouch_state() -> bool:
+func in_crouch_state() -> bool:
 	return current_state in [states.crouch, states.hurt_crouch, states.block_low]
 
-func is_in_dashing_state() -> bool:
+func in_dashing_state() -> bool:
 	return current_state in [states.dash_back, states.dash_forward]
 
-func is_in_attacking_state() -> bool:
+func in_attacking_state() -> bool:
 	return current_state in [states.attack_normal, states.attack_command, states.attack_motion, states.jump_attack]
 
-func is_in_hurting_state() -> bool:
+func in_hurting_state() -> bool:
 	return current_state in [
 		states.hurt_high, states.hurt_low, states.hurt_crouch,
 		states.hurt_fall, states.hurt_bounce
@@ -918,9 +918,9 @@ func try_block(attack : Hitbox,
 			fs_stand : states, fs_crouch : states, fs_air : states) -> bool:
 	# still in hitstun, can't block
 	attack.queue_free()
-	if is_in_hurting_state() or is_in_dashing_state() or is_in_attacking_state():
-		if not is_in_air_state():
-			if is_in_crouch_state():
+	if in_hurting_state() or in_dashing_state() or in_attacking_state():
+		if not in_air_state():
+			if in_crouch_state():
 				set_state(fs_crouch)
 				handle_damage(attack, false)
 				return true
@@ -938,10 +938,10 @@ func try_block(attack : Hitbox,
 		var temp = directions[2]
 		directions[2] = directions[3]
 		directions[3] = temp
-	if not is_in_air_state():
+	if not in_air_state():
 		for check_input in range(len(directions)):
 			if (directions[check_input] == true and ground_block_rules[check_input] == -1) or (directions[check_input] == false and ground_block_rules[check_input] == 1):
-				if is_in_crouch_state():
+				if in_crouch_state():
 					set_state(fs_crouch)
 					handle_damage(attack, false)
 					return true
