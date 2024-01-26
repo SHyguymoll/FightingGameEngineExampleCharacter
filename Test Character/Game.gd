@@ -401,7 +401,7 @@ func move_inputs_and_iterate(fake_inputs):
 	p1.input_step(p1_buf)
 	p2.input_step(p2_buf)
 
-func check_combo():
+func check_combos():
 	if not p1.is_in_hurting_state():
 		p2_combo = 0
 	if not p2.is_in_hurting_state():
@@ -442,7 +442,7 @@ func _physics_process(_delta):
 			if p1.post_intro() and p2.post_intro():
 				moment = moments.GAME
 				$HUD/Fight.visible = true
-			check_combo()
+			check_combos()
 			character_positioning()
 			update_hud()
 		moments.GAME:
@@ -451,14 +451,14 @@ func _physics_process(_delta):
 				proj.tick()
 			create_inputs()
 			move_inputs_and_iterate(false)
-			check_combo()
+			check_combos()
 			training_mode_settings()
 			character_positioning()
 			update_hud()
 			$HUD/Fight.modulate.a8 -= 10
 		moments.ROUND_END:
 			move_inputs_and_iterate(true)
-			check_combo()
+			check_combos()
 			character_positioning()
 			if p1.post_outro() and p2.post_outro():
 				get_tree().reload_current_scene()
