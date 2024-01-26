@@ -58,8 +58,9 @@ func _on_animation_player_animation_finished(anim_name):
 			emit_signal(&"projectile_ended", self)
 
 func _on_projectile_contact(other):
-	if other is Stage:
-		return
-	if other.get_parent() is Projectile:
+	var o_par = other.get_parent()
+	if other is Stage or o_par is Stage:
+		destroy()
+	if o_par is Projectile:
 		if source != other.get_parent().source:
 			destroy()
