@@ -9,3 +9,7 @@ monitoring = false
 script = ExtResource("1_a3bkx")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+
+[node name="HitSound" type="AudioStreamPlayer3D" parent="."]
+
+[node name="BlockSound" type="AudioStreamPlayer3D" parent="."]
