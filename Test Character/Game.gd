@@ -402,9 +402,9 @@ func move_inputs_and_iterate(fake_inputs):
 	p2.input_step(p2_buf)
 
 func check_combos():
-	if not p1.is_in_hurting_state():
+	if not p1.in_hurting_state():
 		p2_combo = 0
-	if not p2.is_in_hurting_state():
+	if not p2.in_hurting_state():
 		p1_combo = 0
 
 func character_positioning():
