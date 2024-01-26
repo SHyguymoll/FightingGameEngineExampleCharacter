@@ -292,32 +292,23 @@ func create_new_input_set(player_inputs: Dictionary, new_inputs: Array):
 			player_inputs[inp].append([1, new_inputs[ind]])
 		ind += 1
 
+func directional_inputs(prefix: String) -> Array:
+	return [
+		Input.is_action_pressed(prefix + "_up") and not Input.is_action_pressed(prefix + "_down"),
+		Input.is_action_pressed(prefix + "_down") and not Input.is_action_pressed(prefix + "_up"),
+		Input.is_action_pressed(prefix + "_left") and not Input.is_action_pressed(prefix + "_right"),
+		Input.is_action_pressed(prefix + "_right") and not Input.is_action_pressed(prefix + "_left"),
+	]
+
+func button_inputs(prefix : String, button_count : int) -> Array:
+	var button_input_arr = []
+	for button in range(button_count):
+		button_input_arr.append(Input.is_action_pressed(prefix + "_button" + str(button)))
+	return button_input_arr
+
 func create_inputs():
-	p1_buttons[0] = Input.is_action_pressed("first_up")
-	p1_buttons[1] = Input.is_action_pressed("first_down")
-	if p1_buttons[0] == p1_buttons[1]: #no conflicting directions
-		p1_buttons[0] = false
-		p1_buttons[1] = false
-	p1_buttons[2] = Input.is_action_pressed("first_left")
-	p1_buttons[3] = Input.is_action_pressed("first_right")
-	if p1_buttons[2] == p1_buttons[3]: #ditto
-		p1_buttons[2] = false
-		p1_buttons[3] = false
-	for button in range(p1.BUTTONCOUNT):
-		p1_buttons[button + 4] = Input.is_action_pressed("first_button" + str(button))
-	
-	p2_buttons[0] = Input.is_action_pressed("second_up")
-	p2_buttons[1] = Input.is_action_pressed("second_down")
-	if p2_buttons[0] == p2_buttons[1]: #no conflicting directions
-		p2_buttons[0] = false
-		p2_buttons[1] = false
-	p2_buttons[2] = Input.is_action_pressed("second_left")
-	p2_buttons[3] = Input.is_action_pressed("second_right")
-	if p2_buttons[2] == p2_buttons[3]: #ditto
-		p2_buttons[2] = false
-		p2_buttons[3] = false
-	for button in range(p2.BUTTONCOUNT):
-		p2_buttons[button + 4] = Input.is_action_pressed("second_button" + str(button))
+	p1_buttons = directional_inputs("first") + button_inputs("first", p1.BUTTONCOUNT)
+	p2_buttons = directional_inputs("second") + button_inputs("second", p2.BUTTONCOUNT)
 	
 	if record:
 		player_record_buffer.append(p2_buttons.duplicate())
