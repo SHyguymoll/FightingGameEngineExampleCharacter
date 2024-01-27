@@ -200,7 +200,6 @@ func initialize_animation_player():
 	
 	for anim in new_anims:
 		animate.get_animation_library(anim[1]).add_animation(anim[0].resource_name, anim[0])
-	#print_debug(animate.get_animation_list())
 	animate.play(basic_anim_state_dict[current_state] + 
 		(anim_right_suf if right_facing else anim_left_suf))
 
