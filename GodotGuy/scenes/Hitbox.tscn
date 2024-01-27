@@ -15,6 +15,6 @@ text = "The script attached to the root node of this file is required by the gam
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 
-[node name="HitSound" type="AudioStreamPlayer3D" parent="."]
+[node name="HitSound" type="AudioStreamPlayer" parent="."]
 
-[node name="BlockSound" type="AudioStreamPlayer3D" parent="."]
+[node name="BlockSound" type="AudioStreamPlayer" parent="."]

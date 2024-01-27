@@ -24,6 +24,6 @@ on_block = [1.25]
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_8erj5")
 
-[node name="HitSound" type="AudioStreamPlayer3D" parent="."]
+[node name="HitSound" type="AudioStreamPlayer" parent="."]
 
-[node name="BlockSound" type="AudioStreamPlayer3D" parent="."]
+[node name="BlockSound" type="AudioStreamPlayer" parent="."]

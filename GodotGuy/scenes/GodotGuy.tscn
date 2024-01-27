@@ -1,7 +1,8 @@
-[gd_scene load_steps=66 format=3 uid="uid://kquoyj34deus"]
+[gd_scene load_steps=67 format=3 uid="uid://kquoyj34deus"]
 
 [ext_resource type="Shape3D" uid="uid://dlbbd7lyja2p6" path="res://GodotGuy/hurtbox_shapes/crouch_shape.tres" id="2_ahw0y"]
 [ext_resource type="Shape3D" uid="uid://bs5a4315bo07p" path="res://GodotGuy/hurtbox_shapes/base_shape.tres" id="3_8q5n8"]
+[ext_resource type="AudioStream" uid="uid://cmrs4t7t5guny" path="res://GodotGuy/sounds/crouch_c_launch.wav" id="3_sx7kg"]
 [ext_resource type="Texture2D" uid="uid://dnp3cp2qqpsg1" path="res://GodotGuy/icon.svg" id="14_03fpi"]
 [ext_resource type="Script" path="res://GodotGuy/MainScript.gd" id="53"]
 
@@ -357,6 +358,21 @@ tracks/11/keys = {
 "update": 1,
 "values": [false]
 }
+tracks/12/type = "audio"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("../AttackAudio")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"clips": [{
+"end_offset": 0.0404,
+"start_offset": 0.0952,
+"stream": ExtResource("3_sx7kg")
+}],
+"times": PackedFloat32Array(0.216667)
+}
+tracks/12/use_blend = true
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_w3q8l"]
 _data = {
@@ -3675,14 +3691,13 @@ shape = ExtResource("2_ahw0y")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.273207, 0.781501, 0)
 
 [node name="SpriteMain" type="Sprite3D" parent="."]
-transform = Transform3D(1.48613, 0, 0, 0, 0.3, 0, 0, 0, 1, 0.574667, 0.221657, 0)
+transform = Transform3D(1, 0, 0, 0, 0.381826, 0, 0, 0, 1, 0, 0.275214, 0)
 rotation_edit_mode = 1
 no_depth_test = true
 texture = ExtResource("14_03fpi")
 
 [node name="SpriteAttack" type="Sprite3D" parent="."]
-transform = Transform3D(0.992772, 0, 0, 0, 0.329543, 0, 0, 0, 1, 1.32556, 0.265214, 0.04)
-modulate = Color(0.803922, 0.686275, 0, 0.999999)
+transform = Transform3D(0.371134, 0, 0, 0, 0.371134, 0, 0, 0, 1, 0.229072, 0.328669, 0.04)
 no_depth_test = true
 texture = ExtResource("14_03fpi")
 
@@ -3691,3 +3706,5 @@ transform = Transform3D(0.363, 0, 0, 0, 0.363, 0, 0, 0, 1, 0.422, 0.307, 0.04)
 visible = false
 no_depth_test = true
 texture = ExtResource("14_03fpi")
+
+[node name="AttackAudio" type="AudioStreamPlayer" parent="."]

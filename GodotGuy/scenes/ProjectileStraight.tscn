@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://56a0waewlr2t"]
+[gd_scene load_steps=12 format=3 uid="uid://56a0waewlr2t"]
 
 [ext_resource type="Script" path="res://GodotGuy/scenes/ProjectileStraight.gd" id="1_up6mg"]
 [ext_resource type="Texture2D" uid="uid://dnp3cp2qqpsg1" path="res://GodotGuy/icon.svg" id="2_1jtyo"]
 [ext_resource type="Script" path="res://GodotGuy/scenes/HitboxScript.gd" id="3_08xxv"]
+[ext_resource type="AudioStream" uid="uid://7arkj6kc7el8" path="res://GodotGuy/sounds/projectile_hit.wav" id="4_meyvp"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_qatpa"]
 size = Vector3(1.18335, 1.0791, 1)
@@ -153,9 +154,11 @@ lifetime = -1
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
 shape = SubResource("BoxShape3D_qatpa")
 
-[node name="HitSound" type="AudioStreamPlayer3D" parent="Hitbox"]
+[node name="HitSound" type="AudioStreamPlayer" parent="Hitbox"]
+stream = ExtResource("4_meyvp")
+volume_db = -10.254
 
-[node name="BlockSound" type="AudioStreamPlayer3D" parent="Hitbox"]
+[node name="BlockSound" type="AudioStreamPlayer" parent="Hitbox"]
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
