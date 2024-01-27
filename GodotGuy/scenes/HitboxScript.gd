@@ -13,8 +13,15 @@ extends Area3D
 var on_hit : Variant
 var on_block : Variant
 
+var marked := false
+
 func _physics_process(_d):
 	if lifetime > 0:
 		lifetime -= 1
-	if lifetime == 0:
-		queue_free()
+	if lifetime == 0 or marked:
+		if not $HitSound.playing and not $BlockSound.playing:
+			queue_free()
+
+func destroy():
+	monitorable = false
+	marked = true
