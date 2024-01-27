@@ -29,6 +29,27 @@ func _ready():
 		types.DIAGONAL_DOWN_SUPER:
 			velocity = (Vector3.RIGHT * 30 * randf()) + (Vector3.DOWN * randf() * 10)
 	velocity.x *= 1 if right_facing else -1
+	match type:
+		types.STRAIGHT, types.DIAGONAL_DOWN:
+			($Hitbox as Hitbox).damage_hit = 5
+			($Hitbox as Hitbox).damage_block = 1
+			($Hitbox as Hitbox).stun_hit = 10
+			($Hitbox as Hitbox).stun_block = 5
+			($Hitbox as Hitbox).kback_hit = Vector3(4, 3, 0)
+			($Hitbox as Hitbox).kback_block = Vector3(2, -2, 0)
+			($Hitbox as Hitbox).type = "mid"
+			($Hitbox as Hitbox).on_hit = [8]
+			($Hitbox as Hitbox).on_block = [4]
+		types.SUPER, types.DIAGONAL_DOWN_SUPER:
+			($Hitbox as Hitbox).damage_hit = 20
+			($Hitbox as Hitbox).damage_block = 10
+			($Hitbox as Hitbox).stun_hit = 10
+			($Hitbox as Hitbox).stun_block = 5
+			($Hitbox as Hitbox).kback_hit = Vector3(4, 7, 0)
+			($Hitbox as Hitbox).kback_block = Vector3(2, -2, 0)
+			($Hitbox as Hitbox).type = "launch"
+			($Hitbox as Hitbox).on_hit = [0]
+			($Hitbox as Hitbox).on_block = [0]
 	$AnimationPlayer.play(start_anim)
 
 func tick():

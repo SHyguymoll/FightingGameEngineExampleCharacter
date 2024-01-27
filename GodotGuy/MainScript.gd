@@ -266,11 +266,7 @@ func create_hitbox(pos : Vector3, hitbox_name : String):
 	new_hitbox.collision_layer = hitbox_layer
 	emit_signal(&"hitbox_created", new_hitbox)
 
-func create_projectile(pos : Vector3, projectile_ind : int, type : int,
-				damage_hit : float, damage_block : float,
-				stun_hit : int, stun_block : int, hit_priority : int,
-				kback_hit : Vector3, kback_block : Vector3, hit_type : String,
-				on_hit_data, on_block_data):
+func create_projectile(pos : Vector3, projectile_ind : int, type : int):
 	var new_projectile := (projectiles[projectile_ind].instantiate() as Projectile)
 	if not right_facing:
 		pos.x *= -1
@@ -279,16 +275,6 @@ func create_projectile(pos : Vector3, projectile_ind : int, type : int,
 	new_projectile.type = type
 	new_projectile.source = player_number
 	new_projectile.get_node(^"Hitbox").collision_layer = hitbox_layer
-	new_projectile.get_node(^"Hitbox").damage_hit = damage_hit
-	new_projectile.get_node(^"Hitbox").damage_block = damage_block * damage_mult
-	new_projectile.get_node(^"Hitbox").stun_hit = stun_hit
-	new_projectile.get_node(^"Hitbox").stun_block = stun_block
-	new_projectile.get_node(^"Hitbox").kback_hit = kback_hit
-	new_projectile.get_node(^"Hitbox").kback_block = kback_block
-	new_projectile.get_node(^"Hitbox").hit_priority = hit_priority
-	new_projectile.get_node(^"Hitbox").type = hit_type
-	new_projectile.get_node(^"Hitbox").on_hit = on_hit_data
-	new_projectile.get_node(^"Hitbox").on_block = on_block_data
 	emit_signal(&"projectile_created", new_projectile)
 
 func add_meter(add_to_meter : float):
