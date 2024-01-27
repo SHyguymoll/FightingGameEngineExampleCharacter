@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://djpmyt4dnc6u0"]
+
+[ext_resource type="Script" path="res://GodotGuy/scenes/HitboxScript.gd" id="1_nrcu5"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xf3y6"]
+size = Vector3(1.46398, 1.48125, 1)
+
+[node name="Hitboxes" type="Area3D"]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+script = ExtResource("1_nrcu5")
+lifetime = 5
+damage_hit = 15.0
+damage_block = 7.0
+stun_hit = 30
+stun_block = 6
+kback_hit = Vector3(0, -6.5, 0)
+kback_block = Vector3(3, 0, 0)
+type = "slam"
+on_hit = [6.0]
+on_block = [2.0]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_xf3y6")
+
+[node name="HitSound" type="AudioStreamPlayer3D" parent="."]
+
+[node name="BlockSound" type="AudioStreamPlayer3D" parent="."]

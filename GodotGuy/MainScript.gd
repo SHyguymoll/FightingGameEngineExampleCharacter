@@ -65,7 +65,6 @@ var right_facing : bool = true
 var kback : Vector3 = Vector3.ZERO
 var stun_time_start : int = 0
 var stun_time_current : int = 0
-@onready var hitbox = preload("res://GodotGuy/scenes/Hitbox.tscn")
 
 const JUST_PRESSED_BUFFER : int = 2
 const DASH_INPUT_LENIENCY : int = 15
@@ -87,6 +86,18 @@ var defense_mult : float = 1.0
 # Saved here as the alternative was copying potentially large blocks of data for many functions.
 var inputs
 
+@onready var hitboxes = {
+	"stand_a": preload("res://GodotGuy/scenes/hitboxes/stand/a.tscn"),
+	"stand_b": preload("res://GodotGuy/scenes/hitboxes/stand/b.tscn"),
+	"stand_c": preload("res://GodotGuy/scenes/hitboxes/stand/c.tscn"),
+	"crouch_a": preload("res://GodotGuy/scenes/hitboxes/crouch/a.tscn"),
+	"crouch_b": preload("res://GodotGuy/scenes/hitboxes/crouch/b.tscn"),
+	"crouch_c": preload("res://GodotGuy/scenes/hitboxes/crouch/c.tscn"),
+	"jump_a": preload("res://GodotGuy/scenes/hitboxes/jump/a.tscn"),
+	"jump_b": preload("res://GodotGuy/scenes/hitboxes/jump/b.tscn"),
+	"jump_c": preload("res://GodotGuy/scenes/hitboxes/jump/c.tscn"),
+	"uppercut": preload("res://GodotGuy/scenes/hitboxes/jump/c.tscn"),
+}
 @onready var projectiles = [preload("res://GodotGuy/scenes/ProjectileStraight.tscn")]
 
 # these are guard clause variables, and may be removed
@@ -247,28 +258,12 @@ func update_velocity(vel : Vector3, how : av_effects):
 		av_effects.SET_Y:
 			velocity.y = vel.y
 
-func create_hitbox(pos : Vector3, shape : Shape3D,
-				lifetime : int, damage_hit : float, damage_block : float,
-				stun_hit : int, stun_block : int, hit_priority : int,
-				kback_hit : Vector3, kback_block : Vector3, type : String,
-				on_hit_data, on_block_data):
-	var new_hitbox := (hitbox.instantiate() as Hitbox)
+func create_hitbox(pos : Vector3, hitbox_name : String):
+	var new_hitbox := (hitboxes[hitbox_name].instantiate() as Hitbox)
 	if not right_facing:
 		pos.x *= -1
 	new_hitbox.set_position(pos + global_position)
-	(new_hitbox.get_node(^"CollisionShape3D") as CollisionShape3D).set_shape(shape)
 	new_hitbox.collision_layer = hitbox_layer
-	new_hitbox.lifetime = lifetime
-	new_hitbox.damage_hit = damage_hit * damage_mult
-	new_hitbox.damage_block = damage_block * damage_mult
-	new_hitbox.stun_hit = stun_hit
-	new_hitbox.stun_block = stun_block
-	new_hitbox.kback_hit = kback_hit
-	new_hitbox.kback_block = kback_block
-	new_hitbox.hit_priority = hit_priority
-	new_hitbox.type = type
-	new_hitbox.on_hit = on_hit_data
-	new_hitbox.on_block = on_block_data
 	emit_signal(&"hitbox_created", new_hitbox)
 
 func create_projectile(pos : Vector3, projectile_ind : int, type : int,
@@ -882,14 +877,14 @@ func input_step(recv_inputs) -> void:
 	reset_facing()
 
 # This is called when a hitbox makes contact with the other fighter, after resolving that the fighter
-# was hit by the attack. A Variant is passed for maximum customizability.
+# was hit by the attack. An Array is passed for maximum customizability.
 func on_hit(on_hit_data):
-# For this fighter, the on_hit and on_block only store a single float, the meter to be gained.
-	add_meter(on_hit_data)
+# For this fighter, the on_hit and on_block arrays only store a single float, the meter to be gained.
+	add_meter(on_hit_data[0])
 
-# Ditto, but for after resolving that the fighter blocked the attack.
+# Ditto, but for after resolving that the opposing fighter blocked the attack.
 func on_block(on_block_data):
-	add_meter(on_block_data)
+	add_meter(on_block_data[0])
 
 func handle_damage(attack : Hitbox, blocked : bool):
 	if not blocked:
