@@ -949,7 +949,7 @@ func try_block(attack : Hitbox,
 
 # Only runs when a hitbox is overlapping, return rules explained above
 func damage_step(attack : Hitbox) -> bool:
-	match attack["type"]:
+	match attack.hit_type:
 		"mid":
 			return try_block(attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, states.hurt_high, states.hurt_crouch, states.hurt_fall)
 		"high":

@@ -13,7 +13,7 @@ extends Area3D
 @export var kback_block : Vector3
 @export_category("Misc")
 @export var hit_priority : int
-@export var type : String
+@export var hit_type : String
 @export var on_hit : Array
 @export var on_block : Array
 

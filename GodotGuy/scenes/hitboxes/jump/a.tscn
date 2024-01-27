@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dftx6jvll0nl3"]
 
-[ext_resource type="Script" path="res://GodotGuy/scenes/HitboxScript.gd" id="1_q6f8e"]
+[ext_resource type="Script" path="res://GodotGuy/scenes/HitboxScript.gd" id="1_j8rl8"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4xqhi"]
 size = Vector3(0.593706, 0.559535, 1)
@@ -9,14 +9,14 @@ size = Vector3(0.593706, 0.559535, 1)
 collision_layer = 0
 collision_mask = 0
 monitoring = false
-script = ExtResource("1_q6f8e")
+script = ExtResource("1_j8rl8")
 lifetime = 3
 damage_hit = 2.0
 stun_hit = 4
 stun_block = 2
 kback_hit = Vector3(1, 1, 0)
 kback_block = Vector3(0.5, 0, 0)
-type = "mid"
+hit_type = "mid"
 on_hit = [1.0]
 on_block = [0.0]
 

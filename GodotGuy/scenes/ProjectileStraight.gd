@@ -37,7 +37,7 @@ func _ready():
 			($Hitbox as Hitbox).stun_block = 5
 			($Hitbox as Hitbox).kback_hit = Vector3(4, 3, 0)
 			($Hitbox as Hitbox).kback_block = Vector3(2, -2, 0)
-			($Hitbox as Hitbox).type = "mid"
+			($Hitbox as Hitbox).hit_type = "mid"
 			($Hitbox as Hitbox).on_hit = [8]
 			($Hitbox as Hitbox).on_block = [4]
 		types.SUPER, types.DIAGONAL_DOWN_SUPER:
@@ -47,7 +47,7 @@ func _ready():
 			($Hitbox as Hitbox).stun_block = 5
 			($Hitbox as Hitbox).kback_hit = Vector3(4, 7, 0)
 			($Hitbox as Hitbox).kback_block = Vector3(2, -2, 0)
-			($Hitbox as Hitbox).type = "launch"
+			($Hitbox as Hitbox).hit_type = "launch"
 			($Hitbox as Hitbox).on_hit = [0]
 			($Hitbox as Hitbox).on_block = [0]
 	$AnimationPlayer.play(start_anim)
