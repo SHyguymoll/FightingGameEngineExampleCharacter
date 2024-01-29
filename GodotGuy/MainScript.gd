@@ -159,53 +159,11 @@ var anim_right_suf = "_right"
 
 # Nothing should modify the fighter's state in _process or _ready, _process is purely for
 # real-time effects, and _ready for initializing the animation player.
-func create_mirrored_animation(anim_to_mirror : Animation) -> Animation:
-	var new_anim : Animation = anim_to_mirror.duplicate(true)
-	new_anim.resource_name = anim_to_mirror.resource_name.trim_suffix(anim_right_suf) + anim_left_suf
-	const POSITION_FLIP_X := Vector3(-1,1,1)
-	const ROTATION_FLIP := Vector3(1,1,-1)
-	for track_ind in range((new_anim as Animation).get_track_count()):
-		# only flip the position 3d and rotation 3d tracks
-		if (new_anim as Animation).track_get_type(track_ind) == Animation.TYPE_POSITION_3D:
-			for key_ind in range((new_anim as Animation).track_get_key_count(track_ind)):
-				(new_anim as Animation).track_set_key_value(
-					track_ind,
-					key_ind,
-					(new_anim.track_get_key_value(track_ind, key_ind) as Vector3) * POSITION_FLIP_X)
-		if (new_anim as Animation).track_get_type(track_ind) == Animation.TYPE_ROTATION_3D:
-			for key_ind in range((new_anim as Animation).track_get_key_count(track_ind)):
-				(new_anim as Animation).track_set_key_value(
-					track_ind,
-					key_ind,
-					Quaternion.from_euler(
-						(
-							new_anim.track_get_key_value(track_ind, key_ind) as Quaternion
-						).get_euler() * ROTATION_FLIP
-					).normalized()
-				)
-	return new_anim
-
-func initialize_animation_player():
-	# Mirror all animations which end with anim_right_suf
-	var new_anims = []
-	var working_list = animate.get_animation_list()
-	for anim_string in working_list:
-		if anim_string.ends_with(anim_right_suf) and (anim_string.trim_suffix(anim_right_suf) + anim_left_suf) not in working_list:
-			new_anims.append(
-				[
-					create_mirrored_animation(animate.get_animation(anim_string)),
-					StringName(anim_string.get_slice("/", 0)) #Animation Library in this case
-				]
-			)
-	
-	for anim in new_anims:
-		animate.get_animation_library(anim[1]).add_animation(anim[0].resource_name, anim[0])
-	animate.play(basic_anim_state_dict[current_state] + 
-		(anim_right_suf if right_facing else anim_left_suf))
 
 func _ready():
 	reset_facing()
-	initialize_animation_player()
+	animate.play(basic_anim_state_dict[current_state] + 
+		(anim_right_suf if right_facing else anim_left_suf))
 
 func _process(_delta):
 	$DebugData.text = """Right Facing: %s

@@ -1,8 +1,9 @@
-[gd_scene load_steps=67 format=3 uid="uid://kquoyj34deus"]
+[gd_scene load_steps=68 format=3 uid="uid://kquoyj34deus"]
 
 [ext_resource type="Shape3D" uid="uid://dlbbd7lyja2p6" path="res://GodotGuy/hurtbox_shapes/crouch_shape.tres" id="2_ahw0y"]
 [ext_resource type="Shape3D" uid="uid://bs5a4315bo07p" path="res://GodotGuy/hurtbox_shapes/base_shape.tres" id="3_8q5n8"]
 [ext_resource type="AudioStream" uid="uid://cmrs4t7t5guny" path="res://GodotGuy/sounds/crouch_c_launch.wav" id="3_sx7kg"]
+[ext_resource type="Script" path="res://GodotGuy/scenes/DupliFlipping2DAnimationPlayer.gd" id="5_e82io"]
 [ext_resource type="Texture2D" uid="uid://dnp3cp2qqpsg1" path="res://GodotGuy/icon.svg" id="14_03fpi"]
 [ext_resource type="Script" path="res://GodotGuy/MainScript.gd" id="53"]
 
@@ -3654,6 +3655,9 @@ libraries = {
 "hurting": SubResource("AnimationLibrary_r08ai"),
 "other": SubResource("AnimationLibrary_xhqxl")
 }
+script = ExtResource("5_e82io")
+anim_left_suf = "_left"
+anim_right_suf = "_right"
 
 [node name="FunctionPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -3691,13 +3695,14 @@ shape = ExtResource("2_ahw0y")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.273207, 0.781501, 0)
 
 [node name="SpriteMain" type="Sprite3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.381826, 0, 0, 0, 1, 0, 0.275214, 0)
+transform = Transform3D(1, 0, 0, 0, 0.776615, 0, 0, 0, 1, 0, 0.529186, 0)
 rotation_edit_mode = 1
 no_depth_test = true
 texture = ExtResource("14_03fpi")
 
 [node name="SpriteAttack" type="Sprite3D" parent="."]
-transform = Transform3D(0.371134, 0, 0, 0, 0.371134, 0, 0, 0, 1, 0.229072, 0.328669, 0.04)
+transform = Transform3D(0.212501, 0, 0, 0, 0.475225, 0, 0, 0, 1, 0.236201, 0.344891, 0.04)
+visible = false
 no_depth_test = true
 texture = ExtResource("14_03fpi")
 
