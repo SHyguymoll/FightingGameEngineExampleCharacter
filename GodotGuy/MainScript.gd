@@ -71,7 +71,7 @@ const DASH_INPUT_LENIENCY : int = 15
 const MOTION_INPUT_LENIENCY : int = 12
 const GROUND_SLIDE_FRICTION : float = 0.97
 
-@export var animate : AnimationPlayer
+@export var animate : FlippingAnimationPlayer
 
 @export var meter : float = 0
 const METER_MAX = 100
@@ -122,9 +122,8 @@ var state_start := states.intro
 @export var current_state: states
 var previous_state : states
 
-# left and right suffixes, change for your animation's version
-var anim_left_suf = "_left"
-var anim_right_suf = "_right"
+@onready var anim_left_suf = animate.anim_left_suf
+@onready var anim_right_suf = animate.anim_right_suf
 
 # Single animations for states can be handled by a simple hash lookup.
 # Because left vs right is handled externally, only the first part of the name is used

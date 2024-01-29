@@ -1,8 +1,5 @@
 class_name DupliFlipping2DAnimationPlayer
-extends AnimationPlayer
-
-@export var anim_left_suf : String
-@export var anim_right_suf : String
+extends FlippingAnimationPlayer
 
 func create_mirrored_animation(anim_to_mirror : Animation) -> Animation:
 	var new_anim : Animation = anim_to_mirror.duplicate(true)
