@@ -421,6 +421,13 @@ func character_positioning():
 	p1.distance = p1.position.x - p2.position.x
 	p2.distance = p2.position.x - p1.position.x
 
+func spawn_audio(sound: AudioStream):
+	var new_audio = AudioStreamPlayer.new()
+	new_audio.stream = sound
+	new_audio.finished.connect(func(): new_audio.queue_free())
+	new_audio.autoplay = true
+	add_child(new_audio)
+
 func register_hitbox(hitbox):
 	add_child(hitbox, true)
 
