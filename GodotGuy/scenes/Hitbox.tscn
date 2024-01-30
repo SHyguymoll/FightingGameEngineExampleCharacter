@@ -11,10 +11,6 @@ script = ExtResource("1_a3bkx")
 [node name="READ ME" type="Label" parent="."]
 offset_right = 40.0
 offset_bottom = 23.0
-text = "The script attached to the root node of this file is required by the game. Don't touch the script! Only change the exported variables."
+text = "The script attached to the root node of this scene is required by the game. Don't touch the script! Only change the exported variables."
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-
-[node name="HitSound" type="AudioStreamPlayer" parent="."]
-
-[node name="BlockSound" type="AudioStreamPlayer" parent="."]

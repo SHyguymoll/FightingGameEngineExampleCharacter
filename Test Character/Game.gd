@@ -374,37 +374,33 @@ func move_inputs_and_iterate(fake_inputs):
 		for p1_attacker in p1_attackers:
 			var hit = p1.damage_step(p1_attacker)
 			if hit:
-				if p1_attacker.get_node_or_null(^"HitSound"):
-					p1_attacker.get_node(^"HitSound").play()
+				spawn_audio(p1_attacker.on_hit_sound)
 				p2.attack_connected = true
 				p2.attack_hurt = true
 				p2_combo += 1
 				p2.on_hit(p1_attacker.on_hit)
 			else:
-				if p1_attacker.get_node_or_null(^"BlockSound"):
-					p1_attacker.get_node(^"BlockSound").play()
+				spawn_audio(p1_attacker.on_block_sound)
 				p2.attack_connected = true
 				p2.attack_hurt = false
 				p2.on_block(p1_attacker.on_block)
-			p1_attacker.destroy()
+			p1_attacker.queue_free()
 		
 		var p2_attackers = (p2.return_attackers() as Array[Hitbox])
 		for p2_attacker in p2_attackers:
 			var hit = p2.damage_step(p2_attacker)
 			if hit:
-				if p2_attacker.get_node_or_null(^"HitSound"):
-					p2_attacker.get_node(^"HitSound").play()
+				spawn_audio(p2_attacker.on_hit_sound)
 				p1.attack_connected = true
 				p1.attack_hurt = true
 				p1_combo += 1
 				p1.on_hit(p2_attacker.on_hit)
 			else:
-				if p2_attacker.get_node_or_null(^"BlockSound"):
-					p2_attacker.get_node(^"BlockSound").play()
+				spawn_audio(p2_attacker.on_block_sound)
 				p1.attack_connected = true
 				p1.attack_hurt = false
 				p1.on_block(p2_attacker.on_block)
-			p2_attacker.destroy()
+			p2_attacker.queue_free()
 	
 	p1.input_step(p1_buf)
 	p2.input_step(p2_buf)

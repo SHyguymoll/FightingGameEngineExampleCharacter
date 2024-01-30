@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://5wy6as0i4odr"]
+[gd_scene load_steps=4 format=3 uid="uid://5wy6as0i4odr"]
 
 [ext_resource type="Script" path="res://GodotGuy/scenes/HitboxScript.gd" id="1_jp6mn"]
+[ext_resource type="AudioStream" uid="uid://5hk5x5uxbevg" path="res://GodotGuy/sounds/blocked.wav" id="2_owocj"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ifkph"]
 size = Vector3(0.943949, 0.585163, 1)
@@ -16,13 +17,10 @@ stun_hit = 12
 stun_block = 5
 kback_hit = Vector3(0.6, 0, 0)
 kback_block = Vector3(-0.2, 0, 0)
+on_block_sound = ExtResource("2_owocj")
 hit_type = "mid"
 on_hit = [3.5]
 on_block = [1.0]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_ifkph")
-
-[node name="HitSound" type="AudioStreamPlayer" parent="."]
-
-[node name="BlockSound" type="AudioStreamPlayer" parent="."]
