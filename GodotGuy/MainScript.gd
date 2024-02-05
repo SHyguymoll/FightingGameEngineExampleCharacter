@@ -718,6 +718,12 @@ func resolve_state_transitions():
 			if not animate.is_playing():
 				set_state(states.idle)
 				previous_state = current_state
+		states.round_win:
+			previous_state = current_state
+			set_state(states.round_win)
+		states.set_win:
+			previous_state = current_state
+			set_state(states.set_win)
 		states.get_up:
 			if not animate.is_playing():
 				set_state(previous_state)
@@ -851,19 +857,22 @@ func on_hit(on_hit_data):
 func on_block(on_block_data):
 	add_meter(on_block_data[0])
 
-func handle_damage(attack : Hitbox, blocked : bool):
+func handle_damage(attack : Hitbox, blocked : bool, next_state : states):
 	if not blocked:
 		health -= attack.damage_hit * defense_mult
 		set_stun(attack.stun_hit)
 		kback = attack.kback_hit
 		if health <= 0:
 			set_state(states.outro_bounce)
-			kback.y = 5
+			kback.y += 6.5
 			emit_signal(&"defeated", player_number)
+		else:
+			set_state(next_state)
 	else:
 		health = max(health - attack.damage_block * defense_mult, 1)
 		set_stun(attack.stun_block)
 		kback = attack.kback_block
+		set_state(next_state)
 
 # block rule arrays: [up, down, away, towards], 1 means valid, 0 means ignored, -1 means invalid
 const BLOCK_ANY = [1, 1, 1, 1]
@@ -882,16 +891,13 @@ func try_block(attack : Hitbox,
 	if in_hurting_state() or in_dashing_state() or in_attacking_state():
 		if not in_air_state():
 			if in_crouch_state():
-				set_state(fs_crouch)
-				handle_damage(attack, false)
+				handle_damage(attack, false, fs_crouch)
 				return true
 			else:
-				set_state(fs_stand)
-				handle_damage(attack, false)
+				handle_damage(attack, false, fs_stand)
 				return true
 		else:
-			handle_damage(attack, false)
-			set_state(fs_air)
+			handle_damage(attack, false, fs_air)
 			return true
 	# Try to block
 	var directions = [btn_pressed("up"),btn_pressed("down"),btn_pressed("left"),btn_pressed("right")]
@@ -903,29 +909,23 @@ func try_block(attack : Hitbox,
 		for check_input in range(len(directions)):
 			if (directions[check_input] == true and ground_block_rules[check_input] == -1) or (directions[check_input] == false and ground_block_rules[check_input] == 1):
 				if in_crouch_state():
-					set_state(fs_crouch)
-					handle_damage(attack, false)
+					handle_damage(attack, false, fs_crouch)
 					return true
 				else:
-					set_state(fs_stand)
-					handle_damage(attack, false)
+					handle_damage(attack, false, fs_stand)
 					return true
 		if btn_pressed("down"):
-			handle_damage(attack, true)
-			set_state(states.block_low)
+			handle_damage(attack, true, states.block_low)
 			return false
 		else:
-			handle_damage(attack, true)
-			set_state(states.block_high)
+			handle_damage(attack, true, states.block_high)
 			return false
 	else:
 		for check_input in range(len(directions)):
 			if (directions[check_input] == true and air_block_rules[check_input] == -1) or (directions[check_input] == false and air_block_rules[check_input] == 1):
-				handle_damage(attack, false)
-				set_state(fs_air)
+				handle_damage(attack, false, fs_air)
 				return true
-		handle_damage(attack, true)
-		set_state(states.block_air)
+		handle_damage(attack, true, states.block_air)
 		return false
 
 # Only runs when a hitbox is overlapping, return rules explained above
