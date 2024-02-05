@@ -62,7 +62,7 @@ func tick():
 
 func destroy():
 	if get_node_or_null(^"Hitbox"):
-		$Hitbox.destroy()
+		$Hitbox.queue_free()
 	velocity = Vector3.ZERO
 	$AnimationPlayer.play(end_anim)
 
