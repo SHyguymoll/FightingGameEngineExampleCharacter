@@ -40,12 +40,22 @@ func _ready():
 			($Hitbox as Hitbox).hit_type = "mid"
 			($Hitbox as Hitbox).on_hit = [8]
 			($Hitbox as Hitbox).on_block = [4]
-		types.SUPER, types.DIAGONAL_DOWN_SUPER:
+		types.SUPER:
 			($Hitbox as Hitbox).damage_hit = 20
 			($Hitbox as Hitbox).damage_block = 10
 			($Hitbox as Hitbox).stun_hit = 10
 			($Hitbox as Hitbox).stun_block = 5
 			($Hitbox as Hitbox).kback_hit = Vector3(4, 7, 0)
+			($Hitbox as Hitbox).kback_block = Vector3(2, -2, 0)
+			($Hitbox as Hitbox).hit_type = "launch"
+			($Hitbox as Hitbox).on_hit = [0]
+			($Hitbox as Hitbox).on_block = [0]
+		types.DIAGONAL_DOWN_SUPER:
+			($Hitbox as Hitbox).damage_hit = 2
+			($Hitbox as Hitbox).damage_block = 1
+			($Hitbox as Hitbox).stun_hit = 10
+			($Hitbox as Hitbox).stun_block = 5
+			($Hitbox as Hitbox).kback_hit = Vector3(-2, 2, 0)
 			($Hitbox as Hitbox).kback_block = Vector3(2, -2, 0)
 			($Hitbox as Hitbox).hit_type = "launch"
 			($Hitbox as Hitbox).on_hit = [0]
