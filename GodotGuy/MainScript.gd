@@ -106,7 +106,7 @@ var inputs
 
 #State transitions are handled by a FSM implemented as match statements in the input_step
 enum states {
-	intro, round_win, set_win, lose, #round stuff
+	intro, round_win, set_win, #round stuff
 	idle, crouch, #basic basics
 	walk_forward, walk_back, dash_forward, dash_back, #lateral movement
 	jump_right_init, jump_neutral_init, jump_left_init, #jump from ground initial
@@ -117,7 +117,8 @@ enum states {
 	block_high, block_low, block_air, get_up, #handling getting attacked well
 	hurt_high, hurt_low, hurt_crouch, #not handling getting attacked well
 	hurt_fall, hurt_lie, hurt_bounce, #REALLY not handling getting attacked well
-	}
+	outro_fall, outro_lie, outro_bounce #The final stage of not handling it
+}
 var state_start := states.intro
 @export var current_state: states
 var previous_state : states
@@ -137,6 +138,9 @@ var previous_state : states
 	states.jump_right_air_init : "basic/jump", states.jump_neutral_air_init : "basic/jump", states.jump_left_air_init : "basic/jump",
 	states.jump_right : "basic/jump", states.jump_left : "basic/jump", states.jump_neutral : "basic/jump",
 	states.jump_right_no_act : "basic/jump", states.jump_left_no_act : "basic/jump", states.jump_neutral_no_act : "basic/jump",
+	states.block_high : "blocking/high",
+	states.block_low : "blocking/low",
+	states.block_air : "blocking/air",
 	states.hurt_high : "hurting/high",
 	states.hurt_low : "hurting/low",
 	states.hurt_crouch : "hurting/crouch",
@@ -144,9 +148,9 @@ var previous_state : states
 	states.hurt_bounce : "hurting/air",
 	states.hurt_lie : "hurting/lying",
 	states.get_up : "hurting/get_up",
-	states.block_high : "blocking/high",
-	states.block_low : "blocking/low",
-	states.block_air : "blocking/air",
+	states.outro_fall : "hurting/air",
+	states.outro_bounce : "hurting/air",
+	states.outro_lie : "hurting/lying",
 }
 # Moving left and right on the ground is decoupled from moving forward and backward in this script,
 # so variables exist here for ease like the dictionary above.
@@ -243,7 +247,10 @@ func post_intro() -> bool:
 	return current_state != states.intro
 
 func post_outro() -> bool:
-	return (current_state in [states.round_win, states.set_win] and not animate.is_playing()) or current_state == states.hurt_lie
+	return (current_state in [states.round_win, states.set_win] and not animate.is_playing())
+
+func in_defeated_state() -> bool:
+	return current_state == states.outro_lie
 
 func in_air_state() -> bool:
 	return current_state in [
@@ -678,11 +685,11 @@ func update_character_state():
 		states.hurt_high, states.hurt_low, states.hurt_crouch, states.block_high, states.block_low:
 			if stun_time_current == stun_time_start:
 				velocity.x += (-1 if right_facing else 1) * kback.x
-		states.hurt_fall, states.hurt_bounce, states.block_air:
+		states.hurt_fall, states.hurt_bounce, states.block_air, states.outro_bounce, states.outro_fall:
 			if stun_time_current == stun_time_start:
 				velocity.x += (-1 if right_facing else 1) * kback.x
 				velocity.y += kback.y
-		states.hurt_lie:
+		states.hurt_lie, states.outro_lie:
 			velocity.x *= GROUND_SLIDE_FRICTION
 	velocity.y += gravity
 	velocity.y = max(min_fall_vel, velocity.y)
@@ -743,10 +750,20 @@ func resolve_state_transitions():
 				set_state(states.hurt_fall)
 				set_stun(stun_time_start)
 				kback.y *= -1
+		states.outro_bounce:
+			reduce_stun()
+			if check_true:
+				set_state(states.outro_fall)
+				set_stun(stun_time_start)
+				kback.y *= -1
 		states.hurt_lie:
 			reduce_stun()
 			if stun_time_current == 0:
 				set_state(states.get_up)
+		states.outro_fall:
+			reduce_stun()
+			if check_true:
+				set_state(states.outro_lie)
 		states.attack_normal, states.attack_command, states.attack_motion:
 			if attack_ended:
 				if attack_return_state.get(current_attack) != null:
@@ -834,7 +851,8 @@ func handle_damage(attack : Hitbox, blocked : bool):
 		set_stun(attack.stun_hit)
 		kback = attack.kback_hit
 		if health <= 0:
-			set_state(states.hurt_lie)
+			set_state(states.outro_bounce)
+			kback.y += 5
 			emit_signal(&"defeated", player_number)
 	else:
 		health = max(health - attack.damage_block * defense_mult, 1)
