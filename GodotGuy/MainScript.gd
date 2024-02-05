@@ -16,6 +16,7 @@ var start_x_offset : float = 2
 const BUTTONCOUNT : int = 3
 var attack_connected : bool
 var attack_hurt : bool
+var game_ended := false
 
 signal hitbox_created
 signal projectile_created
@@ -252,6 +253,9 @@ func post_outro() -> bool:
 func in_defeated_state() -> bool:
 	return current_state == states.outro_lie
 
+func in_outro_state() -> bool:
+	return current_state in [states.outro_fall, states.outro_bounce, states.outro_lie]
+
 func in_air_state() -> bool:
 	return current_state in [
 		states.jump_attack,
@@ -400,12 +404,11 @@ func try_special_attack(cur_state: states) -> states:
 	return cur_state
 
 func try_attack(cur_state: states) -> states:
-	
 	if (
 		!btn_just_pressed("button0") and
 		!btn_just_pressed("button1") and
 		!btn_just_pressed("button2")
-		):
+	):
 		return cur_state
 	
 	previous_state = cur_state
@@ -708,6 +711,9 @@ func resolve_state_transitions():
 		states.jump_left_init, states.jump_left_air_init:
 			previous_state = states.jump_left
 	match current_state:
+		states.idle, states.walk_forward, states.walk_back, states.crouch when game_ended:
+			set_state(states.round_win)
+			return
 		states.intro:
 			if not animate.is_playing():
 				set_state(states.idle)
@@ -852,7 +858,7 @@ func handle_damage(attack : Hitbox, blocked : bool):
 		kback = attack.kback_hit
 		if health <= 0:
 			set_state(states.outro_bounce)
-			kback.y += 5
+			kback.y = 5
 			emit_signal(&"defeated", player_number)
 	else:
 		health = max(health - attack.damage_block * defense_mult, 1)

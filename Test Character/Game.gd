@@ -435,9 +435,11 @@ func register_projectile(projectile):
 func delete_projectile(projectile):
 	projectiles.erase(projectile)
 
-func player_defeated(player_number):
-	print(player_number)
+func player_defeated(player_number : int):
+	print_debug("GAME OVER")
 	moment = moments.ROUND_END
+	p1.game_ended = true
+	p2.game_ended = true
 
 func training_mode_settings():
 	if p1_reset_health_on_drop and not p2_combo:
@@ -471,7 +473,7 @@ func _physics_process(_delta):
 			move_inputs_and_iterate(true)
 			check_combos()
 			character_positioning()
-			if p1.post_outro() and p2.post_outro():
+			if (p1.post_outro() and p2.in_defeated_state()) or (p1.in_defeated_state() and p2.post_outro()):
 				get_tree().reload_current_scene()
 
 func _on_p1_health_reset_switch_toggled(toggled_on):
