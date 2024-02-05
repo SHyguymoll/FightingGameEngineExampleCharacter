@@ -1,9 +1,10 @@
-[gd_scene load_steps=68 format=3 uid="uid://kquoyj34deus"]
+[gd_scene load_steps=69 format=3 uid="uid://kquoyj34deus"]
 
 [ext_resource type="Shape3D" uid="uid://dlbbd7lyja2p6" path="res://GodotGuy/hurtbox_shapes/crouch_shape.tres" id="2_ahw0y"]
 [ext_resource type="Shape3D" uid="uid://bs5a4315bo07p" path="res://GodotGuy/hurtbox_shapes/base_shape.tres" id="3_8q5n8"]
 [ext_resource type="AudioStream" uid="uid://cmrs4t7t5guny" path="res://GodotGuy/sounds/crouch_c_launch.wav" id="3_sx7kg"]
 [ext_resource type="Script" path="res://GodotGuy/scenes/DupliFlipping2DAnimationPlayer.gd" id="5_e82io"]
+[ext_resource type="AudioStream" uid="uid://5sfxgcwubvsw" path="res://GodotGuy/sounds/step.wav" id="5_wtfc2"]
 [ext_resource type="Texture2D" uid="uid://dnp3cp2qqpsg1" path="res://GodotGuy/icon.svg" id="14_03fpi"]
 [ext_resource type="Script" path="res://GodotGuy/MainScript.gd" id="53"]
 
@@ -2100,6 +2101,33 @@ tracks/7/keys = {
 "update": 1,
 "values": [false]
 }
+tracks/8/type = "audio"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("../OtherAudio")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("5_wtfc2")
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("5_wtfc2")
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("5_wtfc2")
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("5_wtfc2")
+}],
+"times": PackedFloat32Array(0.167, 0.334, 0.500001, 0.666668)
+}
+tracks/8/use_blend = true
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1famj"]
 _data = {
@@ -3688,21 +3716,22 @@ collision_mask = 0
 monitorable = false
 
 [node name="HurtboxShape" type="CollisionShape3D" parent="Hurtbox"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.007, 0)
-shape = ExtResource("2_ahw0y")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.642, 0)
+shape = ExtResource("3_8q5n8")
 
 [node name="Node3D" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.273207, 0.781501, 0)
 
 [node name="SpriteMain" type="Sprite3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.776615, 0, 0, 0, 1, 0, 0.529186, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67, 0)
 rotation_edit_mode = 1
 no_depth_test = true
 texture = ExtResource("14_03fpi")
 
 [node name="SpriteAttack" type="Sprite3D" parent="."]
-transform = Transform3D(0.212501, 0, 0, 0, 0.475225, 0, 0, 0, 1, 0.236201, 0.344891, 0.04)
+transform = Transform3D(0.600871, 0, 0, 0, 1.627, 0, 0, 0, 1, 1.231, -0.155, 0.04)
 visible = false
+modulate = Color(0, 1, 1, 0)
 no_depth_test = true
 texture = ExtResource("14_03fpi")
 
@@ -3713,3 +3742,5 @@ no_depth_test = true
 texture = ExtResource("14_03fpi")
 
 [node name="AttackAudio" type="AudioStreamPlayer" parent="."]
+
+[node name="OtherAudio" type="AudioStreamPlayer" parent="."]
