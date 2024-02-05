@@ -436,10 +436,11 @@ func delete_projectile(projectile):
 	projectiles.erase(projectile)
 
 func player_defeated(player_number : int):
-	print_debug("GAME OVER")
 	moment = moments.ROUND_END
 	p1.game_ended = true
 	p2.game_ended = true
+	for projectile in projectiles:
+		projectile.destroy()
 
 func training_mode_settings():
 	if p1_reset_health_on_drop and not p2_combo:
