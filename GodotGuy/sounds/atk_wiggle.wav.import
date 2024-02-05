@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://cmo3e0ujnxq3x"
-path="res://.godot/imported/crouch_b.wav-407ad346aa36f653616e8922a7a49bfc.sample"
+path="res://.godot/imported/atk_wiggle.wav-7210acbff2e94a53ad46a5f46d254ebb.sample"
 
 [deps]
 
-source_file="res://GodotGuy/sounds/crouch_b.wav"
-dest_files=["res://.godot/imported/crouch_b.wav-407ad346aa36f653616e8922a7a49bfc.sample"]
+source_file="res://GodotGuy/sounds/atk_wiggle.wav"
+dest_files=["res://.godot/imported/atk_wiggle.wav-7210acbff2e94a53ad46a5f46d254ebb.sample"]
 
 [params]
 

@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://nkhuo8ke6aca"]
 
 [ext_resource type="Script" path="res://GodotGuy/scenes/HitboxScript.gd" id="1_nbtqf"]
-[ext_resource type="AudioStream" uid="uid://oeejdjhrsbp" path="res://GodotGuy/sounds/crouch_a.wav" id="2_la05j"]
-[ext_resource type="AudioStream" uid="uid://5hk5x5uxbevg" path="res://GodotGuy/sounds/blocked.wav" id="3_q5ca7"]
+[ext_resource type="AudioStream" uid="uid://oeejdjhrsbp" path="res://GodotGuy/sounds/atk_sweep.wav" id="2_la05j"]
+[ext_resource type="AudioStream" uid="uid://5hk5x5uxbevg" path="res://GodotGuy/sounds/atk_blocked.wav" id="3_q5ca7"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1d368"]
 size = Vector3(1.19168, 0.57662, 1)

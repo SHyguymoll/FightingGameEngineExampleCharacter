@@ -2,13 +2,13 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://c4b3c67wo42vs"
-path="res://.godot/imported/stand_c.wav-f54427eb8de65f357efe6a37695196d0.sample"
+uid="uid://dhcm8ougcdxe"
+path="res://.godot/imported/atk_light.wav-bd144c1fcd1d365ded6de356506156a4.sample"
 
 [deps]
 
-source_file="res://GodotGuy/sounds/stand_c.wav"
-dest_files=["res://.godot/imported/stand_c.wav-f54427eb8de65f357efe6a37695196d0.sample"]
+source_file="res://GodotGuy/sounds/atk_light.wav"
+dest_files=["res://.godot/imported/atk_light.wav-bd144c1fcd1d365ded6de356506156a4.sample"]
 
 [params]
 

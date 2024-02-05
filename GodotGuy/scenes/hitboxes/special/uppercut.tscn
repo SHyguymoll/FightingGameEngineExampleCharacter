@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://b3ne8vgra6luw"]
+[gd_scene load_steps=5 format=3 uid="uid://b3ne8vgra6luw"]
 
 [ext_resource type="Script" path="res://GodotGuy/scenes/HitboxScript.gd" id="1_tcktd"]
-[ext_resource type="AudioStream" uid="uid://5hk5x5uxbevg" path="res://GodotGuy/sounds/blocked.wav" id="2_yp180"]
+[ext_resource type="AudioStream" uid="uid://8esy6va00pjb" path="res://GodotGuy/sounds/atk_uppercut.wav" id="2_uqny3"]
+[ext_resource type="AudioStream" uid="uid://5hk5x5uxbevg" path="res://GodotGuy/sounds/atk_blocked.wav" id="2_yp180"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_o8qwp"]
 size = Vector3(1, 2.6936, 1)
@@ -18,6 +19,7 @@ stun_hit = 60
 stun_block = 10
 kback_hit = Vector3(0.6, 10, 0)
 kback_block = Vector3(3, 0, 0)
+on_hit_sound = ExtResource("2_uqny3")
 on_block_sound = ExtResource("2_yp180")
 hit_type = "launch"
 on_hit = [15.0]

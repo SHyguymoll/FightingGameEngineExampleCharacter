@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://7arkj6kc7el8"
-path="res://.godot/imported/projectile_hit.wav-1c8b71f614d8505d634241ff176a06f4.sample"
+path="res://.godot/imported/atk_projectile.wav-2c6a0527a6b16de7af6bebf2ecfa72df.sample"
 
 [deps]
 
-source_file="res://GodotGuy/sounds/projectile_hit.wav"
-dest_files=["res://.godot/imported/projectile_hit.wav-1c8b71f614d8505d634241ff176a06f4.sample"]
+source_file="res://GodotGuy/sounds/atk_projectile.wav"
+dest_files=["res://.godot/imported/atk_projectile.wav-2c6a0527a6b16de7af6bebf2ecfa72df.sample"]
 
 [params]
 
