@@ -264,7 +264,7 @@ func in_air_state() -> bool:
 		states.block_air, states.hurt_bounce, states.hurt_fall
 	]
 
-func in_crouch_state() -> bool:
+func in_crouching_state() -> bool:
 	return current_state in [states.crouch, states.hurt_crouch, states.block_low]
 
 func in_dashing_state() -> bool:
@@ -890,7 +890,7 @@ func try_block(attack : Hitbox,
 	attack.queue_free()
 	if in_hurting_state() or in_dashing_state() or in_attacking_state():
 		if not in_air_state():
-			if in_crouch_state():
+			if in_crouching_state():
 				handle_damage(attack, false, fs_crouch)
 				return true
 			else:
@@ -908,7 +908,7 @@ func try_block(attack : Hitbox,
 	if not in_air_state():
 		for check_input in range(len(directions)):
 			if (directions[check_input] == true and ground_block_rules[check_input] == -1) or (directions[check_input] == false and ground_block_rules[check_input] == 1):
-				if in_crouch_state():
+				if in_crouching_state():
 					handle_damage(attack, false, fs_crouch)
 					return true
 				else:
