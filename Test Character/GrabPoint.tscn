@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b3qx5aofxylc7"]
+
+[ext_resource type="Script" path="res://Test Character/GrabPoint.gd" id="1_mtu2f"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_mtu2f")

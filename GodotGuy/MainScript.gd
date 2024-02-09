@@ -18,6 +18,8 @@ var attack_connected : bool
 var attack_hurt : bool
 var game_ended := false
 
+signal grabbed
+signal releasing_grab
 signal hitbox_created
 signal projectile_created
 signal defeated
@@ -73,6 +75,7 @@ const MOTION_INPUT_LENIENCY : int = 12
 const GROUND_SLIDE_FRICTION : float = 0.97
 
 @export var animate : FlippingAnimationPlayer
+@export var grab_point : GrabPoint
 
 @export var meter : float = 0
 const METER_MAX = 100
@@ -689,6 +692,15 @@ func update_character_state():
 			velocity.x = -1 * walk_speed
 		states.jump_neutral, states.jump_neutral_no_act:
 			velocity.x = 0
+		states.hurt_grabbed:
+			velocity.x = 0
+			velocity.y = -gravity #negative gravity is used here to undo gravity
+			global_position = grab_point.position
+			if right_facing:
+				global_position -= $GrabDifference.position
+			else:
+				global_position += $GrabDifference.position
+			pass
 		states.hurt_high, states.hurt_low, states.hurt_crouch, states.block_high, states.block_low:
 			if stun_time_current == stun_time_start:
 				velocity.x += (-1 if right_facing else 1) * kback.x
@@ -932,6 +944,14 @@ func try_block(attack : Hitbox,
 		handle_damage(attack, true, states.block_air)
 		return false
 
+func try_grab(on_ground : bool) -> bool:
+	if in_crouching_state():
+		return false
+	if on_ground and in_air_state():
+		return false
+	emit_signal(&"grabbed")
+	return true
+
 # Only runs when a hitbox is overlapping, return rules explained above
 func damage_step(attack : Hitbox) -> bool:
 	match attack.hit_type:
@@ -947,5 +967,9 @@ func damage_step(attack : Hitbox) -> bool:
 			return try_block(attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_lie, states.hurt_lie, states.hurt_fall)
 		"slam":
 			return try_block(attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, states.hurt_bounce, states.hurt_bounce, states.hurt_bounce)
+		"ground_grab":
+			return try_grab(true)
+		"air_grab":
+			return try_grab(false)
 		_: # this will definitely not be a bug in the future
 			return try_block(attack, BLOCK_UNBLOCKABLE, BLOCK_UNBLOCKABLE, states.hurt_high, states.hurt_crouch, states.hurt_fall)

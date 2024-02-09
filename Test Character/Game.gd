@@ -32,6 +32,8 @@ var p2_input_index : int = 0
 @export var player_test_two : PackedScene
 @export var scene_to_test : PackedScene
 
+@onready var grab_point = preload("res://Test Character/GrabPoint.tscn")
+
 var p1_reset_health_on_drop := true
 var p2_reset_health_on_drop := true
 var p1_health_reset : float
@@ -118,6 +120,8 @@ func init_fighters():
 	for element in p1.ui_elements_training.player1:
 		$HUD/TrainingModeControlsSpecial/P1Controls.add_child(element)
 	p1.initialize_training_mode_elements()
+	p1.grab_point = grab_point.instantiate()
+	add_child(p1.grab_point)
 	
 	for i in range(p2.BUTTONCOUNT):
 		p2_inputs["button" + str(i)] = [[0, false]]
@@ -133,6 +137,8 @@ func init_fighters():
 	for element in p2.ui_elements_training.player2:
 		$HUD/TrainingModeControlsSpecial/P2Controls.add_child(element)
 	p2.initialize_training_mode_elements()
+	p2.grab_point = grab_point.instantiate()
+	add_child(p2.grab_point)
 	
 	character_positioning()
 	p1_health_reset = p1.health
@@ -416,6 +422,10 @@ func character_positioning():
 	p2.position.x = clamp(p2.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
 	p1.distance = p1.position.x - p2.position.x
 	p2.distance = p2.position.x - p1.position.x
+	if p1.grab_point.follow_player:
+		p1.grab_point.position = p1.global_position
+	if p2.grab_point.follow_player:
+		p2.grab_point.position = p2.global_position
 
 func spawn_audio(sound: AudioStream):
 	var new_audio = AudioStreamPlayer.new()
