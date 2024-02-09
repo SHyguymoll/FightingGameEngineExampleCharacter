@@ -116,7 +116,7 @@ enum states {
 	jump_right_no_act, jump_neutral_no_act, jump_left_no_act, #aerial not actionable
 	attack_normal, attack_command, attack_motion, jump_attack, #handling attacks
 	block_high, block_low, block_air, get_up, #handling getting attacked well
-	hurt_high, hurt_low, hurt_crouch, #not handling getting attacked well
+	hurt_high, hurt_low, hurt_crouch, hurt_grabbed, #not handling getting attacked well
 	hurt_fall, hurt_lie, hurt_bounce, #REALLY not handling getting attacked well
 	outro_fall, outro_lie, outro_bounce #The final stage of not handling it
 }
@@ -145,6 +145,7 @@ var previous_state : states
 	states.hurt_high : "hurting/high",
 	states.hurt_low : "hurting/low",
 	states.hurt_crouch : "hurting/crouch",
+	states.hurt_grabbed : "hurting/air",
 	states.hurt_fall : "hurting/air",
 	states.hurt_bounce : "hurting/air",
 	states.hurt_lie : "hurting/lying",
@@ -275,9 +276,12 @@ func in_attacking_state() -> bool:
 
 func in_hurting_state() -> bool:
 	return current_state in [
-		states.hurt_high, states.hurt_low, states.hurt_crouch,
+		states.hurt_high, states.hurt_low, states.hurt_crouch, states.hurt_grabbed,
 		states.hurt_fall, states.hurt_bounce
 	]
+
+func in_grabbed_state() -> bool:
+	return current_state == states.hurt_grabbed
 
 func set_state(new_state: states):
 	if current_state != new_state:
