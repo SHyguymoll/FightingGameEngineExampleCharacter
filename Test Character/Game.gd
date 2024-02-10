@@ -418,14 +418,18 @@ func check_combos():
 		p1_combo = 0
 
 func character_positioning():
+	if p1.grab_point.follow_player:
+		p1.grab_point.position = p1.global_position
+	else:
+		p1.global_position = p1.grab_point.position + p1.grab_offset
+	if p2.grab_point.follow_player:
+		p2.grab_point.position = p2.global_position
+	else:
+		p2.global_position = p2.grab_point.position + p2.grab_offset
 	p1.position.x = clamp(p1.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
 	p2.position.x = clamp(p2.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
 	p1.distance = p1.position.x - p2.position.x
 	p2.distance = p2.position.x - p1.position.x
-	if p1.grab_point.follow_player:
-		p1.grab_point.position = p1.global_position
-	if p2.grab_point.follow_player:
-		p2.grab_point.position = p2.global_position
 
 func spawn_audio(sound: AudioStream):
 	var new_audio = AudioStreamPlayer.new()
