@@ -1,9 +1,9 @@
 extends Node3D
 
 #required variables from Content.gd
-var p1
-var p2
-var stage
+var p1 : Fighter
+var p2 : Fighter
+var stage : Stage
 var projectiles : Array[Projectile]
 
 #required variables from InputHandle.gd
