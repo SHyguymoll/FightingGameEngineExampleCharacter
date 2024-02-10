@@ -13,6 +13,7 @@ var player_number : int # This is set by the game, don't change this
 var distance : float # Ditto
 var input_buffer_len : int = 10 # Must be a positive number.
 var start_x_offset : float = 2
+var grab_offset : Vector3 = Vector3(0.46, 0.87, 0)
 const BUTTONCOUNT : int = 3
 var attack_connected : bool
 var attack_hurt : bool
@@ -694,13 +695,7 @@ func update_character_state():
 			velocity.x = 0
 		states.hurt_grabbed:
 			velocity.x = 0
-			velocity.y = -gravity #negative gravity is used here to undo gravity
-			global_position = grab_point.position
-			if right_facing:
-				global_position -= $GrabDifference.position
-			else:
-				global_position += $GrabDifference.position
-			pass
+			velocity.y = -gravity #negative gravity is used here to undo gravity and halt all movement
 		states.hurt_high, states.hurt_low, states.hurt_crouch, states.block_high, states.block_low:
 			if stun_time_current == stun_time_start:
 				velocity.x += (-1 if right_facing else 1) * kback.x
