@@ -832,11 +832,11 @@ const INFINITE_STUN := -1
 
 func set_stun(value):
 	stun_time_start = value
-	GlobalKnowledge.global_hitstop = int(value/4)
+	GlobalKnowledge.global_hitstop = int(abs(value)/4)
 	stun_time_current = stun_time_start + 1
 
 func reduce_stun():
-	if stun_time_current != -1:
+	if stun_time_start != -1:
 		stun_time_current = max(0, stun_time_current - 1)
 
 func reset_facing():
