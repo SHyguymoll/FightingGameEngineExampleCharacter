@@ -12,8 +12,10 @@ extends CharacterBody3D
 var player_number : int # This is set by the game, don't change this
 var distance : float # Ditto
 var input_buffer_len : int = 10 # Must be a positive number.
-var start_x_offset : float = 2
-var grab_offset : Vector3 = Vector3(0.46, 0.87, 0)
+@export var start_x_offset : float = 2
+@export var grabbed_offset : Vector3 = Vector3(0.46, 0.87, 0)
+var grabbed_point : GrabPoint # When the fighter is grabbed
+@export var grab_point : GrabPoint # When the fighter is the grabber
 const BUTTONCOUNT : int = 3
 var attack_connected : bool
 var attack_hurt : bool
@@ -76,7 +78,6 @@ const MOTION_INPUT_LENIENCY : int = 12
 const GROUND_SLIDE_FRICTION : float = 0.97
 
 @export var animate : FlippingAnimationPlayer
-@export var grab_point : GrabPoint
 
 @export var meter : float = 0
 const METER_MAX = 100

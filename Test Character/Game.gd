@@ -114,14 +114,16 @@ func init_fighters():
 	p1.char_name += " p1"
 	p1.hitbox_created.connect(register_hitbox)
 	p1.projectile_created.connect(register_projectile)
+	p1.grabbed.connect(grabbed)
+	p1.releasing_grab.connect(releasing_grab)
 	p1.defeated.connect(player_defeated)
 	for element in p1.ui_elements.player1:
 		$HUD/SpecialElements/P1Group.add_child(element)
 	for element in p1.ui_elements_training.player1:
 		$HUD/TrainingModeControlsSpecial/P1Controls.add_child(element)
 	p1.initialize_training_mode_elements()
-	p1.grab_point = grab_point.instantiate()
-	add_child(p1.grab_point)
+	p1.grabbed_point = grab_point.instantiate()
+	add_child(p1.grabbed_point)
 	
 	for i in range(p2.BUTTONCOUNT):
 		p2_inputs["button" + str(i)] = [[0, false]]
@@ -131,16 +133,18 @@ func init_fighters():
 	p2.char_name += " p2"
 	p2.hitbox_created.connect(register_hitbox)
 	p2.projectile_created.connect(register_projectile)
+	p2.grabbed.connect(grabbed)
+	p2.releasing_grab.connect(releasing_grab)
 	p2.defeated.connect(player_defeated)
 	for element in p2.ui_elements.player2:
 		$HUD/SpecialElements/P2Group.add_child(element)
 	for element in p2.ui_elements_training.player2:
 		$HUD/TrainingModeControlsSpecial/P2Controls.add_child(element)
 	p2.initialize_training_mode_elements()
-	p2.grab_point = grab_point.instantiate()
-	add_child(p2.grab_point)
+	p2.grabbed_point = grab_point.instantiate()
+	add_child(p2.grabbed_point)
 	
-	character_positioning()
+	character_positioning(true)
 	p1_health_reset = p1.health
 	p2_health_reset = p2.health
 
@@ -417,15 +421,18 @@ func check_combos():
 	if not p2.in_hurting_state():
 		p1_combo = 0
 
-func character_positioning():
-	if p1.grab_point.follow_player:
-		p1.grab_point.position = p1.global_position
-	else:
-		p1.global_position = p1.grab_point.position + p1.grab_offset
-	if p2.grab_point.follow_player:
-		p2.grab_point.position = p2.global_position
-	else:
-		p2.global_position = p2.grab_point.position + p2.grab_offset
+func character_positioning(ignore_point_logic := false):
+	if not ignore_point_logic:
+		if p1.grab_point.act_on_player:
+			p1.grabbed_point.global_position = p2.grab_point.global_position
+			p1.global_position = p1.grabbed_point.global_position + p1.grabbed_offset
+		else:
+			p1.grab_point.global_position = p1.global_position
+		if p2.grab_point.follow_player:
+			p2.grabbed_point.global_position = p1.grab_point.global_position
+			p2.global_position = p2.grabbed_point.global_position + p2.grabbed_offset
+		else:
+			p2.grab_point.global_position = p2.global_position
 	p1.position.x = clamp(p1.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
 	p2.position.x = clamp(p2.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
 	p1.distance = p1.position.x - p2.position.x
@@ -448,6 +455,20 @@ func register_projectile(projectile):
 
 func delete_projectile(projectile):
 	projectiles.erase(projectile)
+
+func grabbed(player_number):
+	match player_number:
+		1:
+			p1.grab_point.act_on_player = true
+		2:
+			p2.grab_point.act_on_player = true
+
+func releasing_grab(player_number):
+	match player_number:
+		1:
+			p2.grab_point.act_on_player = false
+		2:
+			p1.grab_point.act_on_player = false
 
 func player_defeated(player_number : int):
 	moment = moments.ROUND_END
