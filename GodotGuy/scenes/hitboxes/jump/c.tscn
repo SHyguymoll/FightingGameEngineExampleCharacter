@@ -21,7 +21,7 @@ kback_hit = Vector3(0, -6.5, 0)
 kback_block = Vector3(3, 0, 0)
 on_hit_sound = ExtResource("2_creop")
 on_block_sound = ExtResource("2_62s1y")
-hit_type = "slam"
+hit_type = "high"
 on_hit = [6.0]
 on_block = [2.0]
 
