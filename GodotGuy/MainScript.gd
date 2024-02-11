@@ -883,12 +883,8 @@ func input_step(recv_inputs) -> void:
 # This is called when a hitbox makes contact with the other fighter, after resolving that the fighter
 # was hit by the attack. An Array is passed for maximum customizability.
 func on_hit(on_hit_data : Array):
-# For this fighter, the on_hit and on_block arrays store the following data in this order:
-# meter_gain float
-# grab? (the value stored here is irrelevant, only if exists for the array length check)
+# For this fighter, the on_hit and on_block arrays stores only the meter_gain, a float.
 	add_meter(on_hit_data[0])
-	if len(on_hit_data) > 1:
-		pass
 
 # Ditto, but for after resolving that the opposing fighter blocked the attack.
 func on_block(on_block_data : Array):
