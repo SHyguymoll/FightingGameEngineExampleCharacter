@@ -4148,7 +4148,6 @@ size = Vector3(0.202, 1.068, 0.27)
 size = Vector3(1.45025, 1.28207, 1)
 
 [node name="GodotGuy" type="CharacterBody3D" node_paths=PackedStringArray("grab_point", "animate")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0157823, 0)
 collision_layer = 0
 axis_lock_linear_z = true
 script = ExtResource("53")
