@@ -958,12 +958,16 @@ func try_block(attack : Hitbox,
 		handle_damage(attack, true, states.block_air)
 		return false
 
-func try_grab(on_ground : bool) -> bool:
+func try_grab(attack_dmg: float, on_ground : bool) -> bool:
 	if in_crouching_state():
 		return false
 	if on_ground and in_air_state():
 		return false
-	emit_signal(&"grabbed")
+	emit_signal(&"grabbed", player_number)
+	health = max(health - attack_dmg * defense_mult, 1)
+	set_stun(-1)
+	kback = Vector3.ZERO
+	set_state(states.hurt_grabbed)
 	return true
 
 # Only runs when a hitbox is overlapping, return rules explained above
