@@ -102,7 +102,7 @@ var inputs
 	"jump_a": preload("res://GodotGuy/scenes/hitboxes/jump/a.tscn"),
 	"jump_b": preload("res://GodotGuy/scenes/hitboxes/jump/b.tscn"),
 	"jump_c": preload("res://GodotGuy/scenes/hitboxes/jump/c.tscn"),
-	"uppercut": preload("res://GodotGuy/scenes/hitboxes/jump/c.tscn"),
+	"uppercut": preload("res://GodotGuy/scenes/hitboxes/special/uppercut.tscn"),
 	"grab": preload("res://GodotGuy/scenes/hitboxes/stand/grab.tscn"),
 	"grab_followup": preload("res://GodotGuy/scenes/hitboxes/stand/grab_followup.tscn"),
 }

@@ -4142,7 +4142,7 @@ _data = {
 }
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_38jcs"]
-size = Vector3(0.202, 1.068, 0.27)
+size = Vector3(0.202, 1.08658, 0.27)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vbsgv"]
 size = Vector3(1.45025, 1.28207, 1)
@@ -4193,7 +4193,7 @@ libraries = {
 }
 
 [node name="GroundCollision" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.552, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.54271, 0)
 shape = SubResource("BoxShape3D_38jcs")
 
 [node name="StopPlayerIntersection" type="Area3D" parent="."]
@@ -4211,13 +4211,13 @@ collision_mask = 0
 monitorable = false
 
 [node name="HurtboxShape" type="CollisionShape3D" parent="Hurtbox"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.642, 0)
-shape = ExtResource("3_8q5n8")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.344, 0)
+shape = ExtResource("2_ahw0y")
 
 [node name="Grabbing" parent="." instance=ExtResource("7_eysur")]
 
 [node name="SpriteMain" type="Sprite3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67, 0)
+transform = Transform3D(1, 0, 0, 0, 0.776615, 0, 0, 0, 1, 0, 0.529186, 0)
 rotation_edit_mode = 1
 no_depth_test = true
 texture = ExtResource("14_03fpi")
