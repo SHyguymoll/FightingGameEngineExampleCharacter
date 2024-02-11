@@ -252,6 +252,9 @@ func create_projectile(pos : Vector3, projectile_ind : int, type : int):
 	new_projectile.get_node(^"Hitbox").collision_layer = hitbox_layer
 	emit_signal(&"projectile_created", new_projectile)
 
+func release_grab():
+	emit_signal("releasing_grab", player_number)
+
 func add_meter(add_to_meter : float):
 	meter = min(meter + add_to_meter, METER_MAX)
 	(ui_elements["player1" if player_number == 1 else "player2"][0] as TextureProgressBar).value = meter
