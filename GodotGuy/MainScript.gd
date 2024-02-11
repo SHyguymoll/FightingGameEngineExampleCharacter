@@ -981,9 +981,9 @@ func damage_step(attack : Hitbox) -> bool:
 			return try_block(attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_lie, states.hurt_lie, states.hurt_fall)
 		"slam":
 			return try_block(attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, states.hurt_bounce, states.hurt_bounce, states.hurt_bounce)
-		"ground_grab":
-			return try_grab(true)
-		"air_grab":
-			return try_grab(false)
+		"grab_ground":
+			return try_grab(attack.damage_hit, true)
+		"grab_air":
+			return try_grab(attack.damage_hit, false)
 		_: # this will definitely not be a bug in the future
 			return try_block(attack, BLOCK_UNBLOCKABLE, BLOCK_UNBLOCKABLE, states.hurt_high, states.hurt_crouch, states.hurt_fall)
