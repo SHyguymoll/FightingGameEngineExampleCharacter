@@ -104,6 +104,7 @@ var inputs
 	"jump_c": preload("res://GodotGuy/scenes/hitboxes/jump/c.tscn"),
 	"uppercut": preload("res://GodotGuy/scenes/hitboxes/jump/c.tscn"),
 	"grab": preload("res://GodotGuy/scenes/hitboxes/stand/grab.tscn"),
+	"grab_followup": preload("res://GodotGuy/scenes/hitboxes/stand/grab_followup.tscn"),
 }
 @onready var projectiles = [preload("res://GodotGuy/scenes/ProjectileStraight.tscn")]
 
