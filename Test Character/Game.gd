@@ -428,7 +428,7 @@ func character_positioning(ignore_point_logic := false):
 			p1.global_position = p1.grabbed_point.global_position + p1.grabbed_offset
 		else:
 			p1.grab_point.global_position = p1.global_position
-		if p2.grab_point.follow_player:
+		if p2.grab_point.act_on_player:
 			p2.grabbed_point.global_position = p1.grab_point.global_position
 			p2.global_position = p2.grabbed_point.global_position + p2.grabbed_offset
 		else:
