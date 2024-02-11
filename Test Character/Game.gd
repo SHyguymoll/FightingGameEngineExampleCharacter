@@ -48,7 +48,7 @@ var replay := false
 @export var camera_mode = 0
 const CAMERAMAXX = 1.6
 const CAMERAMAXY = 10
-const MOVEMENTBOUNDX = 8
+const MOVEMENTBOUNDX = 4.5
 var p1_combo := 0
 var p2_combo := 0
 enum moments {
