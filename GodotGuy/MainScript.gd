@@ -103,6 +103,7 @@ var inputs
 	"jump_b": preload("res://GodotGuy/scenes/hitboxes/jump/b.tscn"),
 	"jump_c": preload("res://GodotGuy/scenes/hitboxes/jump/c.tscn"),
 	"uppercut": preload("res://GodotGuy/scenes/hitboxes/jump/c.tscn"),
+	"grab": preload("res://GodotGuy/scenes/hitboxes/stand/grab.tscn"),
 }
 @onready var projectiles = [preload("res://GodotGuy/scenes/ProjectileStraight.tscn")]
 
@@ -119,7 +120,7 @@ enum states {
 	jump_right_air_init, jump_neutral_air_init, jump_left_air_init, #jump from air initial
 	jump_right, jump_neutral, jump_left, #aerial actionable
 	jump_right_no_act, jump_neutral_no_act, jump_left_no_act, #aerial not actionable
-	attack_normal, attack_command, attack_motion, jump_attack, #handling attacks
+	attack_normal, attack_command, attack_motion, attack_grab, jump_attack, #handling attacks
 	block_high, block_low, block_air, get_up, #handling getting attacked well
 	hurt_high, hurt_low, hurt_crouch, hurt_grabbed, #not handling getting attacked well
 	hurt_fall, hurt_lie, hurt_bounce, #REALLY not handling getting attacked well
@@ -205,6 +206,13 @@ var attack_return_state := {
 	"attack_command/crouch_c": states.crouch,
 	"attack_motion/projectile": states.idle,
 	"attack_motion/uppercut": states.jump_neutral_no_act,
+}
+
+var grab_return_states := {
+	"attack_normal/grab": {
+		true: "attack_normal/grab_followup",
+		false: "attack_normal/grab_whiff"
+	},
 }
 
 var hitbox_layer : int
@@ -432,6 +440,9 @@ func try_attack(cur_state: states) -> states:
 	
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
+			if two_attacks_just_pressed():
+				update_attack("attack_normal/grab")
+				return states.attack_grab
 			if btn_just_pressed("button0"):
 				update_attack("attack_normal/a")
 				return states.attack_normal
@@ -794,6 +805,10 @@ func resolve_state_transitions():
 					set_state(attack_return_state[current_attack])
 				else:
 					set_state(previous_state)
+		states.attack_grab:
+			if attack_ended:
+				update_attack(grab_return_states[current_attack][attack_connected])
+				set_state(states.attack_normal)
 		states.jump_attack:
 			if attack_ended:
 				if attack_return_state.get(current_attack) != null:
@@ -805,7 +820,7 @@ func resolve_state_transitions():
 				set_state(new_walk)
 
 func update_character_animation():
-	if current_state in [states.attack_normal, states.attack_command, states.attack_motion, states.jump_attack]:
+	if current_state in [states.attack_normal, states.attack_command, states.attack_motion, states.attack_grab, states.jump_attack]:
 		animate.play(current_attack + (anim_right_suf if right_facing else anim_left_suf))
 	else:
 		match current_state:
@@ -833,7 +848,7 @@ const INFINITE_STUN := -1
 func set_stun(value):
 	stun_time_start = value
 	GlobalKnowledge.global_hitstop = int(abs(value)/4)
-	stun_time_current = stun_time_start + 1
+	stun_time_current = stun_time_start + 1 if stun_time_start != -1 else -1
 
 func reduce_stun():
 	if stun_time_start != -1:
