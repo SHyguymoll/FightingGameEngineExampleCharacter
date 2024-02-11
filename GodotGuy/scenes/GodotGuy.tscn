@@ -2225,6 +2225,13 @@ tracks/8/keys = {
 "update": 1,
 "values": [false]
 }
+tracks/9/type = "position_3d"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("../Grabbing")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = PackedFloat32Array(0, 1, 0, 0, 0)
 
 [sub_resource type="Animation" id="Animation_oq48w"]
 resource_name = "idle_right"
@@ -2395,6 +2402,13 @@ tracks/7/keys = {
 "update": 1,
 "values": [false]
 }
+tracks/8/type = "position_3d"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("../Grabbing")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = PackedFloat32Array(0, 1, 0, 0, 0)
 
 [sub_resource type="Animation" id="Animation_bo21u"]
 resource_name = "walk_right"
@@ -4199,13 +4213,13 @@ collision_mask = 0
 monitorable = false
 
 [node name="HurtboxShape" type="CollisionShape3D" parent="Hurtbox"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.007, 0)
-shape = ExtResource("2_ahw0y")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.642, 0)
+shape = ExtResource("3_8q5n8")
 
 [node name="Grabbing" parent="." instance=ExtResource("7_eysur")]
 
 [node name="SpriteMain" type="Sprite3D" parent="."]
-transform = Transform3D(1.123, 0, 0, 0, 0.351, 0, 0, 0, 1, 0, 0.247625, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67, 0)
 rotation_edit_mode = 1
 no_depth_test = true
 texture = ExtResource("14_03fpi")
