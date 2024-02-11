@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cx7pdgv0mhddt"]
+[gd_scene load_steps=9 format=3 uid="uid://cx7pdgv0mhddt"]
 
 [ext_resource type="Script" path="res://Test Character/Stage.gd" id="1_25b8i"]
 
@@ -18,9 +18,11 @@ albedo_color = Color(1, 0.603922, 1, 1)
 material = SubResource("StandardMaterial3D_skvje")
 size = Vector3(16.288, 8, 0.125)
 
-[sub_resource type="BoxShape3D" id="5"]
-margin = 0.001
-size = Vector3(1.569, 95, 1)
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_jswp6"]
+plane = Plane(1, 0, 0, 0)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_5xxee"]
+plane = Plane(-1, 0, 0, 0)
 
 [node name="Ground" type="StaticBody3D"]
 collision_mask = 0
@@ -38,15 +40,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -0.635832)
 mesh = SubResource("3")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.49292, 4.1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 4.1, 0)
 collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-shape = SubResource("5")
+shape = SubResource("WorldBoundaryShape3D_jswp6")
 
 [node name="StaticBody2" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.493, 4.1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 4.1, 0)
 collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody2"]
-shape = SubResource("5")
+shape = SubResource("WorldBoundaryShape3D_5xxee")
