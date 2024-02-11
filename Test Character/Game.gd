@@ -461,16 +461,16 @@ func delete_projectile(projectile):
 func grabbed(player_number):
 	match player_number:
 		1:
-			p1.grab_point.act_on_player = true
+			p1.grabbed_point.act_on_player = true
 		2:
-			p2.grab_point.act_on_player = true
+			p2.grabbed_point.act_on_player = true
 
 func releasing_grab(player_number):
 	match player_number:
 		1:
-			p2.grab_point.act_on_player = false
+			p2.grabbed_point.act_on_player = false
 		2:
-			p1.grab_point.act_on_player = false
+			p1.grabbed_point.act_on_player = false
 
 func player_defeated(player_number : int):
 	moment = moments.ROUND_END
