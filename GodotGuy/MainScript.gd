@@ -918,7 +918,6 @@ func try_block(attack : Hitbox,
 			ground_block_rules : Array, air_block_rules : Array,
 			fs_stand : states, fs_crouch : states, fs_air : states) -> bool:
 	# still in hitstun, can't block
-	attack.queue_free()
 	if in_hurting_state() or in_dashing_state() or in_attacking_state():
 		if not in_air_state():
 			if in_crouching_state():
