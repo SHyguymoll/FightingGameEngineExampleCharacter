@@ -144,7 +144,10 @@ func init_fighters():
 	p2.grabbed_point = grab_point.instantiate()
 	add_child(p2.grabbed_point)
 	
-	character_positioning(true)
+	p1.position.x = clamp(p1.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
+	p2.position.x = clamp(p2.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
+	p1.distance = p1.position.x - p2.position.x
+	p2.distance = p2.position.x - p1.position.x
 	p1_health_reset = p1.health
 	p2_health_reset = p2.health
 
@@ -421,18 +424,17 @@ func check_combos():
 	if not p2.in_hurting_state():
 		p1_combo = 0
 
-func character_positioning(ignore_point_logic := false):
-	if not ignore_point_logic:
-		if p1.grab_point.act_on_player:
-			p1.grabbed_point.global_position = p2.grab_point.global_position
-			p1.global_position = p1.grabbed_point.global_position + p1.grabbed_offset
-		else:
-			p1.grab_point.global_position = p1.global_position
-		if p2.grab_point.act_on_player:
-			p2.grabbed_point.global_position = p1.grab_point.global_position
-			p2.global_position = p2.grabbed_point.global_position + p2.grabbed_offset
-		else:
-			p2.grab_point.global_position = p2.global_position
+func character_positioning():
+	if p1.grabbed_point.act_on_player:
+		p1.grabbed_point.global_position = p2.grab_point.global_position
+		p1.global_position = p1.grabbed_point.global_position + p1.grabbed_offset
+	else:
+		p1.grabbed_point.global_position = p1.global_position
+	if p2.grabbed_point.act_on_player:
+		p2.grabbed_point.global_position = p1.grab_point.global_position
+		p2.global_position = p2.grabbed_point.global_position + p2.grabbed_offset
+	else:
+		p2.grabbed_point.global_position = p2.global_position
 	p1.position.x = clamp(p1.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
 	p2.position.x = clamp(p2.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
 	p1.distance = p1.position.x - p2.position.x
