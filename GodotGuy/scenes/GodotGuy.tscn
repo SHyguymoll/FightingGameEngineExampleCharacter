@@ -4147,14 +4147,15 @@ size = Vector3(0.202, 1.08658, 0.27)
 [sub_resource type="BoxShape3D" id="BoxShape3D_vbsgv"]
 size = Vector3(1.45025, 1.28207, 1)
 
-[node name="GodotGuy" type="CharacterBody3D" node_paths=PackedStringArray("grab_point", "animate")]
+[node name="GodotGuy" type="CharacterBody3D" node_paths=PackedStringArray("animate", "grab_point")]
 collision_layer = 0
 axis_lock_linear_z = true
 script = ExtResource("53")
 char_name = "Godot Guy"
 health = 100.0
-grab_point = NodePath("Grabbing")
 animate = NodePath("AnimationPlayer")
+grab_point = NodePath("Grabbing")
+METER_MAX = 100
 
 [node name="DebugData" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)

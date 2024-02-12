@@ -7,20 +7,85 @@ extends CharacterBody3D
 # damage_step() is called with the details of the attack, if it happened
 
 # This block of variables and signals are accessed by the game for various reasons.
-@export var char_name : String
-@export var health : float
+@export_category("DON'T TOUCH!")
 var player_number : int # This is set by the game, don't change this
 var distance : float # Ditto
 var input_buffer_len : int = 10 # Must be a positive number.
+var attack_connected : bool
+var attack_hurt : bool
+var game_ended := false
+
+@export_category("Fighter Details")
+@export var char_name : String
+@export var health : float
+@export var post_win_quote : String
+
+@export_category("Animation Details")
+@export var animate : FlippingAnimationPlayer
+@export var basic_anim_state_dict := {
+	states.intro : "other/intro",
+	states.round_win : "other/win",
+	states.set_win : "other/win",
+	states.idle : "basic/idle",
+	states.crouch : "basic/crouch",
+	states.jump_right_init : "basic/jump", states.jump_left_init : "basic/jump", states.jump_neutral_init : "basic/jump",
+	states.jump_right_air_init : "basic/jump", states.jump_neutral_air_init : "basic/jump", states.jump_left_air_init : "basic/jump",
+	states.jump_right : "basic/jump", states.jump_left : "basic/jump", states.jump_neutral : "basic/jump",
+	states.jump_right_no_act : "basic/jump", states.jump_left_no_act : "basic/jump", states.jump_neutral_no_act : "basic/jump",
+	states.block_high : "blocking/high",
+	states.block_low : "blocking/low",
+	states.block_air : "blocking/air",
+	states.hurt_high : "hurting/high",
+	states.hurt_low : "hurting/low",
+	states.hurt_crouch : "hurting/crouch",
+	states.hurt_grabbed : "hurting/air",
+	states.hurt_fall : "hurting/air",
+	states.hurt_bounce : "hurting/air",
+	states.hurt_lie : "hurting/lying",
+	states.get_up : "hurting/get_up",
+	states.outro_fall : "hurting/air",
+	states.outro_bounce : "hurting/air",
+	states.outro_lie : "hurting/lying",
+}
 @export var animation_ended = true
+@export var move_left_anim : StringName = &"basic/walk_left"
+@export var move_right_anim : StringName = &"basic/walk_right"
+@export var dash_left_anim : StringName = &"basic/dash"
+@export var dash_right_anim : StringName = &"basic/dash"
+
+@export_category("Gameplay Details")
+@export var BUTTONCOUNT : int = 3
 @export var start_x_offset : float = 2
 @export var grabbed_offset : Vector3 = Vector3(-0.46, -0.87, 0)
 var grabbed_point : GrabPoint # When the fighter is grabbed
 @export var grab_point : GrabPoint # When the fighter is the grabber
-const BUTTONCOUNT : int = 3
-var attack_connected : bool
-var attack_hurt : bool
-var game_ended := false
+
+@export_category("Super Attack Meter")
+@export var meter : float = 0
+@export var METER_MAX : float= 100
+
+@export_category("Damage and Defense")
+@export var damage_mult : float = 1.0
+@export var defense_mult : float = 1.0
+
+@export_category("Movement")
+@export var walk_speed : float = 2
+@export var jump_total : int = 2
+var jump_count : int = 0
+@export var jump_height : float = 11
+@export var gravity : float = -0.5
+@export var min_fall_vel : float = -6.5
+
+var right_facing : bool
+
+var kback : Vector3 = Vector3.ZERO
+var stun_time_start : int = 0
+var stun_time_current : int = 0
+
+const JUST_PRESSED_BUFFER : int = 2
+const DASH_INPUT_LENIENCY : int = 15
+const MOTION_INPUT_LENIENCY : int = 12
+const GROUND_SLIDE_FRICTION : float = 0.97
 
 signal grabbed
 signal releasing_grab
@@ -59,32 +124,6 @@ func initialize_training_mode_elements():
 func training_mode_set_meter(val):
 	meter = val
 	(ui_elements["player1" if player_number == 1 else "player2"][0] as TextureProgressBar).value = meter
-
-@export var walk_speed : float = 2
-@export var jump_total : int = 2
-var jump_count : int = 0
-@export var jump_height : float = 11
-@export var gravity : float = -0.5
-@export var min_fall_vel : float = -6.5
-
-var right_facing : bool = true
-
-var kback : Vector3 = Vector3.ZERO
-var stun_time_start : int = 0
-var stun_time_current : int = 0
-
-const JUST_PRESSED_BUFFER : int = 2
-const DASH_INPUT_LENIENCY : int = 15
-const MOTION_INPUT_LENIENCY : int = 12
-const GROUND_SLIDE_FRICTION : float = 0.97
-
-@export var animate : FlippingAnimationPlayer
-
-@export var meter : float = 0
-const METER_MAX = 100
-
-var damage_mult : float = 1.0
-var defense_mult : float = 1.0
 
 # Extremely important, how the character stores the inputs from the game.
 # Dictionary with 4 entries for each cardinal directional input, plus the number of buttons (buttonX).
@@ -128,45 +167,14 @@ enum states {
 	outro_fall, outro_lie, outro_bounce #The final stage of not handling it
 }
 var state_start := states.intro
-@export var current_state: states
+var current_state: states
 var previous_state : states
 
 
 
 # Single animations for states can be handled by a simple hash lookup.
 # Because left vs right is handled externally, only the first part of the name is used
-@export var basic_anim_state_dict := {
-	states.intro : "other/intro",
-	states.round_win : "other/win",
-	states.set_win : "other/win",
-	states.idle : "basic/idle",
-	states.crouch : "basic/crouch",
-	states.jump_right_init : "basic/jump", states.jump_left_init : "basic/jump", states.jump_neutral_init : "basic/jump",
-	states.jump_right_air_init : "basic/jump", states.jump_neutral_air_init : "basic/jump", states.jump_left_air_init : "basic/jump",
-	states.jump_right : "basic/jump", states.jump_left : "basic/jump", states.jump_neutral : "basic/jump",
-	states.jump_right_no_act : "basic/jump", states.jump_left_no_act : "basic/jump", states.jump_neutral_no_act : "basic/jump",
-	states.block_high : "blocking/high",
-	states.block_low : "blocking/low",
-	states.block_air : "blocking/air",
-	states.hurt_high : "hurting/high",
-	states.hurt_low : "hurting/low",
-	states.hurt_crouch : "hurting/crouch",
-	states.hurt_grabbed : "hurting/air",
-	states.hurt_fall : "hurting/air",
-	states.hurt_bounce : "hurting/air",
-	states.hurt_lie : "hurting/lying",
-	states.get_up : "hurting/get_up",
-	states.outro_fall : "hurting/air",
-	states.outro_bounce : "hurting/air",
-	states.outro_lie : "hurting/lying",
-}
-# Moving left and right on the ground is decoupled from moving forward and backward in this script,
-# so variables exist here for ease like the dictionary above.
-@export var move_left_anim : StringName = &"basic/walk_left"
-@export var move_right_anim : StringName = &"basic/walk_right"
 
-@export var dash_left_anim : StringName = &"basic/dash"
-@export var dash_right_anim : StringName = &"basic/dash"
 
 # Nothing should modify the fighter's state in _process or _ready, _process is purely for
 # real-time effects, and _ready for initializing the animation player.
