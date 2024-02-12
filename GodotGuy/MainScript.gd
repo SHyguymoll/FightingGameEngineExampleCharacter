@@ -131,8 +131,7 @@ var state_start := states.intro
 @export var current_state: states
 var previous_state : states
 
-@onready var anim_left_suf = animate.anim_left_suf
-@onready var anim_right_suf = animate.anim_right_suf
+
 
 # Single animations for states can be handled by a simple hash lookup.
 # Because left vs right is handled externally, only the first part of the name is used
@@ -175,7 +174,7 @@ var previous_state : states
 func _ready():
 	reset_facing()
 	animate.play(basic_anim_state_dict[current_state] + 
-		(anim_right_suf if right_facing else anim_left_suf))
+		(animate.anim_right_suf if right_facing else animate.anim_left_suf))
 
 func _process(_delta):
 	$DebugData.text = """Right Facing: %s
@@ -825,7 +824,7 @@ func resolve_state_transitions():
 
 func update_character_animation():
 	if current_state in [states.attack_normal, states.attack_command, states.attack_motion, states.attack_grab, states.jump_attack]:
-		animate.play(current_attack + (anim_right_suf if right_facing else anim_left_suf))
+		animate.play(current_attack + (animate.anim_right_suf if right_facing else animate.anim_left_suf))
 	else:
 		match current_state:
 			states.walk_forward when right_facing:
@@ -845,7 +844,7 @@ func update_character_animation():
 			states.dash_back when !right_facing:
 				animate.play(dash_right_anim)
 			_:
-				animate.play(basic_anim_state_dict[current_state] + (anim_right_suf if right_facing else anim_left_suf))
+				animate.play(basic_anim_state_dict[current_state] + (animate.anim_right_suf if right_facing else animate.anim_left_suf))
 
 const INFINITE_STUN := -1
 
