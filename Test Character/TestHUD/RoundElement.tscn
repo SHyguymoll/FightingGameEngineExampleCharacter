@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://ciamluym2y5or"]
+
+[ext_resource type="Texture2D" uid="uid://bi0i0i35tmu6s" path="res://Test Character/TestHUD/RoundIcon.png" id="1_gnjj6"]
+
+[node name="Sprite2D" type="Sprite2D"]
+texture = ExtResource("1_gnjj6")
+hframes = 2
