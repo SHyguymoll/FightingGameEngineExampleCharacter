@@ -12,6 +12,7 @@ extends CharacterBody3D
 var player_number : int # This is set by the game, don't change this
 var distance : float # Ditto
 var input_buffer_len : int = 10 # Must be a positive number.
+@export var animation_ended = true
 @export var start_x_offset : float = 2
 @export var grabbed_offset : Vector3 = Vector3(-0.46, -0.87, 0)
 var grabbed_point : GrabPoint # When the fighter is grabbed
@@ -109,8 +110,7 @@ var inputs
 @onready var projectiles = [preload("res://GodotGuy/scenes/ProjectileStraight.tscn")]
 
 # these are guard clause variables, and may be removed
-@export var attack_ended = true
-@export var dash_ended = true
+
 
 #State transitions are handled by a FSM implemented as match statements in the input_step
 enum states {
@@ -189,7 +189,7 @@ func _process(_delta):
 		right_facing,
 		states.keys()[current_state],
 		states.keys()[previous_state],
-		attack_ended,
+		animation_ended,
 		stun_time_current,
 		stun_time_start,
 		kback,
@@ -322,7 +322,7 @@ func ground_cancelled_attack_ended() -> bool:
 
 func update_attack(new_attack: String) -> void:
 	current_attack = new_attack
-	attack_ended = false
+	animation_ended = false
 	attack_connected = false
 	attack_hurt = false
 
@@ -526,7 +526,7 @@ func try_dash(input: String, success_state: states, cur_state: states) -> states
 	]
 	var count_frames = btn_state(input, -3)[0] + btn_state(input, -2)[0] + btn_state(input, -1)[0]
 	if walks == [true, false, true] and count_frames <= DASH_INPUT_LENIENCY:
-		dash_ended = false
+		animation_ended = false
 		return success_state
 	return cur_state
 
@@ -755,10 +755,10 @@ func resolve_state_transitions():
 			if not animate.is_playing():
 				set_state(previous_state)
 		states.dash_back:
-			if dash_ended:
+			if animation_ended:
 				set_state(states.walk_back)
 		states.dash_forward:
-			if dash_ended:
+			if animation_ended:
 				set_state(states.walk_forward)
 		states.jump_right_init, states.jump_right_air_init:
 			if not is_on_floor(): set_state(states.jump_right)
@@ -804,17 +804,17 @@ func resolve_state_transitions():
 			if check_true:
 				set_state(states.outro_lie)
 		states.attack_normal, states.attack_command, states.attack_motion:
-			if attack_ended:
+			if animation_ended:
 				if attack_return_state.get(current_attack) != null:
 					set_state(attack_return_state[current_attack])
 				else:
 					set_state(previous_state)
 		states.attack_grab:
-			if attack_ended:
+			if animation_ended:
 				update_attack(grab_return_states[current_attack][attack_connected])
 				set_state(states.attack_normal)
 		states.jump_attack:
-			if attack_ended:
+			if animation_ended:
 				if attack_return_state.get(current_attack) != null:
 					set_state(attack_return_state[current_attack])
 				else:
