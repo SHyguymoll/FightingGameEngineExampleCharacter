@@ -45,7 +45,7 @@ horizontal_alignment = 1
 [node name="HealthAndTime" type="HBoxContainer" parent="HUD"]
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 212.0
+offset_bottom = 337.0
 grow_horizontal = 2
 theme_override_constants/separation = 100
 alignment = 1
@@ -56,7 +56,7 @@ alignment = 2
 
 [node name="Health" type="TextureProgressBar" parent="HUD/HealthAndTime/P1Group"]
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 8
 size_flags_vertical = 0
 value = 10.0
 fill_mode = 1
@@ -84,6 +84,7 @@ text = "Player 1 Character"
 [node name="Rounds" type="HBoxContainer" parent="HUD/HealthAndTime/P1Group"]
 layout_direction = 3
 layout_mode = 2
+size_flags_vertical = 3
 
 [node name="Time" type="Label" parent="HUD/HealthAndTime"]
 layout_mode = 2
@@ -94,19 +95,19 @@ horizontal_alignment = 1
 
 [node name="P2Group" type="VBoxContainer" parent="HUD/HealthAndTime"]
 layout_mode = 2
-size_flags_horizontal = 8
+alignment = 2
 
 [node name="Health" type="TextureProgressBar" parent="HUD/HealthAndTime/P2Group"]
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 0
+size_flags_vertical = 0
 value = 10.0
 texture_under = ExtResource("5_6q5w6")
 texture_progress = ExtResource("6_2k3f0")
 
 [node name="NameAndPosVel" type="HBoxContainer" parent="HUD/HealthAndTime/P2Group"]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 10
+alignment = 2
 
 [node name="Char" type="Label" parent="HUD/HealthAndTime/P2Group/NameAndPosVel"]
 layout_mode = 2
@@ -123,9 +124,9 @@ text = "p,v"
 horizontal_alignment = 1
 
 [node name="Rounds" type="HBoxContainer" parent="HUD/HealthAndTime/P2Group"]
-layout_direction = 3
+layout_direction = 2
 layout_mode = 2
-alignment = 2
+size_flags_vertical = 3
 
 [node name="SpecialElements" type="HBoxContainer" parent="HUD"]
 anchors_preset = 10

@@ -91,14 +91,17 @@ func make_hud():
 	match round_change_behavior:
 		round_change_types.ADD:
 			for n in range(GlobalKnowledge.p1_wins):
-				($HUD/HealthAndTime/P1Group/Rounds.get_node(str(n)) as Sprite2D).frame = 1
+				($HUD/HealthAndTime/P1Group/Rounds.get_node(str(n)) as RoundElement).fulfill()
 			for n in range(GlobalKnowledge.p2_wins):
-				($HUD/HealthAndTime/P2Group/Rounds.get_node(str(n)) as Sprite2D).frame = 1
+				($HUD/HealthAndTime/P2Group/Rounds.get_node(str(n)) as RoundElement).fulfill()
 		round_change_types.REMOVE:
+			for n in range(GlobalKnowledge.win_threshold):
+				($HUD/HealthAndTime/P1Group/Rounds.get_node(str(n)) as RoundElement).fulfill()
+				($HUD/HealthAndTime/P2Group/Rounds.get_node(str(n)) as RoundElement).fulfill()
 			for n in range(GlobalKnowledge.p1_wins, -1, -1):
-				($HUD/HealthAndTime/P2Group/Rounds.get_node(str(n)) as Sprite2D).frame = 1
+				($HUD/HealthAndTime/P2Group/Rounds.get_node(str(n)) as RoundElement).unfulfill()
 			for n in range(GlobalKnowledge.p2_wins, -1, -1):
-				($HUD/HealthAndTime/P1Group/Rounds.get_node(str(n)) as Sprite2D).frame = 1
+				($HUD/HealthAndTime/P1Group/Rounds.get_node(str(n)) as RoundElement).unfulfill()
 	
 	# game itself
 	$HUD/Fight.visible = false
