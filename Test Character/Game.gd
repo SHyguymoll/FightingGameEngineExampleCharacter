@@ -58,6 +58,13 @@ enum moments {
 }
 var moment := moments.INTRO
 
+@onready var round_element = preload("res://Test Character/TestHUD/RoundElement.tscn")
+enum round_change_types {
+	ADD,
+	REMOVE
+}
+var round_change_behavior : round_change_types = round_change_types.ADD
+
 func make_hud():
 	# player 1
 	$HUD/HealthAndTime/P1Group/Health.max_value = p1.health
@@ -73,6 +80,25 @@ func make_hud():
 	$HUD/HealthAndTime/P2Group/NameAndPosVel/PosVel.text = str(p2.position) + "\n" + str(p2.velocity)
 	$HUD/P2Stats/State.text = p2.states.keys()[p2.current_state]
 	
+	# set up rounds
+	for n in range(GlobalKnowledge.win_threshold):
+		var p1_round = round_element.instantiate()
+		p1_round.name = str(n)
+		$HUD/HealthAndTime/P1Group/Rounds.add_child(p1_round)
+		var p2_round = round_element.instantiate()
+		p1_round.name = str(n)
+		$HUD/HealthAndTime/P2Group/Rounds.add_child(p2_round)
+	match round_change_behavior:
+		round_change_types.ADD:
+			for n in range(GlobalKnowledge.p1_wins):
+				($HUD/HealthAndTime/P1Group/Rounds.get_node(str(n)) as Sprite2D).frame = 1
+			for n in range(GlobalKnowledge.p2_wins):
+				($HUD/HealthAndTime/P2Group/Rounds.get_node(str(n)) as Sprite2D).frame = 1
+		round_change_types.REMOVE:
+			for n in range(GlobalKnowledge.p1_wins, -1, -1):
+				($HUD/HealthAndTime/P2Group/Rounds.get_node(str(n)) as Sprite2D).frame = 1
+			for n in range(GlobalKnowledge.p2_wins, -1, -1):
+				($HUD/HealthAndTime/P1Group/Rounds.get_node(str(n)) as Sprite2D).frame = 1
 	
 	# game itself
 	$HUD/Fight.visible = false
@@ -511,8 +537,22 @@ func _physics_process(_delta):
 			move_inputs_and_iterate(true)
 			check_combos()
 			character_positioning()
-			if (p1.post_outro() and p2.in_defeated_state()) or (p1.in_defeated_state() and p2.post_outro()):
-				get_tree().reload_current_scene()
+			if (p1.post_outro() and p2.in_defeated_state()):
+				GlobalKnowledge.p1_wins += 1
+				if GlobalKnowledge.p1_wins < GlobalKnowledge.win_threshold:
+					get_tree().reload_current_scene()
+				else:
+					print("game ended here, restarting anyways")
+					GlobalKnowledge.p1_wins = 0
+					get_tree().reload_current_scene()
+			elif (p1.in_defeated_state() and p2.post_outro()):
+				GlobalKnowledge.p2_wins += 1
+				if GlobalKnowledge.p2_wins < GlobalKnowledge.win_threshold:
+					get_tree().reload_current_scene()
+				else:
+					print("game ended here, restarting anyways")
+					GlobalKnowledge.p2_wins = 0
+					get_tree().reload_current_scene()
 
 func _on_p1_health_reset_switch_toggled(toggled_on):
 	p1_reset_health_on_drop = toggled_on
