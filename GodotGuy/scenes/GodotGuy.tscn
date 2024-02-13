@@ -3746,7 +3746,7 @@ tracks/1/keys = {
 "args": [Vector3(0, 0, 0), 1],
 "method": &"update_velocity"
 }, {
-"args": [Vector3(0.875549, 0.685474, 0.04), 0, 0],
+"args": [Vector3(0.875549, 0.685474, 0.04), "basic", 0],
 "method": &"create_projectile"
 }]
 }
@@ -3780,7 +3780,7 @@ tracks/1/keys = {
 "args": [Vector3(0, 5, 0), 3],
 "method": &"update_velocity"
 }, {
-"args": [Vector3(0.875549, 0.685474, 0.04), 0, 1],
+"args": [Vector3(0.875549, 0.685474, 0.04), "basic", 1],
 "method": &"create_projectile"
 }]
 }
@@ -4069,13 +4069,13 @@ tracks/1/keys = {
 "args": [Vector3(0, 0, 0), 1],
 "method": &"update_velocity"
 }, {
-"args": [Vector3(0.875549, 0.685474, 0.04), 0, 2],
+"args": [Vector3(0.875549, 0.685474, 0.04), "basic", 2],
 "method": &"create_projectile"
 }, {
-"args": [Vector3(0.875549, 0.685474, 0.04), 0, 2],
+"args": [Vector3(0.875549, 0.685474, 0.04), "basic", 2],
 "method": &"create_projectile"
 }, {
-"args": [Vector3(0.875549, 0.685474, 0.04), 0, 2],
+"args": [Vector3(0.875549, 0.685474, 0.04), "basic", 2],
 "method": &"create_projectile"
 }]
 }
@@ -4109,28 +4109,28 @@ tracks/1/keys = {
 "args": [Vector3(0, 5, 0), 3],
 "method": &"update_velocity"
 }, {
-"args": [Vector3(0.875549, 0.685474, 0.04), 0, 3],
+"args": [Vector3(0.875549, 0.685474, 0.04), "basic", 3],
 "method": &"create_projectile"
 }, {
-"args": [Vector3(0.875549, 0.685474, 0.04), 0, 3],
+"args": [Vector3(0.875549, 0.685474, 0.04), "basic", 3],
 "method": &"create_projectile"
 }, {
-"args": [Vector3(0.875549, 0.685474, 0.04), 0, 3],
+"args": [Vector3(0.875549, 0.685474, 0.04), "basic", 3],
 "method": &"create_projectile"
 }, {
-"args": [Vector3(0.875549, 0.685474, 0.04), 0, 3],
+"args": [Vector3(0.875549, 0.685474, 0.04), "basic", 3],
 "method": &"create_projectile"
 }, {
-"args": [Vector3(0.875549, 0.685474, 0.04), 0, 3],
+"args": [Vector3(0.875549, 0.685474, 0.04), "basic", 3],
 "method": &"create_projectile"
 }, {
-"args": [Vector3(0.875549, 0.685474, 0.04), 0, 3],
+"args": [Vector3(0.875549, 0.685474, 0.04), "basic", 3],
 "method": &"create_projectile"
 }, {
-"args": [Vector3(0.875549, 0.685474, 0.04), 0, 3],
+"args": [Vector3(0.875549, 0.685474, 0.04), "basic", 3],
 "method": &"create_projectile"
 }, {
-"args": [Vector3(0.875549, 0.685474, 0.04), 0, 3],
+"args": [Vector3(0.875549, 0.685474, 0.04), "basic", 3],
 "method": &"create_projectile"
 }]
 }
@@ -4155,7 +4155,6 @@ char_name = "Godot Guy"
 health = 100.0
 animate = NodePath("AnimationPlayer")
 grab_point = NodePath("Grabbing")
-METER_MAX = 100
 
 [node name="DebugData" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)

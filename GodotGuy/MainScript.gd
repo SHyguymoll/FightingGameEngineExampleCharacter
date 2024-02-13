@@ -146,10 +146,9 @@ var inputs
 	"grab": preload("res://GodotGuy/scenes/hitboxes/stand/grab.tscn"),
 	"grab_followup": preload("res://GodotGuy/scenes/hitboxes/stand/grab_followup.tscn"),
 }
-@onready var projectiles = [preload("res://GodotGuy/scenes/ProjectileStraight.tscn")]
-
-# these are guard clause variables, and may be removed
-
+@onready var projectiles = {
+	"basic": preload("res://GodotGuy/scenes/ProjectileStraight.tscn")
+}
 
 #State transitions are handled by a FSM implemented as match statements in the input_step
 enum states {
@@ -249,8 +248,8 @@ func create_hitbox(pos : Vector3, hitbox_name : String):
 	new_hitbox.collision_layer = hitbox_layer
 	emit_signal(&"hitbox_created", new_hitbox)
 
-func create_projectile(pos : Vector3, projectile_ind : int, type : int):
-	var new_projectile := (projectiles[projectile_ind].instantiate() as Projectile)
+func create_projectile(pos : Vector3, projectile_name : String, type : int):
+	var new_projectile := (projectiles[projectile_name].instantiate() as Projectile)
 	if not right_facing:
 		pos.x *= -1
 	new_projectile.set_position(pos + global_position)
