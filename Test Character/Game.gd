@@ -139,7 +139,7 @@ func init_fighters():
 		p1_inputs["button" + str(i)] = [[0, false]]
 	p1.player_number = 1
 	p1.position = Vector3(p1.start_x_offset * -1,0,0)
-	p1.initialize_boxes(true)
+	p1._initialize_boxes(true)
 	p1.char_name += " p1"
 	p1.hitbox_created.connect(register_hitbox)
 	p1.projectile_created.connect(register_projectile)
@@ -150,7 +150,7 @@ func init_fighters():
 		$HUD/SpecialElements/P1Group.add_child(element)
 	for element in p1.ui_elements_training.player1:
 		$HUD/TrainingModeControlsSpecial/P1Controls.add_child(element)
-	p1.initialize_training_mode_elements()
+	p1._initialize_training_mode_elements()
 	p1.grabbed_point = grab_point.instantiate()
 	add_child(p1.grabbed_point)
 	
@@ -158,7 +158,7 @@ func init_fighters():
 		p2_inputs["button" + str(i)] = [[0, false]]
 	p2.player_number = 2
 	p2.position = Vector3(p2.start_x_offset,0,0)
-	p2.initialize_boxes(false)
+	p2._initialize_boxes(false)
 	p2.char_name += " p2"
 	p2.hitbox_created.connect(register_hitbox)
 	p2.projectile_created.connect(register_projectile)
@@ -169,7 +169,7 @@ func init_fighters():
 		$HUD/SpecialElements/P2Group.add_child(element)
 	for element in p2.ui_elements_training.player2:
 		$HUD/TrainingModeControlsSpecial/P2Controls.add_child(element)
-	p2.initialize_training_mode_elements()
+	p2._initialize_training_mode_elements()
 	p2.grabbed_point = grab_point.instantiate()
 	add_child(p2.grabbed_point)
 	
@@ -396,8 +396,8 @@ func create_dummy_buffer(button_count : int):
 
 func move_inputs_and_iterate(fake_inputs):
 	if fake_inputs:
-		p1.input_step(create_dummy_buffer(p1.BUTTONCOUNT))
-		p2.input_step(create_dummy_buffer(p2.BUTTONCOUNT))
+		p1._input_step(create_dummy_buffer(p1.BUTTONCOUNT))
+		p2._input_step(create_dummy_buffer(p2.BUTTONCOUNT))
 		return
 	
 	var p1_buf = slice_input_dictionary(
@@ -412,45 +412,45 @@ func move_inputs_and_iterate(fake_inputs):
 	build_input_tracker(p1_buf, p2_buf)
 	
 	if not fake_inputs:
-		var p1_attackers = (p1.return_attackers() as Array[Hitbox])
+		var p1_attackers = (p1._return_attackers() as Array[Hitbox])
 		for p1_attacker in p1_attackers:
-			var hit = p1.damage_step(p1_attacker)
+			var hit = p1._damage_step(p1_attacker)
 			if hit:
 				spawn_audio(p1_attacker.on_hit_sound)
 				p2.attack_connected = true
 				p2.attack_hurt = true
 				p2_combo += 1
-				p2.on_hit(p1_attacker.on_hit)
+				p2._on_hit(p1_attacker.on_hit)
 			else:
 				spawn_audio(p1_attacker.on_block_sound)
 				p2.attack_connected = true
 				p2.attack_hurt = false
-				p2.on_block(p1_attacker.on_block)
+				p2._on_block(p1_attacker.on_block)
 			p1_attacker.queue_free()
 		
-		var p2_attackers = (p2.return_attackers() as Array[Hitbox])
+		var p2_attackers = (p2._return_attackers() as Array[Hitbox])
 		for p2_attacker in p2_attackers:
-			var hit = p2.damage_step(p2_attacker)
+			var hit = p2._damage_step(p2_attacker)
 			if hit:
 				spawn_audio(p2_attacker.on_hit_sound)
 				p1.attack_connected = true
 				p1.attack_hurt = true
 				p1_combo += 1
-				p1.on_hit(p2_attacker.on_hit)
+				p1._on_hit(p2_attacker.on_hit)
 			else:
 				spawn_audio(p2_attacker.on_block_sound)
 				p1.attack_connected = true
 				p1.attack_hurt = false
-				p1.on_block(p2_attacker.on_block)
+				p1._on_block(p2_attacker.on_block)
 			p2_attacker.queue_free()
 	
-	p1.input_step(p1_buf)
-	p2.input_step(p2_buf)
+	p1._input_step(p1_buf)
+	p2._input_step(p2_buf)
 
 func check_combos():
-	if not p1.in_hurting_state():
+	if not p1._in_hurting_state():
 		p2_combo = 0
-	if not p2.in_hurting_state():
+	if not p2._in_hurting_state():
 		p1_combo = 0
 
 func character_positioning():
@@ -519,7 +519,7 @@ func _physics_process(_delta):
 	match moment:
 		moments.INTRO:
 			move_inputs_and_iterate(true)
-			if p1.post_intro() and p2.post_intro():
+			if p1._post_intro() and p2._post_intro():
 				moment = moments.GAME
 				$HUD/Fight.visible = true
 			check_combos()
@@ -540,7 +540,7 @@ func _physics_process(_delta):
 			move_inputs_and_iterate(true)
 			check_combos()
 			character_positioning()
-			if (p1.post_outro() and p2.in_defeated_state()):
+			if (p1._post_outro() and p2._in_defeated_state()):
 				GlobalKnowledge.p1_wins += 1
 				if GlobalKnowledge.p1_wins < GlobalKnowledge.win_threshold:
 					get_tree().reload_current_scene()
@@ -548,7 +548,7 @@ func _physics_process(_delta):
 					print("game ended here, restarting anyways")
 					GlobalKnowledge.p1_wins = 0
 					get_tree().reload_current_scene()
-			elif (p1.in_defeated_state() and p2.post_outro()):
+			elif (p1._in_defeated_state() and p2._post_outro()):
 				GlobalKnowledge.p2_wins += 1
 				if GlobalKnowledge.p2_wins < GlobalKnowledge.win_threshold:
 					get_tree().reload_current_scene()

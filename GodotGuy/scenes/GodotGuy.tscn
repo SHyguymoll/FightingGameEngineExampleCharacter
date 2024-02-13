@@ -4151,9 +4151,9 @@ size = Vector3(1.45025, 1.28207, 1)
 collision_layer = 0
 axis_lock_linear_z = true
 script = ExtResource("53")
+animate = NodePath("AnimationPlayer")
 char_name = "Godot Guy"
 health = 100.0
-animate = NodePath("AnimationPlayer")
 grab_point = NodePath("Grabbing")
 
 [node name="DebugData" type="Label3D" parent="."]

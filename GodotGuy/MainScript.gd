@@ -1,31 +1,11 @@
-class_name Fighter
-extends CharacterBody3D
+class_name State2DMeterFighter
+extends Fighter
 
-signal grabbed
-signal releasing_grab
-signal hitbox_created
-signal projectile_created
-signal defeated
 
-# This script holds the main components of a Fighter.
-# A Fighter has several variables and methods which are accessed and called by the game.
-# input_step() is called with the latest buffer of inputs.
-# damage_step() is called per each overlapping hitbox after handling inputs,
-# with the details of the attack.
-
-# This block of variables and signals are accessed by the game for various reasons.
-@export_category("DON'T TOUCH!")
-var player_number : int # This is set by the game, don't change this
-var distance : float # Ditto
-var input_buffer_len : int = 10 # Must be a positive number.
-var attack_connected : bool
-var attack_hurt : bool
-var game_ended := false
-
-@export_category("Fighter Details")
-@export var char_name : String
-@export var health : float
-@export var post_win_quote : String
+# This script defines a FSM-based Fighter with the following features:
+# 2D Movement
+# Dashing
+# Super Meter
 
 @export_category("Animation Details")
 @export var animate : FlippingAnimationPlayer
@@ -60,16 +40,6 @@ var game_ended := false
 @export var dash_left_anim : StringName = &"basic/dash"
 @export var dash_right_anim : StringName = &"basic/dash"
 
-@export_category("Gameplay Details")
-@export var BUTTONCOUNT : int = 3
-@export var JUST_PRESSED_BUFFER : int = 2
-@export var DASH_INPUT_LENIENCY : int = 15
-@export var MOTION_INPUT_LENIENCY : int = 12
-@export var start_x_offset : float = 2
-@export var grabbed_offset : Vector3 = Vector3(-0.46, -0.87, 0)
-var grabbed_point : GrabPoint # When the fighter is grabbed
-@export var grab_point : GrabPoint # When the fighter is the grabber
-
 @export_category("Super Attack Meter")
 @export var meter : float = 0
 @export var METER_MAX : float= 100
@@ -86,34 +56,28 @@ var jump_count : int = 0
 @export var gravity : float = -0.5
 @export var min_fall_vel : float = -6.5
 @export var GROUND_SLIDE_FRICTION : float = 0.97
-
+var record_y : float
+var check_true : bool # Used to remember results of move_and_slide()
 var right_facing : bool
 
-var kback : Vector3 = Vector3.ZERO
-var stun_time_start : int = 0
-var stun_time_current : int = 0
-
-# Preload ui elements here for the game to add to the screen.
 var ui_elements = {
-	player1=[
-		preload("res://GodotGuy/scenes/SuperBarP1.tscn").instantiate()
-	],
-	player2=[
-		preload("res://GodotGuy/scenes/SuperBarP2.tscn").instantiate()
-	]
-}
-
-# Ditto for training mode
+		player1=[
+			preload("res://GodotGuy/scenes/SuperBarP1.tscn").instantiate()
+		],
+		player2=[
+			preload("res://GodotGuy/scenes/SuperBarP2.tscn").instantiate()
+		]
+	}
 var ui_elements_training = {
-	player1=[
-		preload("res://GodotGuy/scenes/SuperBarTrainingModeP1.tscn").instantiate()
-	],
-	player2=[
-		preload("res://GodotGuy/scenes/SuperBarTrainingModeP2.tscn").instantiate()
-	]
-}
+		player1=[
+			preload("res://GodotGuy/scenes/SuperBarTrainingModeP1.tscn").instantiate()
+		],
+		player2=[
+			preload("res://GodotGuy/scenes/SuperBarTrainingModeP2.tscn").instantiate()
+		]
+	}
 
-func initialize_training_mode_elements():
+func _initialize_training_mode_elements():
 	match player_number:
 		1:
 			(ui_elements_training.player1[0] as HSlider).value_changed.connect(training_mode_set_meter)
@@ -124,13 +88,6 @@ func initialize_training_mode_elements():
 func training_mode_set_meter(val):
 	meter = val
 	(ui_elements["player1" if player_number == 1 else "player2"][0] as TextureProgressBar).value = meter
-
-# Extremely important, how the character stores the inputs from the game.
-# Dictionary with 4 entries for each cardinal directional input, plus the number of buttons (buttonX).
-# Each entry holds an array made up of tuples of a boolean and an int, representing how long the
-# input was held/not held.
-# Saved here as the alternative was copying potentially large blocks of data for many functions.
-var inputs
 
 @onready var hitboxes = {
 	"stand_a": preload("res://GodotGuy/scenes/hitboxes/stand/a.tscn"),
@@ -170,12 +127,50 @@ var current_state: states
 var previous_state : states
 
 # Nothing should modify the fighter's state in _process or _ready, _process is purely for
-# real-time effects, and _ready for initializing the animation player.
+# real-time effects, and _ready for initialization.
 
 func _ready():
 	reset_facing()
 	animate.play(basic_anim_state_dict[current_state] + 
 		(animate.anim_right_suf if right_facing else animate.anim_left_suf))
+
+func _post_intro() -> bool:
+	return current_state != states.intro
+
+func _post_outro() -> bool:
+	return (current_state in [states.round_win, states.set_win] and not animate.is_playing())
+
+func _in_defeated_state() -> bool:
+	return current_state == states.outro_lie
+
+func _in_outro_state() -> bool:
+	return current_state in [states.outro_fall, states.outro_bounce, states.outro_lie]
+
+func _in_attacking_state() -> bool:
+	return current_state in [states.attack_normal, states.attack_command, states.attack_motion, states.jump_attack]
+
+func _in_hurting_state() -> bool:
+	return current_state in [
+		states.hurt_high, states.hurt_low, states.hurt_crouch, states.hurt_grabbed,
+		states.hurt_fall, states.hurt_bounce
+	]
+
+func _in_grabbed_state() -> bool:
+	return current_state == states.hurt_grabbed
+
+func in_air_state() -> bool:
+	return current_state in [
+		states.jump_attack,
+		states.jump_left, states.jump_neutral, states.jump_right,
+		states.jump_right_no_act, states.jump_neutral_no_act, states.jump_left_no_act,
+		states.block_air, states.hurt_bounce, states.hurt_fall
+	]
+
+func in_crouching_state() -> bool:
+	return current_state in [states.crouch, states.hurt_crouch, states.block_low]
+
+func in_dashing_state() -> bool:
+	return current_state in [states.dash_back, states.dash_forward]
 
 func _process(_delta):
 	$DebugData.text = """Right Facing: %s
@@ -215,8 +210,6 @@ var grab_return_states := {
 		false: "attack_normal/grab_whiff"
 	},
 }
-
-var hitbox_layer : int
 
 # Functions used by the AnimationPlayer to perform actions within animations
 
@@ -260,60 +253,22 @@ func add_meter(add_to_meter : float):
 	meter = min(meter + add_to_meter, METER_MAX)
 	(ui_elements["player1" if player_number == 1 else "player2"][0] as TextureProgressBar).value = meter
 
-# Functions used within this script and by the game, mostly for checks
-
-func post_intro() -> bool:
-	return current_state != states.intro
-
-func post_outro() -> bool:
-	return (current_state in [states.round_win, states.set_win] and not animate.is_playing())
-
-func in_defeated_state() -> bool:
-	return current_state == states.outro_lie
-
-func in_outro_state() -> bool:
-	return current_state in [states.outro_fall, states.outro_bounce, states.outro_lie]
-
-func in_air_state() -> bool:
-	return current_state in [
-		states.jump_attack,
-		states.jump_left, states.jump_neutral, states.jump_right,
-		states.jump_right_no_act, states.jump_neutral_no_act, states.jump_left_no_act,
-		states.block_air, states.hurt_bounce, states.hurt_fall
-	]
-
-func in_crouching_state() -> bool:
-	return current_state in [states.crouch, states.hurt_crouch, states.block_low]
-
-func in_dashing_state() -> bool:
-	return current_state in [states.dash_back, states.dash_forward]
-
-func in_attacking_state() -> bool:
-	return current_state in [states.attack_normal, states.attack_command, states.attack_motion, states.jump_attack]
-
-func in_hurting_state() -> bool:
-	return current_state in [
-		states.hurt_high, states.hurt_low, states.hurt_crouch, states.hurt_grabbed,
-		states.hurt_fall, states.hurt_bounce
-	]
-
-func in_grabbed_state() -> bool:
-	return current_state == states.hurt_grabbed
-
 func set_state(new_state: states):
 	if current_state != new_state:
 		current_state = new_state
 		update_character_animation()
 
-func initialize_boxes(player: bool) -> void:
-	if player:
-		$Hurtbox.collision_mask = 2
-		hitbox_layer = 4
-	else:
-		$Hurtbox.collision_mask = 4
-		hitbox_layer = 2
-
 # Functions used only in this script
+const INFINITE_STUN := -1
+
+func set_stun(value):
+	stun_time_start = value
+	GlobalKnowledge.global_hitstop = int(abs(value)/4)
+	stun_time_current = stun_time_start + 1 if stun_time_start != INFINITE_STUN else INFINITE_STUN
+
+func reduce_stun():
+	if stun_time_start != INFINITE_STUN:
+		stun_time_current = max(0, stun_time_current - 1)
 
 var current_attack : String
 
@@ -326,41 +281,20 @@ func update_attack(new_attack: String) -> void:
 	attack_connected = false
 	attack_hurt = false
 
-enum actions {set, add, remove}
-enum buttons {Up = 1, Down = 2, Left = 4, Right = 8, A = 16, B = 32, C = 64}
-
-func btn_state(input: String, ind: int):
-	return inputs[input][ind]
-
-func btn_pressed_ind(input: String, ind: int):
-	return btn_state(input, ind)[1]
-
-func btn_pressed(input: String):
-	return btn_pressed_ind(input, -1)
-
-func btn_just_pressed(input: String):
-	return btn_pressed_ind_under_time(input, -1, JUST_PRESSED_BUFFER)
-
-func btn_pressed_ind_under_time(input: String, ind: int, duration: int):
-	return btn_state(input, ind)[0] < duration and btn_pressed_ind(input, ind)
-
-func button_held_over_time(input: String, duration: int):
-	return btn_state(input, -1)[0] >= duration and btn_pressed(input)
-
-func any_attack_just_pressed():
+func any_atk_just_pressed():
 	return btn_just_pressed("button0") or btn_just_pressed("button1") or btn_just_pressed("button2")
 
-func all_attacks_just_pressed():
+func all_atk_just_pressed():
 	return btn_just_pressed("button0") and btn_just_pressed("button1") and btn_just_pressed("button2")
 
-func two_attacks_just_pressed():
+func two_atk_just_pressed():
 	return (
 		int(btn_just_pressed("button0")) +
 		int(btn_just_pressed("button1")) +
 		int(btn_just_pressed("button2")) == 2
 	)
 
-func one_attack_just_pressed():
+func one_atk_just_pressed():
 	return (
 		int(btn_just_pressed("button0")) + 
 		int(btn_just_pressed("button1")) + 
@@ -389,12 +323,12 @@ const GG_INPUT = [[6,3,2,1,4,6], [6,3,2,1,4,5,6], [6,2,1,4,6], [6,2,4,5,6], [6,2
 func try_super_attack(cur_state: states) -> states:
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
-			if motion_input_check(GG_INPUT) and one_attack_just_pressed() and meter >= 50:
+			if motion_input_check(GG_INPUT) and one_atk_just_pressed() and meter >= 50:
 				meter -= 50
 				update_attack("attack_super/projectile")
 				return states.attack_motion
 		states.jump_neutral, states.jump_left, states.jump_right:
-			if motion_input_check(GG_INPUT) and one_attack_just_pressed() and meter >= 50:
+			if motion_input_check(GG_INPUT) and one_atk_just_pressed() and meter >= 50:
 				meter -= 50
 				update_attack("attack_super/projectile_air")
 				jump_count = 0
@@ -405,20 +339,20 @@ func try_special_attack(cur_state: states) -> states:
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
 			#check z_motion first since there's a lot of overlap with quarter_circle on extreme cases
-			if motion_input_check(Z_MOTION_FORWARD) and one_attack_just_pressed():
+			if motion_input_check(Z_MOTION_FORWARD) and one_atk_just_pressed():
 				update_attack("attack_motion/uppercut")
 				jump_count = 0
 				return states.attack_motion
-			if motion_input_check(QUARTER_CIRCLE_FORWARD) and one_attack_just_pressed():
+			if motion_input_check(QUARTER_CIRCLE_FORWARD) and one_atk_just_pressed():
 				update_attack("attack_motion/projectile")
 				return states.attack_motion
 		states.crouch:
-			if motion_input_check(Z_MOTION_FORWARD) and one_attack_just_pressed():
+			if motion_input_check(Z_MOTION_FORWARD) and one_atk_just_pressed():
 				update_attack("attack_motion/uppercut")
 				jump_count = 0
 				return states.attack_motion
 		states.jump_neutral, states.jump_left, states.jump_right:
-			if motion_input_check(QUARTER_CIRCLE_FORWARD + TIGER_KNEE_FORWARD) and one_attack_just_pressed():
+			if motion_input_check(QUARTER_CIRCLE_FORWARD + TIGER_KNEE_FORWARD) and one_atk_just_pressed():
 				update_attack("attack_motion/projectile_air")
 				jump_count = 0
 				return states.attack_motion
@@ -444,7 +378,7 @@ func try_attack(cur_state: states) -> states:
 	
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward:
-			if two_attacks_just_pressed():
+			if two_atk_just_pressed():
 				update_attack("attack_normal/grab")
 				return states.attack_grab
 			if btn_just_pressed("button0"):
@@ -601,7 +535,6 @@ func inputs_as_numpad(timing := true) -> Array:
 		)
 	return numpad_buffer
 
-
 func motion_input_check(motions_to_check) -> bool:
 	var buffer_as_numpad = inputs_as_numpad()
 	for motion_to_check in motions_to_check:
@@ -670,9 +603,6 @@ func handle_air_stun():
 #		handle_stand_stun(buffer)
 		var new_walk = try_walk(null, current_state)
 		set_state(new_walk)
-
-var record_y
-var check_true
 
 func update_character_state():
 	match current_state:
@@ -847,17 +777,6 @@ func update_character_animation():
 			_:
 				animate.play(basic_anim_state_dict[current_state] + (animate.anim_right_suf if right_facing else animate.anim_left_suf))
 
-const INFINITE_STUN := -1
-
-func set_stun(value):
-	stun_time_start = value
-	GlobalKnowledge.global_hitstop = int(abs(value)/4)
-	stun_time_current = stun_time_start + 1 if stun_time_start != -1 else -1
-
-func reduce_stun():
-	if stun_time_start != -1:
-		stun_time_current = max(0, stun_time_current - 1)
-
 func reset_facing():
 	if distance < 0:
 		right_facing = true
@@ -867,10 +786,10 @@ func reset_facing():
 		grabbed_offset.x = .46
 
 # Functions called directly by the game
-func return_attackers():
+func _return_attackers():
 	return $Hurtbox.get_overlapping_areas() as Array[Hitbox]
 
-func input_step(recv_inputs) -> void:
+func _input_step(recv_inputs) -> void:
 	inputs = recv_inputs
 	if GlobalKnowledge.global_hitstop == 0:
 		resolve_state_transitions()
@@ -882,12 +801,12 @@ func input_step(recv_inputs) -> void:
 
 # This is called when a hitbox makes contact with the other fighter, after resolving that the fighter
 # was hit by the attack. An Array is passed for maximum customizability.
-func on_hit(on_hit_data : Array):
+func _on_hit(on_hit_data : Array):
 # For this fighter, the on_hit and on_block arrays stores only the meter_gain, a float.
 	add_meter(on_hit_data[0])
 
 # Ditto, but for after resolving that the opposing fighter blocked the attack.
-func on_block(on_block_data : Array):
+func _on_block(on_block_data : Array):
 	add_meter(on_block_data[0])
 
 func handle_damage(attack : Hitbox, blocked : bool, next_state : states):
@@ -908,6 +827,7 @@ func handle_damage(attack : Hitbox, blocked : bool, next_state : states):
 		set_state(next_state)
 
 # block rule arrays: [up, down, away, towards], 1 means must hold, 0 means ignored, -1 means must not hold
+@export_category("2D Gameplay Details")
 @export var block : Dictionary = {
 	away_any = [0, 0, 1, -1],
 	away_high = [0, -1, 1, -1],
@@ -920,7 +840,7 @@ func try_block(attack : Hitbox,
 			ground_block_rules : Array, air_block_rules : Array,
 			fs_stand : states, fs_crouch : states, fs_air : states) -> bool:
 	# still in hitstun, can't block
-	if in_hurting_state() or in_dashing_state() or in_attacking_state():
+	if _in_hurting_state() or _in_attacking_state() or in_dashing_state():
 		if not in_air_state():
 			if in_crouching_state():
 				handle_damage(attack, false, fs_crouch)
@@ -973,7 +893,7 @@ func try_grab(attack_dmg: float, on_ground : bool) -> bool:
 	return true
 
 # Only runs when a hitbox is overlapping, return rules explained above
-func damage_step(attack : Hitbox) -> bool:
+func _damage_step(attack : Hitbox) -> bool:
 	match attack.hit_type:
 		"mid":
 			return try_block(attack, block.away_any, block.away_any, states.hurt_high, states.hurt_crouch, states.hurt_fall)
