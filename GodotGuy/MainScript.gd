@@ -1,10 +1,17 @@
 class_name Fighter
 extends CharacterBody3D
 
-# This script holds the main components of a Fighter, namely the attacks and state machine.
+signal grabbed
+signal releasing_grab
+signal hitbox_created
+signal projectile_created
+signal defeated
+
+# This script holds the main components of a Fighter.
 # A Fighter has several variables and methods which are accessed and called by the game.
-# input_step() is called with the latest buffer of inputs
-# damage_step() is called with the details of the attack, if it happened
+# input_step() is called with the latest buffer of inputs.
+# damage_step() is called per each overlapping hitbox after handling inputs,
+# with the details of the attack.
 
 # This block of variables and signals are accessed by the game for various reasons.
 @export_category("DON'T TOUCH!")
@@ -55,6 +62,9 @@ var game_ended := false
 
 @export_category("Gameplay Details")
 @export var BUTTONCOUNT : int = 3
+@export var JUST_PRESSED_BUFFER : int = 2
+@export var DASH_INPUT_LENIENCY : int = 15
+@export var MOTION_INPUT_LENIENCY : int = 12
 @export var start_x_offset : float = 2
 @export var grabbed_offset : Vector3 = Vector3(-0.46, -0.87, 0)
 var grabbed_point : GrabPoint # When the fighter is grabbed
@@ -75,23 +85,13 @@ var jump_count : int = 0
 @export var jump_height : float = 11
 @export var gravity : float = -0.5
 @export var min_fall_vel : float = -6.5
+@export var GROUND_SLIDE_FRICTION : float = 0.97
 
 var right_facing : bool
 
 var kback : Vector3 = Vector3.ZERO
 var stun_time_start : int = 0
 var stun_time_current : int = 0
-
-const JUST_PRESSED_BUFFER : int = 2
-const DASH_INPUT_LENIENCY : int = 15
-const MOTION_INPUT_LENIENCY : int = 12
-const GROUND_SLIDE_FRICTION : float = 0.97
-
-signal grabbed
-signal releasing_grab
-signal hitbox_created
-signal projectile_created
-signal defeated
 
 # Preload ui elements here for the game to add to the screen.
 var ui_elements = {
@@ -168,12 +168,6 @@ enum states {
 var state_start := states.intro
 var current_state: states
 var previous_state : states
-
-
-
-# Single animations for states can be handled by a simple hash lookup.
-# Because left vs right is handled externally, only the first part of the name is used
-
 
 # Nothing should modify the fighter's state in _process or _ready, _process is purely for
 # real-time effects, and _ready for initializing the animation player.
