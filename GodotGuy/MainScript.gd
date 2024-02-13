@@ -907,13 +907,13 @@ func handle_damage(attack : Hitbox, blocked : bool, next_state : states):
 		kback = attack.kback_block
 		set_state(next_state)
 
-# block rule arrays: [up, down, away, towards], 1 means valid, 0 means ignored, -1 means invalid
-const BLOCK_ANY = [1, 1, 1, 1]
-const BLOCK_AWAY_ANY = [0, 0, 1, -1]
-const BLOCK_AWAY_HIGH = [0, -1, 1, -1]
-const BLOCK_AWAY_LOW = [-1, 1, 1, -1]
-const BLOCK_UNBLOCKABLE = [-1, -1. -1, -1]
-
+# block rule arrays: [up, down, away, towards], 1 means must hold, 0 means ignored, -1 means must not hold
+@export var block : Dictionary = {
+	away_any = [0, 0, 1, -1],
+	away_high = [0, -1, 1, -1],
+	away_low = [-1, 1, 1, -1],
+	nope = [-1, -1. -1, -1],
+}
 # If attack is blocked, return false
 # If attack isn't blocked, return true
 func try_block(attack : Hitbox,
@@ -976,20 +976,20 @@ func try_grab(attack_dmg: float, on_ground : bool) -> bool:
 func damage_step(attack : Hitbox) -> bool:
 	match attack.hit_type:
 		"mid":
-			return try_block(attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, states.hurt_high, states.hurt_crouch, states.hurt_fall)
+			return try_block(attack, block.away_any, block.away_any, states.hurt_high, states.hurt_crouch, states.hurt_fall)
 		"high":
-			return try_block(attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, states.hurt_high, states.hurt_crouch, states.hurt_fall)
+			return try_block(attack, block.away_high, block.away_any, states.hurt_high, states.hurt_crouch, states.hurt_fall)
 		"low":
-			return try_block(attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_low, states.hurt_crouch, states.hurt_fall)
+			return try_block(attack, block.away_low, block.away_any, states.hurt_low, states.hurt_crouch, states.hurt_fall)
 		"launch":
-			return try_block(attack, BLOCK_AWAY_ANY, BLOCK_AWAY_ANY, states.hurt_fall, states.hurt_fall, states.hurt_fall)
+			return try_block(attack, block.away_any, block.away_any, states.hurt_fall, states.hurt_fall, states.hurt_fall)
 		"sweep":
-			return try_block(attack, BLOCK_AWAY_LOW, BLOCK_AWAY_ANY, states.hurt_lie, states.hurt_lie, states.hurt_fall)
+			return try_block(attack, block.away_low, block.away_any, states.hurt_lie, states.hurt_lie, states.hurt_fall)
 		"slam":
-			return try_block(attack, BLOCK_AWAY_HIGH, BLOCK_AWAY_ANY, states.hurt_bounce, states.hurt_bounce, states.hurt_bounce)
+			return try_block(attack, block.away_high, block.away_any, states.hurt_bounce, states.hurt_bounce, states.hurt_bounce)
 		"grab_ground":
 			return try_grab(attack.damage_hit, true)
 		"grab_air":
 			return try_grab(attack.damage_hit, false)
 		_: # this will definitely not be a bug in the future
-			return try_block(attack, BLOCK_UNBLOCKABLE, BLOCK_UNBLOCKABLE, states.hurt_high, states.hurt_crouch, states.hurt_fall)
+			return try_block(attack, block.nope, block.nope, states.hurt_high, states.hurt_crouch, states.hurt_fall)
