@@ -86,7 +86,7 @@ func make_hud():
 		p1_round.name = str(n)
 		$HUD/HealthAndTime/P1Group/Rounds.add_child(p1_round)
 		var p2_round = round_element.instantiate()
-		p1_round.name = str(n)
+		p2_round.name = str(n)
 		$HUD/HealthAndTime/P2Group/Rounds.add_child(p2_round)
 	match round_change_behavior:
 		round_change_types.ADD:
