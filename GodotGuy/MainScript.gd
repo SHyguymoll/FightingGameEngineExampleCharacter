@@ -60,34 +60,23 @@ var record_y : float
 var check_true : bool # Used to remember results of move_and_slide()
 var right_facing : bool
 
-var ui_elements = {
-		player1=[
-			preload("res://GodotGuy/scenes/SuperBarP1.tscn").instantiate()
-		],
-		player2=[
-			preload("res://GodotGuy/scenes/SuperBarP2.tscn").instantiate()
-		]
-	}
-var ui_elements_training = {
-		player1=[
-			preload("res://GodotGuy/scenes/SuperBarTrainingModeP1.tscn").instantiate()
-		],
-		player2=[
-			preload("res://GodotGuy/scenes/SuperBarTrainingModeP2.tscn").instantiate()
-		]
-	}
-
-func _initialize_training_mode_elements():
-	match player_number:
-		1:
-			(ui_elements_training.player1[0] as HSlider).value_changed.connect(training_mode_set_meter)
-		2:
-			(ui_elements_training.player2[0] as HSlider).value_changed.connect(training_mode_set_meter)
+func _initialize_training_mode_elements(player : bool):
+	if player:
+		for scene in ui_elements_packed.player1:
+			ui_elements.append(scene.instantiate())
+		for scene in ui_elements_training_packed.player1:
+			ui_elements_training.append(scene.instantiate())
+	else:
+		for scene in ui_elements_packed.player2:
+			ui_elements.append(scene.instantiate())
+		for scene in ui_elements_training_packed.player2:
+			ui_elements_training.append(scene.instantiate())
+	(ui_elements_training[0] as HSlider).value_changed.connect(training_mode_set_meter)
 
 # this block of variables isn't required, but generally used by a typical fighter.
 func training_mode_set_meter(val):
 	meter = val
-	(ui_elements["player1" if player_number == 1 else "player2"][0] as TextureProgressBar).value = meter
+	(ui_elements[0] as TextureProgressBar).value = meter
 
 @onready var hitboxes = {
 	"stand_a": preload("res://GodotGuy/scenes/hitboxes/stand/a.tscn"),
@@ -251,7 +240,7 @@ func release_grab():
 
 func add_meter(add_to_meter : float):
 	meter = min(meter + add_to_meter, METER_MAX)
-	(ui_elements["player1" if player_number == 1 else "player2"][0] as TextureProgressBar).value = meter
+	(ui_elements[0] as TextureProgressBar).value = meter
 
 func set_state(new_state: states):
 	if current_state != new_state:

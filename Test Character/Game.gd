@@ -146,11 +146,11 @@ func init_fighters():
 	p1.grabbed.connect(grabbed)
 	p1.releasing_grab.connect(releasing_grab)
 	p1.defeated.connect(player_defeated)
-	for element in p1.ui_elements.player1:
+	p1._initialize_training_mode_elements(true)
+	for element in p1.ui_elements:
 		$HUD/SpecialElements/P1Group.add_child(element)
-	for element in p1.ui_elements_training.player1:
+	for element in p1.ui_elements_training:
 		$HUD/TrainingModeControlsSpecial/P1Controls.add_child(element)
-	p1._initialize_training_mode_elements()
 	p1.grabbed_point = grab_point.instantiate()
 	add_child(p1.grabbed_point)
 	
@@ -165,11 +165,11 @@ func init_fighters():
 	p2.grabbed.connect(grabbed)
 	p2.releasing_grab.connect(releasing_grab)
 	p2.defeated.connect(player_defeated)
-	for element in p2.ui_elements.player2:
+	p2._initialize_training_mode_elements(false)
+	for element in p2.ui_elements:
 		$HUD/SpecialElements/P2Group.add_child(element)
-	for element in p2.ui_elements_training.player2:
+	for element in p2.ui_elements_training:
 		$HUD/TrainingModeControlsSpecial/P2Controls.add_child(element)
-	p2._initialize_training_mode_elements()
 	p2.grabbed_point = grab_point.instantiate()
 	add_child(p2.grabbed_point)
 	

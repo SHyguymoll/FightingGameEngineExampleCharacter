@@ -29,15 +29,21 @@ var game_ended := false
 @export var health : float
 @export var post_win_quote : String
 
-# NOTE: extensions of this class must define a "ui_elements" and "ui_elements_training" variable.
-# both are Dictionarys with the following structure:
-#{
-	#player1=[],
-	#player2=[]
-#}
-# there's probably a better way to do this, but it's nearly 1 AM and I'm tired.
+@export var ui_elements_packed = {
+	player1=[],
+	player2=[]
+}
 
-func _initialize_training_mode_elements():
+var ui_elements = []
+
+@export var ui_elements_training_packed = {
+	player1=[],
+	player2=[]
+}
+
+var ui_elements_training = []
+
+func _initialize_training_mode_elements(player: bool):
 	pass
 
 @export_category("Gameplay Details")
