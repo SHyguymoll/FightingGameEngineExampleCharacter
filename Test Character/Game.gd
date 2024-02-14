@@ -556,6 +556,19 @@ func _physics_process(_delta):
 					print("game ended with a p2 victory, restarting anyways")
 					GlobalKnowledge.p2_wins = 0
 					get_tree().reload_current_scene()
+			elif p1._in_defeated_state() and p2._in_defeated_state():
+				if (
+					GlobalKnowledge.p1_wins == GlobalKnowledge.win_threshold - 1
+					and GlobalKnowledge.p2_wins == GlobalKnowledge.win_threshold - 1
+				):
+					print("game ended on a draw, restarting anyways")
+					GlobalKnowledge.p1_wins = 0
+					GlobalKnowledge.p2_wins = 0
+					get_tree().reload_current_scene()
+				else:
+					GlobalKnowledge.p1_wins = GlobalKnowledge.win_threshold - 1
+					GlobalKnowledge.p2_wins = GlobalKnowledge.win_threshold - 1
+					get_tree().reload_current_scene()
 
 func _on_p1_health_reset_switch_toggled(toggled_on):
 	p1_reset_health_on_drop = toggled_on
