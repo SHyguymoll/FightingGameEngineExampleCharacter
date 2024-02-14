@@ -540,20 +540,20 @@ func _physics_process(_delta):
 			move_inputs_and_iterate(true)
 			check_combos()
 			character_positioning()
-			if (p1._post_outro() and p2._in_defeated_state()):
+			if p1._post_outro() and p2._in_defeated_state():
 				GlobalKnowledge.p1_wins += 1
 				if GlobalKnowledge.p1_wins < GlobalKnowledge.win_threshold:
 					get_tree().reload_current_scene()
 				else:
-					print("game ended here, restarting anyways")
+					print("game ended with a p1 victory, restarting anyways")
 					GlobalKnowledge.p1_wins = 0
 					get_tree().reload_current_scene()
-			elif (p1._in_defeated_state() and p2._post_outro()):
+			elif p1._in_defeated_state() and p2._post_outro():
 				GlobalKnowledge.p2_wins += 1
 				if GlobalKnowledge.p2_wins < GlobalKnowledge.win_threshold:
 					get_tree().reload_current_scene()
 				else:
-					print("game ended here, restarting anyways")
+					print("game ended with a p2 victory, restarting anyways")
 					GlobalKnowledge.p2_wins = 0
 					get_tree().reload_current_scene()
 
