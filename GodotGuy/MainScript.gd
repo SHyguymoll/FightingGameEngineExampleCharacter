@@ -806,7 +806,7 @@ func handle_damage(attack : Hitbox, blocked : bool, next_state : states):
 		if health <= 0:
 			set_state(states.outro_bounce)
 			kback.y += 6.5
-			emit_signal(&"defeated", player_number)
+			emit_signal(&"defeated")
 		else:
 			set_state(next_state)
 	else:

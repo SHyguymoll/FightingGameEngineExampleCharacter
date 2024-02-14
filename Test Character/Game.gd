@@ -501,7 +501,7 @@ func releasing_grab(player_number):
 		2:
 			p1.grabbed_point.act_on_player = false
 
-func player_defeated(player_number : int):
+func player_defeated():
 	moment = moments.ROUND_END
 	p1.game_ended = true
 	p2.game_ended = true
