@@ -43,7 +43,7 @@ var ui_elements = []
 
 var ui_elements_training = []
 
-func _initialize_training_mode_elements(player: bool):
+func _initialize_training_mode_elements(_player: bool):
 	pass
 
 @export_category("Gameplay Details")
@@ -99,18 +99,18 @@ func _input_step(recv_inputs) -> void:
 
 # This is called when a hitbox makes contact with the other fighter, after resolving that the fighter
 # was hit by the attack. An Array is passed for maximum customizability.
-func _on_hit(on_hit_data : Array):
+func _on_hit(_on_hit_data : Array):
 # For this fighter, the on_hit and on_block arrays stores only the meter_gain, a float.
 	pass
 
 # Ditto, but for after resolving that the opposing fighter blocked the attack.
-func _on_block(on_block_data : Array):
+func _on_block(_on_block_data : Array):
 	pass
 
 # Only runs when a hitbox is overlapping.
 # If attack is blocked, return false
 # If attack isn't blocked, return true
-func _damage_step(attack : Hitbox) -> bool:
+func _damage_step(_attack : Hitbox) -> bool:
 	return true
 
 func _initialize_boxes(player: bool) -> void:
