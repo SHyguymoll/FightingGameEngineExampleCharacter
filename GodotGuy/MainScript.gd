@@ -222,6 +222,8 @@ func create_hitbox(pos : Vector3, hitbox_name : String):
 		pos.x *= -1
 	new_hitbox.set_position(pos + global_position)
 	new_hitbox.collision_layer = hitbox_layer
+	new_hitbox.damage_block *= damage_mult
+	new_hitbox.damage_hit *= damage_mult
 	emit_signal(&"hitbox_created", new_hitbox)
 
 func create_projectile(pos : Vector3, projectile_name : String, type : int):
@@ -233,6 +235,8 @@ func create_projectile(pos : Vector3, projectile_name : String, type : int):
 	new_projectile.type = type
 	new_projectile.source = player_number
 	new_projectile.get_node(^"Hitbox").collision_layer = hitbox_layer
+	new_projectile.get_node(^"Hitbox").damage_block *= damage_mult
+	new_projectile.get_node(^"Hitbox").damage_hit *= damage_mult
 	emit_signal(&"projectile_created", new_projectile)
 
 func release_grab():
