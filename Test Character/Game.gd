@@ -189,7 +189,9 @@ func _ready():
 	reset_hitstop()
 	add_child(scene_to_test.instantiate())
 	p1 = player_test_one.instantiate()
+	p1.name = "p1"
 	p2 = player_test_two.instantiate()
+	p2.name = "p2"
 	make_hud()
 	init_fighters()
 	add_child(p1)
