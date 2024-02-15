@@ -60,7 +60,7 @@ var record_y : float
 var check_true : bool # Used to remember results of move_and_slide()
 var right_facing : bool
 
-func _initialize_training_mode_elements(player : bool):
+func _initialize_training_mode_elements():
 	if player:
 		for scene in ui_elements_packed.player1:
 			ui_elements.append(scene.instantiate())
@@ -233,14 +233,14 @@ func create_projectile(pos : Vector3, projectile_name : String, type : int):
 	new_projectile.set_position(pos + global_position)
 	new_projectile.right_facing = right_facing
 	new_projectile.type = type
-	new_projectile.source = player_number
+	new_projectile.source = player
 	new_projectile.get_node(^"Hitbox").collision_layer = hitbox_layer
 	new_projectile.get_node(^"Hitbox").damage_block *= damage_mult
 	new_projectile.get_node(^"Hitbox").damage_hit *= damage_mult
 	emit_signal(&"projectile_created", new_projectile)
 
 func release_grab():
-	emit_signal("releasing_grab", player_number)
+	emit_signal("releasing_grab", player)
 
 func add_meter(add_to_meter : float):
 	meter = min(meter + add_to_meter, METER_MAX)
@@ -878,7 +878,7 @@ func try_grab(attack_dmg: float, on_ground : bool) -> bool:
 		return false
 	if on_ground and in_air_state():
 		return false
-	emit_signal(&"grabbed", player_number)
+	emit_signal(&"grabbed", player)
 	health = max(health - attack_dmg * defense_mult, 1)
 	set_stun(-1)
 	kback = Vector3.ZERO

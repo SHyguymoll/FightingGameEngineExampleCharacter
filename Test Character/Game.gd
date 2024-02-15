@@ -137,16 +137,16 @@ func update_hud():
 func init_fighters():
 	for i in range(p1.BUTTONCOUNT):
 		p1_inputs["button" + str(i)] = [[0, false]]
-	p1.player_number = 1
+	p1.player = true
 	p1.position = Vector3(p1.start_x_offset * -1,0,0)
-	p1._initialize_boxes(true)
+	p1._initialize_boxes()
 	p1.char_name += " p1"
 	p1.hitbox_created.connect(register_hitbox)
 	p1.projectile_created.connect(register_projectile)
 	p1.grabbed.connect(grabbed)
 	p1.releasing_grab.connect(releasing_grab)
 	p1.defeated.connect(player_defeated)
-	p1._initialize_training_mode_elements(true)
+	p1._initialize_training_mode_elements()
 	for element in p1.ui_elements:
 		$HUD/SpecialElements/P1Group.add_child(element)
 	for element in p1.ui_elements_training:
@@ -156,16 +156,16 @@ func init_fighters():
 	
 	for i in range(p2.BUTTONCOUNT):
 		p2_inputs["button" + str(i)] = [[0, false]]
-	p2.player_number = 2
+	p2.player = false
 	p2.position = Vector3(p2.start_x_offset,0,0)
-	p2._initialize_boxes(false)
+	p2._initialize_boxes()
 	p2.char_name += " p2"
 	p2.hitbox_created.connect(register_hitbox)
 	p2.projectile_created.connect(register_projectile)
 	p2.grabbed.connect(grabbed)
 	p2.releasing_grab.connect(releasing_grab)
 	p2.defeated.connect(player_defeated)
-	p2._initialize_training_mode_elements(false)
+	p2._initialize_training_mode_elements()
 	for element in p2.ui_elements:
 		$HUD/SpecialElements/P2Group.add_child(element)
 	for element in p2.ui_elements_training:
@@ -489,19 +489,17 @@ func register_projectile(projectile):
 func delete_projectile(projectile):
 	projectiles.erase(projectile)
 
-func grabbed(player_number):
-	match player_number:
-		1:
-			p1.grabbed_point.act_on_player = true
-		2:
-			p2.grabbed_point.act_on_player = true
+func grabbed(player):
+	if player:
+		p1.grabbed_point.act_on_player = true
+	else:
+		p2.grabbed_point.act_on_player = true
 
-func releasing_grab(player_number):
-	match player_number:
-		1:
-			p2.grabbed_point.act_on_player = false
-		2:
-			p1.grabbed_point.act_on_player = false
+func releasing_grab(player):
+	if player:
+		p2.grabbed_point.act_on_player = false
+	else:
+		p1.grabbed_point.act_on_player = false
 
 func player_defeated():
 	moment = moments.ROUND_END

@@ -17,7 +17,7 @@ signal defeated
 
 # This block of variables and signals are accessed by the game for various reasons.
 @export_category("DON'T TOUCH!")
-var player_number : int # This is set by the game, don't change this
+var player : bool # This is set by the game, don't change this. True if player 1, False if player 2.
 var distance : float # Ditto
 var input_buffer_len : int = 10 # Must be a positive number.
 var attack_connected : bool
@@ -43,7 +43,7 @@ var ui_elements = []
 
 var ui_elements_training = []
 
-func _initialize_training_mode_elements(_player: bool):
+func _initialize_training_mode_elements():
 	pass
 
 @export_category("Gameplay Details")
@@ -113,7 +113,7 @@ func _on_block(_on_block_data : Array):
 func _damage_step(_attack : Hitbox) -> bool:
 	return true
 
-func _initialize_boxes(player: bool) -> void:
+func _initialize_boxes() -> void:
 	if player:
 		$Hurtbox.collision_mask = 2
 		hitbox_layer = 4
