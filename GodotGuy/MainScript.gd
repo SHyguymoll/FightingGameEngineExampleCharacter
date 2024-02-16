@@ -141,13 +141,13 @@ func _in_attacking_state() -> bool:
 		states.attack_command,
 		states.attack_motion,
 		states.attack_grab,
-		states.jump_attack
+		states.jump_attack,
 	]
 
 func _in_hurting_state() -> bool:
 	return current_state in [
 		states.hurt_high, states.hurt_low, states.hurt_crouch,
-		states.hurt_grabbed, states.hurt_fall, states.hurt_bounce
+		states.hurt_grabbed, states.hurt_fall, states.hurt_bounce,
 	]
 
 func _in_grabbed_state() -> bool:
@@ -158,7 +158,7 @@ func in_air_state() -> bool:
 		states.jump_attack,
 		states.jump_left, states.jump_neutral, states.jump_right,
 		states.jump_right_no_act, states.jump_neutral_no_act, states.jump_left_no_act,
-		states.block_air, states.hurt_bounce, states.hurt_fall
+		states.block_air, states.hurt_bounce, states.hurt_fall,
 	]
 
 func in_crouching_state() -> bool:
@@ -183,7 +183,7 @@ func _process(_delta):
 		stun_time_current,
 		stun_time_start,
 		kback,
-		animate.current_animation
+		animate.current_animation,
 	]
 	if len(inputs.up) > 0:
 		$DebugData.text += str(inputs_as_numpad()[0])
@@ -322,7 +322,7 @@ const Z_MOTION_BACK = [
 	[4,1,2,3,2,1],
 	[4,5,3,2,1],
 	[4,5,6,3,2,1],
-	[4,5,6,3,2,1,4]
+	[4,5,6,3,2,1,4],
 ]
 
 # Name is a reference to the common Guilty Gear Overdrive input of a half circle back to forward
@@ -332,7 +332,7 @@ const GG_INPUT = [
 	[6,2,1,4,6],
 	[6,2,4,6],
 	[6,2,4,5,6],
-	[6,2,1,4,5,6]
+	[6,2,1,4,5,6],
 ]
 
 func try_super_attack(cur_state: states) -> states:
@@ -471,7 +471,7 @@ func try_dash(input: String, success_state: states, cur_state: states) -> states
 	var walks = [
 		btn_pressed_ind(input, -3),
 		btn_pressed_ind(input, -2),
-		btn_pressed_ind(input, -1)
+		btn_pressed_ind(input, -1),
 	]
 	var count_frames = btn_state(input, -3)[0] + btn_state(input, -2)[0] + btn_state(input, -1)[0]
 	if walks == [true, false, true] and count_frames <= DASH_INPUT_LENIENCY:
