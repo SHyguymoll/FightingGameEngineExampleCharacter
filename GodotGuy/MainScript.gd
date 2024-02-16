@@ -1,10 +1,12 @@
 class_name State2DMeterFighter
 extends Fighter
 
-
 # This script defines a FSM-based Fighter with the following features:
 # 2D Movement
 # Dashing
+# Jump-Cancelling
+# The Magic Series (Stronger Attacks Cancel Weaker Attacks)
+# Special Cancelling
 # Super Meter
 
 @export_category("Animation Details")
@@ -71,6 +73,7 @@ func _initialize_training_mode_elements():
 			ui_elements.append(scene.instantiate())
 		for scene in ui_elements_training_packed.player2:
 			ui_elements_training.append(scene.instantiate())
+	
 	(ui_elements_training[0] as HSlider).value_changed.connect(training_mode_set_meter)
 
 # this block of variables isn't required, but generally used by a typical fighter.
@@ -236,26 +239,34 @@ func update_velocity(vel : Vector3, how : av_effects):
 
 func create_hitbox(pos : Vector3, hitbox_name : String):
 	var new_hitbox := (hitboxes[hitbox_name].instantiate() as Hitbox)
+	
 	if not right_facing:
 		pos.x *= -1
+	
 	new_hitbox.set_position(pos + global_position)
 	new_hitbox.collision_layer = hitbox_layer
+	
 	new_hitbox.damage_block *= damage_mult
 	new_hitbox.damage_hit *= damage_mult
+	
 	emit_signal(&"hitbox_created", new_hitbox)
 
 
 func create_projectile(pos : Vector3, projectile_name : String, type : int):
 	var new_projectile := (projectiles[projectile_name].instantiate() as Projectile)
+	
 	if not right_facing:
 		pos.x *= -1
+	
 	new_projectile.set_position(pos + global_position)
 	new_projectile.right_facing = right_facing
 	new_projectile.type = type
 	new_projectile.source = player
+	
 	new_projectile.get_node(^"Hitbox").collision_layer = hitbox_layer
 	new_projectile.get_node(^"Hitbox").damage_block *= damage_mult
 	new_projectile.get_node(^"Hitbox").damage_hit *= damage_mult
+	
 	emit_signal(&"projectile_created", new_projectile)
 
 
@@ -325,6 +336,7 @@ func one_atk_just_pressed():
 # defining the motion inputs, with some leniency
 const QUARTER_CIRCLE_FORWARD = [[2,3,6], [2,6]]
 const QUARTER_CIRCLE_BACK = [[2,1,4], [2,4]]
+# Referencing the Street Fighter 2 input
 const TIGER_KNEE_FORWARD = [[2,3,6,9]]
 const TIGER_KNEE_BACK = [[2,1,4,7]]
 const Z_MOTION_FORWARD = [
@@ -370,6 +382,7 @@ func try_super_attack(cur_state: states) -> states:
 				update_attack("attack_super/projectile_air")
 				jump_count = 0
 				return states.attack_motion
+	
 	return cur_state
 
 
@@ -394,6 +407,7 @@ func try_special_attack(cur_state: states) -> states:
 				update_attack("attack_motion/projectile_air")
 				jump_count = 0
 				return states.attack_motion
+	
 	return cur_state
 
 
@@ -480,6 +494,7 @@ enum walk_directions {back = -1, neutral = 0, forward = 1}
 
 func try_walk(exclude, cur_state: states) -> states:
 	var walk = walk_value()
+	
 	if walk != exclude:
 		match walk:
 			walk_directions.forward:
@@ -489,6 +504,7 @@ func try_walk(exclude, cur_state: states) -> states:
 			walk_directions.back:
 				if distance < 5:
 					return states.walk_back
+	
 	return cur_state
 
 
@@ -499,10 +515,13 @@ func try_dash(input: String, success_state: states, cur_state: states) -> states
 		btn_pressed_ind(input, -2),
 		btn_pressed_ind(input, -1),
 	]
+	
 	var count_frames = btn_state(input, -3)[0] + btn_state(input, -2)[0] + btn_state(input, -1)[0]
+	
 	if walks == [true, false, true] and count_frames <= DASH_INPUT_LENIENCY:
 		animation_ended = false
 		return success_state
+	
 	return cur_state
 
 
@@ -512,6 +531,7 @@ func try_jump(exclude, cur_state: states, grounded := true) -> states:
 			(btn_just_pressed("up") and not grounded) and jump_count > 0
 	):
 		var dir = walk_value()
+		
 		if dir != exclude:
 			match dir:
 				walk_directions.forward:
@@ -526,6 +546,7 @@ func try_jump(exclude, cur_state: states, grounded := true) -> states:
 						return states.jump_right_init if grounded else states.jump_right_air_init
 				walk_directions.neutral:
 					return states.jump_neutral_init if grounded else states.jump_neutral_air_init
+	
 	return cur_state
 
 
@@ -551,6 +572,7 @@ func directions_as_numpad(up, down, back, forward) -> int:
 
 func inputs_as_numpad(timing := true) -> Array:
 	var numpad_buffer = []
+	
 	for i in range(max(0, len(inputs.up) - 2)):
 		numpad_buffer.append(
 			directions_as_numpad(
@@ -560,8 +582,10 @@ func inputs_as_numpad(timing := true) -> Array:
 					btn_pressed_ind("right", i)
 			)
 		)
+	
 	if max(0, len(inputs.up) - 2) == 0:
 		return [5]
+	
 	if timing:
 		numpad_buffer.append(
 			directions_as_numpad(
@@ -580,15 +604,18 @@ func inputs_as_numpad(timing := true) -> Array:
 					btn_pressed_ind("right", -2)
 			)
 		)
+	
 	return numpad_buffer
 
 
 func motion_input_check(motions_to_check) -> bool:
 	var buffer_as_numpad = inputs_as_numpad()
+	
 	for motion_to_check in motions_to_check:
 		var buffer_sliced = buffer_as_numpad.slice(len(buffer_as_numpad) - len(motion_to_check))
 		if buffer_sliced == motion_to_check:
 			return true
+	
 	return false
 
 
@@ -650,6 +677,7 @@ func handle_stand_stun():
 func handle_air_stun():
 	if stun_time_current > 0:
 		return
+	
 	if is_on_floor():
 #		handle_stand_stun(buffer)
 		var new_walk = try_walk(null, current_state)
@@ -703,6 +731,7 @@ func update_character_state():
 				velocity.y += kback.y
 		states.hurt_lie, states.outro_lie:
 			velocity.x *= GROUND_SLIDE_FRICTION
+	
 	velocity.y += gravity
 	velocity.y = max(min_fall_vel, velocity.y)
 	record_y = velocity.y
@@ -847,11 +876,13 @@ func _return_attackers():
 
 func _input_step(recv_inputs) -> void:
 	inputs = recv_inputs
+	
 	if GlobalKnowledge.global_hitstop == 0:
 		resolve_state_transitions()
 	handle_input()
 	if GlobalKnowledge.global_hitstop == 0:
 		update_character_state()
+	
 	animate.speed_scale = float(GlobalKnowledge.global_hitstop == 0)
 	reset_facing()
 
@@ -896,7 +927,7 @@ func handle_damage(attack : Hitbox, blocked : bool, next_state : states):
 func try_block(attack : Hitbox,
 			ground_block_rules : Array, air_block_rules : Array,
 			fs_stand : states, fs_crouch : states, fs_air : states) -> bool:
-	# still in hitstun, can't block
+	# still in hitstun or just can't block
 	if _in_hurting_state() or _in_attacking_state() or in_dashing_state():
 		if not in_air_state():
 			if in_crouching_state():
@@ -943,6 +974,7 @@ func try_grab(attack_dmg: float, on_ground : bool) -> bool:
 		return false
 	if on_ground and in_air_state():
 		return false
+	
 	emit_signal(&"grabbed", player)
 	health = max(health - attack_dmg * defense_mult, 1)
 	set_stun(-1)
