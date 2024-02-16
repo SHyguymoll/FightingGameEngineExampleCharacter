@@ -73,26 +73,34 @@ var inputs
 func _post_intro() -> bool:
 	return true
 
+
 func _post_outro() -> bool:
 	return true
+
 
 func _in_defeated_state() -> bool:
 	return true
 
+
 func _in_outro_state() -> bool:
 	return true
+
 
 func _in_attacking_state() -> bool:
 	return true
 
+
 func _in_hurting_state() -> bool:
 	return true
+
 
 func _in_grabbed_state() -> bool:
 	return true
 
+
 func _return_attackers():
 	return []
+
 
 func _input_step(recv_inputs) -> void:
 	inputs = recv_inputs
@@ -113,6 +121,7 @@ func _on_block(_on_block_data : Array):
 func _damage_step(_attack : Hitbox) -> bool:
 	return true
 
+
 func _initialize_boxes() -> void:
 	if player:
 		$Hurtbox.collision_mask = 2
@@ -125,17 +134,22 @@ func _initialize_boxes() -> void:
 func btn_state(input: String, ind: int):
 	return inputs[input][ind]
 
+
 func btn_pressed_ind(input: String, ind: int):
 	return btn_state(input, ind)[1]
+
 
 func btn_pressed(input: String):
 	return btn_pressed_ind(input, -1)
 
+
 func btn_just_pressed(input: String):
 	return btn_pressed_ind_under_time(input, -1, JUST_PRESSED_BUFFER)
 
+
 func btn_pressed_ind_under_time(input: String, ind: int, duration: int):
 	return btn_state(input, ind)[0] < duration and btn_pressed_ind(input, ind)
+
 
 func btn_held_over_time(input: String, duration: int):
 	return btn_state(input, -1)[0] >= duration and btn_pressed(input)
