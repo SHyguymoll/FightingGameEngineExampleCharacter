@@ -123,17 +123,22 @@ func _ready():
 	animate.play(basic_anim_state_dict[current_state] + 
 			(animate.anim_right_suf if right_facing else animate.anim_left_suf))
 
+
 func _post_intro() -> bool:
 	return current_state != states.intro
+
 
 func _post_outro() -> bool:
 	return (current_state in [states.round_win, states.set_win] and not animate.is_playing())
 
+
 func _in_defeated_state() -> bool:
 	return current_state == states.outro_lie
 
+
 func _in_outro_state() -> bool:
 	return current_state in [states.outro_fall, states.outro_bounce, states.outro_lie]
+
 
 func _in_attacking_state() -> bool:
 	return current_state in [
@@ -144,14 +149,17 @@ func _in_attacking_state() -> bool:
 		states.jump_attack,
 	]
 
+
 func _in_hurting_state() -> bool:
 	return current_state in [
 		states.hurt_high, states.hurt_low, states.hurt_crouch,
 		states.hurt_grabbed, states.hurt_fall, states.hurt_bounce,
 	]
 
+
 func _in_grabbed_state() -> bool:
 	return current_state == states.hurt_grabbed
+
 
 func in_air_state() -> bool:
 	return current_state in [
@@ -161,11 +169,14 @@ func in_air_state() -> bool:
 		states.block_air, states.hurt_bounce, states.hurt_fall,
 	]
 
+
 func in_crouching_state() -> bool:
 	return current_state in [states.crouch, states.hurt_crouch, states.block_low]
 
+
 func in_dashing_state() -> bool:
 	return current_state in [states.dash_back, states.dash_forward]
+
 
 func _process(_delta):
 	$DebugData.text = """Right Facing: %s
@@ -222,6 +233,7 @@ func update_velocity(vel : Vector3, how : av_effects):
 		av_effects.SET_Y:
 			velocity.y = vel.y
 
+
 func create_hitbox(pos : Vector3, hitbox_name : String):
 	var new_hitbox := (hitboxes[hitbox_name].instantiate() as Hitbox)
 	if not right_facing:
@@ -231,6 +243,7 @@ func create_hitbox(pos : Vector3, hitbox_name : String):
 	new_hitbox.damage_block *= damage_mult
 	new_hitbox.damage_hit *= damage_mult
 	emit_signal(&"hitbox_created", new_hitbox)
+
 
 func create_projectile(pos : Vector3, projectile_name : String, type : int):
 	var new_projectile := (projectiles[projectile_name].instantiate() as Projectile)
@@ -245,12 +258,15 @@ func create_projectile(pos : Vector3, projectile_name : String, type : int):
 	new_projectile.get_node(^"Hitbox").damage_hit *= damage_mult
 	emit_signal(&"projectile_created", new_projectile)
 
+
 func release_grab():
 	emit_signal("releasing_grab", player)
+
 
 func add_meter(add_to_meter : float):
 	meter = min(meter + add_to_meter, METER_MAX)
 	(ui_elements[0] as TextureProgressBar).value = meter
+
 
 func set_state(new_state: states):
 	if current_state != new_state:
@@ -265,6 +281,7 @@ func set_stun(value):
 	GlobalKnowledge.global_hitstop = int(abs(value)/4)
 	stun_time_current = stun_time_start + 1 if stun_time_start != INFINITE_STUN else INFINITE_STUN
 
+
 func reduce_stun():
 	if stun_time_start != INFINITE_STUN:
 		stun_time_current = max(0, stun_time_current - 1)
@@ -274,17 +291,21 @@ var current_attack : String
 func ground_cancelled_attack_ended() -> bool:
 	return is_on_floor()
 
+
 func update_attack(new_attack: String) -> void:
 	current_attack = new_attack
 	animation_ended = false
 	attack_connected = false
 	attack_hurt = false
 
+
 func any_atk_just_pressed():
 	return btn_just_pressed("button0") or btn_just_pressed("button1") or btn_just_pressed("button2")
 
+
 func all_atk_just_pressed():
 	return btn_just_pressed("button0") and btn_just_pressed("button1") and btn_just_pressed("button2")
+
 
 func two_atk_just_pressed():
 	return (
@@ -292,6 +313,7 @@ func two_atk_just_pressed():
 			int(btn_just_pressed("button1")) +
 			int(btn_just_pressed("button2")) == 2
 	)
+
 
 func one_atk_just_pressed():
 	return (
@@ -350,6 +372,7 @@ func try_super_attack(cur_state: states) -> states:
 				return states.attack_motion
 	return cur_state
 
+
 func try_special_attack(cur_state: states) -> states:
 	match current_state:
 		states.idle, states.walk_back, states.walk_forward, states.attack_normal:
@@ -372,6 +395,7 @@ func try_special_attack(cur_state: states) -> states:
 				jump_count = 0
 				return states.attack_motion
 	return cur_state
+
 
 func try_attack(cur_state: states) -> states:
 	if (
@@ -429,6 +453,7 @@ func try_attack(cur_state: states) -> states:
 	# how did we get here, something has gone terribly wrong
 	return states.intro
 
+
 func magic_series(level: int):
 	if level == 3:
 		return
@@ -466,6 +491,7 @@ func try_walk(exclude, cur_state: states) -> states:
 					return states.walk_back
 	return cur_state
 
+
 func try_dash(input: String, success_state: states, cur_state: states) -> states:
 # we only need the last three inputs
 	var walks = [
@@ -478,6 +504,7 @@ func try_dash(input: String, success_state: states, cur_state: states) -> states
 		animation_ended = false
 		return success_state
 	return cur_state
+
 
 func try_jump(exclude, cur_state: states, grounded := true) -> states:
 	if (
@@ -501,6 +528,7 @@ func try_jump(exclude, cur_state: states, grounded := true) -> states:
 					return states.jump_neutral_init if grounded else states.jump_neutral_air_init
 	return cur_state
 
+
 func directions_as_numpad(up, down, back, forward) -> int:
 	if up:
 		if back and right_facing or forward and not right_facing:
@@ -519,6 +547,7 @@ func directions_as_numpad(up, down, back, forward) -> int:
 	if forward and right_facing or back and not right_facing:
 		return 6
 	return 5
+
 
 func inputs_as_numpad(timing := true) -> Array:
 	var numpad_buffer = []
@@ -553,6 +582,7 @@ func inputs_as_numpad(timing := true) -> Array:
 		)
 	return numpad_buffer
 
+
 func motion_input_check(motions_to_check) -> bool:
 	var buffer_as_numpad = inputs_as_numpad()
 	for motion_to_check in motions_to_check:
@@ -560,6 +590,7 @@ func motion_input_check(motions_to_check) -> bool:
 		if buffer_sliced == motion_to_check:
 			return true
 	return false
+
 
 func handle_input() -> void:
 	var decision : states = current_state
@@ -609,10 +640,12 @@ func handle_input() -> void:
 					decision = try_special_attack(decision)
 	set_state(decision)
 
+
 func handle_stand_stun():
 	if stun_time_current == 0:
 		var new_walk = try_walk(null, current_state)
 		set_state(new_walk)
+
 
 func handle_air_stun():
 	if stun_time_current > 0:
@@ -621,6 +654,7 @@ func handle_air_stun():
 #		handle_stand_stun(buffer)
 		var new_walk = try_walk(null, current_state)
 		set_state(new_walk)
+
 
 func update_character_state():
 	match current_state:
@@ -675,6 +709,7 @@ func update_character_state():
 	check_true = move_and_slide()
 	if velocity.y < 0 and is_on_floor():
 		velocity.y = 0
+
 
 func resolve_state_transitions():
 	# complete jump bug fix
@@ -771,6 +806,7 @@ func resolve_state_transitions():
 				var new_walk = try_walk(null, current_state)
 				set_state(new_walk)
 
+
 func update_character_animation():
 	if _in_attacking_state():
 		animate.play(current_attack + (animate.anim_right_suf if right_facing else animate.anim_left_suf))
@@ -795,6 +831,7 @@ func update_character_animation():
 			_:
 				animate.play(basic_anim_state_dict[current_state] + (animate.anim_right_suf if right_facing else animate.anim_left_suf))
 
+
 func reset_facing():
 	if distance < 0:
 		right_facing = true
@@ -806,6 +843,7 @@ func reset_facing():
 # Functions called directly by the game
 func _return_attackers():
 	return $Hurtbox.get_overlapping_areas() as Array[Hitbox]
+
 
 func _input_step(recv_inputs) -> void:
 	inputs = recv_inputs
@@ -826,6 +864,7 @@ func _on_hit(on_hit_data : Array):
 # Ditto, but for after resolving that the opposing fighter blocked the attack.
 func _on_block(on_block_data : Array):
 	add_meter(on_block_data[0])
+
 
 func handle_damage(attack : Hitbox, blocked : bool, next_state : states):
 	if not blocked:
@@ -897,6 +936,7 @@ func try_block(attack : Hitbox,
 				return true
 		handle_damage(attack, true, states.block_air)
 		return false
+
 
 func try_grab(attack_dmg: float, on_ground : bool) -> bool:
 	if in_crouching_state():
