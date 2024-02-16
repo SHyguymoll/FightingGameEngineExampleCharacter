@@ -7,7 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://cmrs4t7t5guny" path="res://GodotGuy/sounds/crouch_c_launch.wav" id="3_sx7kg"]
 [ext_resource type="PackedScene" uid="uid://bheinqfnk6wxk" path="res://GodotGuy/scenes/SuperBarP2.tscn" id="3_yl6a6"]
 [ext_resource type="PackedScene" uid="uid://bjnhblqpyw7vp" path="res://GodotGuy/scenes/SuperBarTrainingModeP1.tscn" id="4_m71sm"]
-[ext_resource type="Script" path="res://GodotGuy/scenes/DupliFlipping2DAnimationPlayer.gd" id="5_e82io"]
+[ext_resource type="Script" path="res://GodotGuy/scenes/dupli_flipping_2d_animation_player.gd" id="5_e82io"]
 [ext_resource type="PackedScene" uid="uid://deergjaym2msh" path="res://GodotGuy/scenes/SuperBarTrainingModeP2.tscn" id="5_fjkep"]
 [ext_resource type="AudioStream" uid="uid://5sfxgcwubvsw" path="res://GodotGuy/sounds/step.wav" id="5_wtfc2"]
 [ext_resource type="PackedScene" uid="uid://b3qx5aofxylc7" path="res://Test Character/GrabPoint.tscn" id="7_eysur"]
@@ -4223,13 +4223,13 @@ collision_mask = 0
 monitorable = false
 
 [node name="HurtboxShape" type="CollisionShape3D" parent="Hurtbox"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.642, 0)
-shape = ExtResource("3_8q5n8")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.344, 0)
+shape = ExtResource("2_ahw0y")
 
 [node name="Grabbing" parent="." instance=ExtResource("7_eysur")]
 
 [node name="SpriteMain" type="Sprite3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67, 0)
+transform = Transform3D(1, 0, 0, 0, 0.776615, 0, 0, 0, 1, 0, 0.529186, 0)
 rotation_edit_mode = 1
 no_depth_test = true
 texture = ExtResource("14_03fpi")

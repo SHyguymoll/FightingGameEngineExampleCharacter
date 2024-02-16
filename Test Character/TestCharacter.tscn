@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://cd77r01gxs0ud"]
 
-[ext_resource type="Script" path="res://Test Character/Game.gd" id="1_a16kr"]
+[ext_resource type="Script" path="res://Test Character/game.gd" id="1_a16kr"]
 [ext_resource type="FontFile" uid="uid://b3yiy4ulnirtc" path="res://Test Character/TestHUD/PlayerFont.ttf" id="2_jjmwk"]
 [ext_resource type="PackedScene" uid="uid://kquoyj34deus" path="res://GodotGuy/scenes/GodotGuy.tscn" id="2_qa73f"]
 [ext_resource type="PackedScene" uid="uid://cx7pdgv0mhddt" path="res://Test Character/BlankStage.tscn" id="3_21y52"]

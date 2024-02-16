@@ -1,8 +1,8 @@
 [gd_scene load_steps=13 format=3 uid="uid://56a0waewlr2t"]
 
-[ext_resource type="Script" path="res://GodotGuy/scenes/ProjectileStraight.gd" id="1_up6mg"]
+[ext_resource type="Script" path="res://GodotGuy/scenes/projectile_straight.gd" id="1_up6mg"]
 [ext_resource type="Texture2D" uid="uid://dnp3cp2qqpsg1" path="res://GodotGuy/icon.svg" id="2_1jtyo"]
-[ext_resource type="Script" path="res://GodotGuy/scenes/HitboxScript.gd" id="3_08xxv"]
+[ext_resource type="Script" path="res://GodotGuy/scenes/hitbox.gd" id="3_08xxv"]
 [ext_resource type="AudioStream" uid="uid://7arkj6kc7el8" path="res://GodotGuy/sounds/atk_projectile.wav" id="4_rix0r"]
 [ext_resource type="AudioStream" uid="uid://5hk5x5uxbevg" path="res://GodotGuy/sounds/atk_blocked.wav" id="5_6t4oa"]
 

@@ -72,14 +72,14 @@ func make_hud():
 	$HUD/HealthAndTime/P1Group/NameAndPosVel/Char.text = p1.char_name
 	$HUD/HealthAndTime/P1Group/NameAndPosVel/PosVel.text = str(p1.position) + "\n" + str(p1.velocity)
 	$HUD/P1Stats/State.text = p1.states.keys()[p1.current_state]
-	
+
 	# player 2
 	$HUD/HealthAndTime/P2Group/Health.max_value = p2.health
 	$HUD/HealthAndTime/P2Group/Health.value = p2.health
 	$HUD/HealthAndTime/P2Group/NameAndPosVel/Char.text = p2.char_name
 	$HUD/HealthAndTime/P2Group/NameAndPosVel/PosVel.text = str(p2.position) + "\n" + str(p2.velocity)
 	$HUD/P2Stats/State.text = p2.states.keys()[p2.current_state]
-	
+
 	# set up rounds
 	for n in range(GlobalKnowledge.win_threshold):
 		var p1_round = round_element.instantiate()
@@ -102,7 +102,7 @@ func make_hud():
 				($HUD/HealthAndTime/P2Group/Rounds.get_node(str(n)) as RoundElement).unfulfill()
 			for n in range(GlobalKnowledge.p2_wins, -1, -1):
 				($HUD/HealthAndTime/P1Group/Rounds.get_node(str(n)) as RoundElement).unfulfill()
-	
+
 	# game itself
 	$HUD/Fight.visible = false
 	$HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthReset.min_value = 1
@@ -122,7 +122,7 @@ func update_hud():
 		$HUD/P1Stats/State.text += " : " + p1.current_attack
 	$HUD/HealthAndTime/P1Group/NameAndPosVel/PosVel.text = str(p1.position) + "\n" + str(p1.velocity)
 	$HUD/P1Stats/Combo.text = str(p1_combo)
-	
+
 	# player 2
 	$HUD/HealthAndTime/P2Group/Health.value = p2.health
 	$HUD/P2Stats/State.text = p2.states.keys()[p2.current_state]
@@ -130,7 +130,7 @@ func update_hud():
 		$HUD/P2Stats/State.text += " : " + p2.current_attack
 	$HUD/HealthAndTime/P2Group/NameAndPosVel/PosVel.text = str(p2.position) + "\n" + str(p2.velocity)
 	$HUD/P2Stats/Combo.text = str(p2_combo)
-	
+
 	# training
 	$HUD/TrainingModeControls/P2Controls/HBoxContainer/RecordStatus.text = "%s/%s %s" % [record_buffer_current, len(player_record_buffer), "PLY" if replay else ("REC" if record else "STP")]
 
@@ -153,7 +153,7 @@ func init_fighters():
 		$HUD/TrainingModeControlsSpecial/P1Controls.add_child(element)
 	p1.grabbed_point = grab_point.instantiate()
 	add_child(p1.grabbed_point)
-	
+
 	for i in range(p2.BUTTONCOUNT):
 		p2_inputs["button" + str(i)] = [[0, false]]
 	p2.player = false
@@ -172,7 +172,7 @@ func init_fighters():
 		$HUD/TrainingModeControlsSpecial/P2Controls.add_child(element)
 	p2.grabbed_point = grab_point.instantiate()
 	add_child(p2.grabbed_point)
-	
+
 	p1.position.x = clamp(p1.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
 	p2.position.x = clamp(p2.position.x, -MOVEMENTBOUNDX, MOVEMENTBOUNDX)
 	p1.distance = p1.position.x - p2.position.x
@@ -267,7 +267,7 @@ func slice_input_dictionary(input_dict: Dictionary, from: int, to: int):
 func generate_input_hud(buf : Dictionary, input_label : Label):
 	var lookup_string := ""
 	var dirs := ["up", "down", "left", "right"]
-	
+
 	input_label.text = ""
 	for i in range(len(buf.up)):
 		lookup_string = ""
@@ -321,7 +321,7 @@ func generate_prior_input_hash(player_inputs: Dictionary):
 		(int(player_inputs.get("button4", fail_case)[-1][1]) * 256) +
 		(int(player_inputs.get("button5", fail_case)[-1][1]) * 512)
 	)
-	
+
 
 func increment_inputs(player_inputs: Dictionary):
 	for inp in player_inputs:
@@ -353,23 +353,23 @@ func button_inputs(prefix : String, button_count : int) -> Array:
 func create_inputs():
 	p1_buttons = directional_inputs("first") + button_inputs("first", p1.BUTTONCOUNT)
 	p2_buttons = directional_inputs("second") + button_inputs("second", p2.BUTTONCOUNT)
-	
+
 	if record:
 		player_record_buffer.append(p2_buttons.duplicate())
-	
+
 	if not record and not replay and Input.is_action_just_pressed("training_replay"):
 		replay = true
-	
+
 	if generate_prior_input_hash(p1_inputs) != generate_current_input_hash(p1_buttons, p1.BUTTONCOUNT):
 		create_new_input_set(p1_inputs, p1_buttons)
 		p1_input_index += 1
 	else:
 		increment_inputs(p1_inputs)
-	
+
 	if replay and record_buffer_current == len(player_record_buffer):
 		replay = false
 		record_buffer_current = 0
-	
+
 	if not replay:
 		if generate_prior_input_hash(p2_inputs) != generate_current_input_hash(p2_buttons, p2.BUTTONCOUNT):
 			create_new_input_set(p2_inputs, p2_buttons)
@@ -393,7 +393,7 @@ func create_dummy_buffer(button_count : int):
 	}
 	for i in range(button_count):
 		dummy_buffer["button" + str(i)] = [[0, false]]
-	
+
 	return dummy_buffer
 
 func move_inputs_and_iterate(fake_inputs):
@@ -401,7 +401,7 @@ func move_inputs_and_iterate(fake_inputs):
 		p1._input_step(create_dummy_buffer(p1.BUTTONCOUNT))
 		p2._input_step(create_dummy_buffer(p2.BUTTONCOUNT))
 		return
-	
+
 	var p1_buf = slice_input_dictionary(
 		p1_inputs, max(0, p1_input_index - p1.input_buffer_len),
 		p1_input_index + 1
@@ -412,7 +412,7 @@ func move_inputs_and_iterate(fake_inputs):
 		p2_input_index + 1
 	)
 	build_input_tracker(p1_buf, p2_buf)
-	
+
 	if not fake_inputs:
 		var p1_attackers = (p1._return_attackers() as Array[Hitbox])
 		for p1_attacker in p1_attackers:
@@ -429,7 +429,7 @@ func move_inputs_and_iterate(fake_inputs):
 				p2.attack_hurt = false
 				p2._on_block(p1_attacker.on_block)
 			p1_attacker.queue_free()
-		
+
 		var p2_attackers = (p2._return_attackers() as Array[Hitbox])
 		for p2_attacker in p2_attackers:
 			var hit = p2._damage_step(p2_attacker)
@@ -445,7 +445,7 @@ func move_inputs_and_iterate(fake_inputs):
 				p1.attack_hurt = false
 				p1._on_block(p2_attacker.on_block)
 			p2_attacker.queue_free()
-	
+
 	p1._input_step(p1_buf)
 	p2._input_step(p2_buf)
 

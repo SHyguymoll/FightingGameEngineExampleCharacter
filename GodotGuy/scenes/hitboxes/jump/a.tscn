@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dftx6jvll0nl3"]
 
-[ext_resource type="Script" path="res://GodotGuy/scenes/HitboxScript.gd" id="1_j8rl8"]
+[ext_resource type="Script" path="res://GodotGuy/scenes/hitbox.gd" id="1_j8rl8"]
 [ext_resource type="AudioStream" uid="uid://5hk5x5uxbevg" path="res://GodotGuy/sounds/atk_blocked.wav" id="2_4j181"]
 [ext_resource type="AudioStream" uid="uid://dhcm8ougcdxe" path="res://GodotGuy/sounds/atk_light.wav" id="2_24usw"]
 
