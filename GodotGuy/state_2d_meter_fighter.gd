@@ -93,6 +93,8 @@ func training_mode_set_meter(val):
 	"uppercut": preload("res://GodotGuy/scenes/hitboxes/special/uppercut.tscn"),
 	"grab": preload("res://GodotGuy/scenes/hitboxes/stand/grab.tscn"),
 	"grab_followup": preload("res://GodotGuy/scenes/hitboxes/stand/grab_followup.tscn"),
+	"spin_approach": preload("res://GodotGuy/scenes/hitboxes/special/spin_approach.tscn"),
+	"spin_approach_final": preload("res://GodotGuy/scenes/hitboxes/special/spin_approach_final.tscn"),
 }
 @onready var projectiles = {
 	"basic": preload("res://GodotGuy/scenes/ProjectileStraight.tscn")
@@ -210,6 +212,8 @@ var attack_return_state := {
 	"attack_command/crouch_c": states.crouch,
 	"attack_motion/projectile": states.idle,
 	"attack_motion/uppercut": states.jump_neutral_no_act,
+	"attack_motion/spin_approach": states.jump_neutral_no_act,
+	"attack_motion/spin_approach_air": states.jump_neutral_no_act,
 }
 
 var grab_return_states := {
@@ -404,17 +408,22 @@ func try_special_attack(cur_state: states) -> states:
 			if motion_input_check(QUARTER_CIRCLE_FORWARD) and one_atk_just_pressed():
 				update_attack("attack_motion/projectile")
 				return states.attack_motion
+			if motion_input_check(QUARTER_CIRCLE_BACK) and one_atk_just_pressed():
+				update_attack("attack_motion/spin_approach")
+				return states.attack_motion
 		states.crouch:
 			if motion_input_check(Z_MOTION_FORWARD) and one_atk_just_pressed():
 				update_attack("attack_motion/uppercut")
 				jump_count = 0
 				return states.attack_motion
 		states.jump_neutral, states.jump_left, states.jump_right:
-			if (
-					motion_input_check(QUARTER_CIRCLE_FORWARD + TIGER_KNEE_FORWARD) and
+			if (motion_input_check(QUARTER_CIRCLE_FORWARD + TIGER_KNEE_FORWARD) and
 					one_atk_just_pressed()):
 				update_attack("attack_motion/projectile_air")
 				jump_count = 0
+				return states.attack_motion
+			if motion_input_check(QUARTER_CIRCLE_BACK) and one_atk_just_pressed():
+				update_attack("attack_motion/spin_approach_air")
 				return states.attack_motion
 
 	return cur_state
