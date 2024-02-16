@@ -121,7 +121,7 @@ var previous_state : states
 func _ready():
 	reset_facing()
 	animate.play(basic_anim_state_dict[current_state] + 
-		(animate.anim_right_suf if right_facing else animate.anim_left_suf))
+			(animate.anim_right_suf if right_facing else animate.anim_left_suf))
 
 func _post_intro() -> bool:
 	return current_state != states.intro
@@ -136,12 +136,18 @@ func _in_outro_state() -> bool:
 	return current_state in [states.outro_fall, states.outro_bounce, states.outro_lie]
 
 func _in_attacking_state() -> bool:
-	return current_state in [states.attack_normal, states.attack_command, states.attack_motion, states.jump_attack]
+	return current_state in [
+		states.attack_normal,
+		states.attack_command,
+		states.attack_motion,
+		states.attack_grab,
+		states.jump_attack
+	]
 
 func _in_hurting_state() -> bool:
 	return current_state in [
-		states.hurt_high, states.hurt_low, states.hurt_crouch, states.hurt_grabbed,
-		states.hurt_fall, states.hurt_bounce
+		states.hurt_high, states.hurt_low, states.hurt_crouch,
+		states.hurt_grabbed, states.hurt_fall, states.hurt_bounce
 	]
 
 func _in_grabbed_state() -> bool:
@@ -282,16 +288,16 @@ func all_atk_just_pressed():
 
 func two_atk_just_pressed():
 	return (
-		int(btn_just_pressed("button0")) +
-		int(btn_just_pressed("button1")) +
-		int(btn_just_pressed("button2")) == 2
+			int(btn_just_pressed("button0")) +
+			int(btn_just_pressed("button1")) +
+			int(btn_just_pressed("button2")) == 2
 	)
 
 func one_atk_just_pressed():
 	return (
-		int(btn_just_pressed("button0")) + 
-		int(btn_just_pressed("button1")) + 
-		int(btn_just_pressed("button2")) == 1
+			int(btn_just_pressed("button0")) + 
+			int(btn_just_pressed("button1")) + 
+			int(btn_just_pressed("button2")) == 1
 	)
 
 # defining the motion inputs, with some leniency
@@ -309,9 +315,25 @@ const Z_MOTION_FORWARD = [
 	[6,5,4,1,2,3], #forward to one away from a half circle
 	[6,5,4,1,2,3,6], #forward to a half circle, maximumly lenient
 ]
-const Z_MOTION_BACK = [[4,2,1], [4,5,2,1], [4,1,2,3], [4,1,2,3,2,1], [4,5,3,2,1], [4,5,6,3,2,1], [4,5,6,3,2,1,4]]
+const Z_MOTION_BACK = [
+	[4,2,1],
+	[4,5,2,1],
+	[4,1,2,3],
+	[4,1,2,3,2,1],
+	[4,5,3,2,1],
+	[4,5,6,3,2,1],
+	[4,5,6,3,2,1,4]
+]
 
-const GG_INPUT = [[6,3,2,1,4,6], [6,3,2,1,4,5,6], [6,2,1,4,6], [6,2,4,5,6], [6,2,1,4,5,6]]
+# Name is a reference to the common Guilty Gear Overdrive input of a half circle back to forward
+const GG_INPUT = [
+	[6,3,2,1,4,6],
+	[6,3,2,1,4,5,6],
+	[6,2,1,4,6],
+	[6,2,4,6],
+	[6,2,4,5,6],
+	[6,2,1,4,5,6]
+]
 
 func try_super_attack(cur_state: states) -> states:
 	match current_state:
@@ -330,7 +352,7 @@ func try_super_attack(cur_state: states) -> states:
 
 func try_special_attack(cur_state: states) -> states:
 	match current_state:
-		states.idle, states.walk_back, states.walk_forward:
+		states.idle, states.walk_back, states.walk_forward, states.attack_normal:
 			#check z_motion first since there's a lot of overlap with quarter_circle on extreme cases
 			if motion_input_check(Z_MOTION_FORWARD) and one_atk_just_pressed():
 				update_attack("attack_motion/uppercut")
@@ -353,9 +375,9 @@ func try_special_attack(cur_state: states) -> states:
 
 func try_attack(cur_state: states) -> states:
 	if (
-		!btn_just_pressed("button0") and
-		!btn_just_pressed("button1") and
-		!btn_just_pressed("button2")
+			!btn_just_pressed("button0") and
+			!btn_just_pressed("button1") and
+			!btn_just_pressed("button2")
 	):
 		return cur_state
 	
@@ -422,11 +444,11 @@ func magic_series(level: int):
 #returns -1 (walk away), 0 (neutral), and 1 (walk towards)
 func walk_value() -> int:
 	return (
-		(1 * int((btn_pressed("right") and right_facing) or
+			(1 * int((btn_pressed("right") and right_facing) or
 			(btn_pressed("left") and !right_facing))) +
-		(-1 * int((btn_pressed("left") and right_facing) or
+			(-1 * int((btn_pressed("left") and right_facing) or
 			(btn_pressed("right") and !right_facing))
-		)
+			)
 	)
 
 enum walk_directions {back = -1, neutral = 0, forward = 1}
@@ -458,7 +480,10 @@ func try_dash(input: String, success_state: states, cur_state: states) -> states
 	return cur_state
 
 func try_jump(exclude, cur_state: states, grounded := true) -> states:
-	if (btn_pressed("up") and grounded) or (btn_just_pressed("up") and not grounded) and jump_count > 0:
+	if (
+			(btn_pressed("up") and grounded) or
+			(btn_just_pressed("up") and not grounded) and jump_count > 0
+	):
 		var dir = walk_value()
 		if dir != exclude:
 			match dir:
@@ -500,10 +525,10 @@ func inputs_as_numpad(timing := true) -> Array:
 	for i in range(max(0, len(inputs.up) - 2)):
 		numpad_buffer.append(
 			directions_as_numpad(
-				btn_pressed_ind("up", i),
-				btn_pressed_ind("down", i),
-				btn_pressed_ind("left", i),
-				btn_pressed_ind("right", i)
+					btn_pressed_ind("up", i),
+					btn_pressed_ind("down", i),
+					btn_pressed_ind("left", i),
+					btn_pressed_ind("right", i)
 			)
 		)
 	if max(0, len(inputs.up) - 2) == 0:
@@ -511,19 +536,19 @@ func inputs_as_numpad(timing := true) -> Array:
 	if timing:
 		numpad_buffer.append(
 			directions_as_numpad(
-				btn_pressed_ind_under_time("up", -2, MOTION_INPUT_LENIENCY),
-				btn_pressed_ind_under_time("down", -2, MOTION_INPUT_LENIENCY),
-				btn_pressed_ind_under_time("left", -2, MOTION_INPUT_LENIENCY),
-				btn_pressed_ind_under_time("right", -2, MOTION_INPUT_LENIENCY)
+					btn_pressed_ind_under_time("up", -2, MOTION_INPUT_LENIENCY),
+					btn_pressed_ind_under_time("down", -2, MOTION_INPUT_LENIENCY),
+					btn_pressed_ind_under_time("left", -2, MOTION_INPUT_LENIENCY),
+					btn_pressed_ind_under_time("right", -2, MOTION_INPUT_LENIENCY)
 			)
 		)
 	else:
 		numpad_buffer.append(
 			directions_as_numpad(
-				btn_pressed_ind("up", -2),
-				btn_pressed_ind("down", -2),
-				btn_pressed_ind("left", -2),
-				btn_pressed_ind("right", -2)
+					btn_pressed_ind("up", -2),
+					btn_pressed_ind("down", -2),
+					btn_pressed_ind("left", -2),
+					btn_pressed_ind("right", -2)
 			)
 		)
 	return numpad_buffer
