@@ -1,5 +1,6 @@
 [gd_scene load_steps=80 format=3 uid="uid://kquoyj34deus"]
 
+[ext_resource type="Script" path="res://GodotGuy/state_2d_meter_fighter.gd" id="1_5p4re"]
 [ext_resource type="Shape3D" uid="uid://dlbbd7lyja2p6" path="res://GodotGuy/hurtbox_shapes/crouch_shape.tres" id="2_ahw0y"]
 [ext_resource type="PackedScene" uid="uid://crglsjvtvqvim" path="res://GodotGuy/scenes/SuperBarP1.tscn" id="2_xjhia"]
 [ext_resource type="Shape3D" uid="uid://bs5a4315bo07p" path="res://GodotGuy/hurtbox_shapes/base_shape.tres" id="3_8q5n8"]
@@ -11,7 +12,6 @@
 [ext_resource type="AudioStream" uid="uid://5sfxgcwubvsw" path="res://GodotGuy/sounds/step.wav" id="5_wtfc2"]
 [ext_resource type="PackedScene" uid="uid://b3qx5aofxylc7" path="res://Test Character/GrabPoint.tscn" id="7_eysur"]
 [ext_resource type="Texture2D" uid="uid://dnp3cp2qqpsg1" path="res://GodotGuy/icon.svg" id="14_03fpi"]
-[ext_resource type="Script" path="res://GodotGuy/MainScript.gd" id="53"]
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1cfsu"]
 
@@ -4154,7 +4154,7 @@ size = Vector3(1.45025, 1.28207, 1)
 [node name="GodotGuy" type="CharacterBody3D" node_paths=PackedStringArray("animate", "grab_point")]
 collision_layer = 0
 axis_lock_linear_z = true
-script = ExtResource("53")
+script = ExtResource("1_5p4re")
 animate = NodePath("AnimationPlayer")
 char_name = "Godot Guy"
 health = 100.0
