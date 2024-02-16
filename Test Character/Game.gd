@@ -70,48 +70,54 @@ func make_hud():
 	$HUD/HealthAndTime/P1Group/Health.max_value = p1.health
 	$HUD/HealthAndTime/P1Group/Health.value = p1.health
 	$HUD/HealthAndTime/P1Group/NameAndPosVel/Char.text = p1.char_name
-	$HUD/HealthAndTime/P1Group/NameAndPosVel/PosVel.text = str(p1.position) + "\n" + str(p1.velocity)
+	$HUD/HealthAndTime/P1Group/NameAndPosVel/PosVel.text = (
+			str(p1.position) + "\n" + str(p1.velocity))
 	$HUD/P1Stats/State.text = p1.states.keys()[p1.current_state]
 
 	# player 2
 	$HUD/HealthAndTime/P2Group/Health.max_value = p2.health
 	$HUD/HealthAndTime/P2Group/Health.value = p2.health
 	$HUD/HealthAndTime/P2Group/NameAndPosVel/Char.text = p2.char_name
-	$HUD/HealthAndTime/P2Group/NameAndPosVel/PosVel.text = str(p2.position) + "\n" + str(p2.velocity)
+	$HUD/HealthAndTime/P2Group/NameAndPosVel/PosVel.text = (
+			str(p2.position) + "\n" + str(p2.velocity))
 	$HUD/P2Stats/State.text = p2.states.keys()[p2.current_state]
 
 	# set up rounds
+	var p1_round_group = $HUD/HealthAndTime/P1Group/Rounds
+	var p2_round_group = $HUD/HealthAndTime/P2Group/Rounds
 	for n in range(GlobalKnowledge.win_threshold):
 		var p1_round = round_element.instantiate()
 		p1_round.name = str(n)
-		$HUD/HealthAndTime/P1Group/Rounds.add_child(p1_round)
+		p1_round_group.add_child(p1_round)
 		var p2_round = round_element.instantiate()
 		p2_round.name = str(n)
-		$HUD/HealthAndTime/P2Group/Rounds.add_child(p2_round)
+		p2_round_group.add_child(p2_round)
 	match round_change_behavior:
 		round_change_types.ADD:
 			for n in range(GlobalKnowledge.p1_wins):
-				($HUD/HealthAndTime/P1Group/Rounds.get_node(str(n)) as RoundElement).fulfill()
+				(p1_round_group.get_node(str(n)) as RoundElement).fulfill()
 			for n in range(GlobalKnowledge.p2_wins):
-				($HUD/HealthAndTime/P2Group/Rounds.get_node(str(n)) as RoundElement).fulfill()
+				(p2_round_group.get_node(str(n)) as RoundElement).fulfill()
 		round_change_types.REMOVE:
 			for n in range(GlobalKnowledge.win_threshold):
-				($HUD/HealthAndTime/P1Group/Rounds.get_node(str(n)) as RoundElement).fulfill()
-				($HUD/HealthAndTime/P2Group/Rounds.get_node(str(n)) as RoundElement).fulfill()
+				(p1_round_group.get_node(str(n)) as RoundElement).fulfill()
+				(p2_round_group.get_node(str(n)) as RoundElement).fulfill()
 			for n in range(GlobalKnowledge.p1_wins, -1, -1):
-				($HUD/HealthAndTime/P2Group/Rounds.get_node(str(n)) as RoundElement).unfulfill()
+				(p2_round_group.get_node(str(n)) as RoundElement).unfulfill()
 			for n in range(GlobalKnowledge.p2_wins, -1, -1):
-				($HUD/HealthAndTime/P1Group/Rounds.get_node(str(n)) as RoundElement).unfulfill()
+				(p1_round_group.get_node(str(n)) as RoundElement).unfulfill()
 
 	# game itself
 	$HUD/Fight.visible = false
-	$HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthReset.min_value = 1
-	$HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthReset.max_value = p1.health
-	$HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthReset.value = $HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthReset.max_value
+	var health_reset_hud = $HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthReset
+	health_reset_hud.min_value = 1
+	health_reset_hud.max_value = p1.health
+	health_reset_hud.value = health_reset_hud.max_value
 	$HUD/TrainingModeControls/P1Controls/HBoxContainer/HealthResetSwitch.set_pressed_no_signal(p1_reset_health_on_drop)
-	$HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthReset.min_value = 1
-	$HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthReset.max_value = p2.health
-	$HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthReset.value = $HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthReset.max_value
+	health_reset_hud = $HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthReset
+	health_reset_hud.min_value = 1
+	health_reset_hud.max_value = p2.health
+	health_reset_hud.value = health_reset_hud.max_value
 	$HUD/TrainingModeControls/P2Controls/HBoxContainer/HealthResetSwitch.set_pressed_no_signal(p2_reset_health_on_drop)
 
 func update_hud():
@@ -120,7 +126,8 @@ func update_hud():
 	$HUD/P1Stats/State.text = p1.states.keys()[p1.current_state]
 	if "attack" in $HUD/P1Stats/State.text:
 		$HUD/P1Stats/State.text += " : " + p1.current_attack
-	$HUD/HealthAndTime/P1Group/NameAndPosVel/PosVel.text = str(p1.position) + "\n" + str(p1.velocity)
+	$HUD/HealthAndTime/P1Group/NameAndPosVel/PosVel.text = (
+			str(p1.position) + "\n" + str(p1.velocity))
 	$HUD/P1Stats/Combo.text = str(p1_combo)
 
 	# player 2
@@ -128,11 +135,18 @@ func update_hud():
 	$HUD/P2Stats/State.text = p2.states.keys()[p2.current_state]
 	if "attack" in $HUD/P2Stats/State.text:
 		$HUD/P2Stats/State.text += " : " + p2.current_attack
-	$HUD/HealthAndTime/P2Group/NameAndPosVel/PosVel.text = str(p2.position) + "\n" + str(p2.velocity)
+	$HUD/HealthAndTime/P2Group/NameAndPosVel/PosVel.text = (
+			str(p2.position) + "\n" + str(p2.velocity))
 	$HUD/P2Stats/Combo.text = str(p2_combo)
 
 	# training
-	$HUD/TrainingModeControls/P2Controls/HBoxContainer/RecordStatus.text = "%s/%s %s" % [record_buffer_current, len(player_record_buffer), "PLY" if replay else ("REC" if record else "STP")]
+	$HUD/TrainingModeControls/P2Controls/HBoxContainer/RecordStatus.text = (
+		"%s/%s %s" % [
+			record_buffer_current,
+			len(player_record_buffer),
+			"PLY" if replay else ("REC" if record else "STP"),
+		]
+	)
 
 func init_fighters():
 	for i in range(p1.BUTTONCOUNT):
@@ -284,7 +298,8 @@ func generate_input_hud(buf : Dictionary, input_label : Label):
 				else:
 					input_label.text += ("| %s, x " % [str(buf[button][i][0])])
 			else:
-				input_label.text += ("| %s, %s " % [buf[button][i][0], ("Ø" if buf[button][i][1] else "0")])
+				input_label.text += (
+					"| %s, %s " % [buf[button][i][0], ("Ø" if buf[button][i][1] else "0")])
 		input_label.text += "\n"
 
 func build_input_tracker(p1_buf : Dictionary, p2_buf : Dictionary) -> void:
@@ -338,10 +353,14 @@ func create_new_input_set(player_inputs: Dictionary, new_inputs: Array):
 
 func directional_inputs(prefix: String) -> Array:
 	return [
-		Input.is_action_pressed(prefix + "_up") and not Input.is_action_pressed(prefix + "_down"),
-		Input.is_action_pressed(prefix + "_down") and not Input.is_action_pressed(prefix + "_up"),
-		Input.is_action_pressed(prefix + "_left") and not Input.is_action_pressed(prefix + "_right"),
-		Input.is_action_pressed(prefix + "_right") and not Input.is_action_pressed(prefix + "_left"),
+		(Input.is_action_pressed(prefix + "_up") and
+				not Input.is_action_pressed(prefix + "_down")),
+		(Input.is_action_pressed(prefix + "_down") and
+				not Input.is_action_pressed(prefix + "_up")),
+		(Input.is_action_pressed(prefix + "_left") and
+				not Input.is_action_pressed(prefix + "_right")),
+		(Input.is_action_pressed(prefix + "_right") and
+				not Input.is_action_pressed(prefix + "_left")),
 	]
 
 func button_inputs(prefix : String, button_count : int) -> Array:
@@ -360,7 +379,8 @@ func create_inputs():
 	if not record and not replay and Input.is_action_just_pressed("training_replay"):
 		replay = true
 
-	if generate_prior_input_hash(p1_inputs) != generate_current_input_hash(p1_buttons, p1.BUTTONCOUNT):
+	if generate_prior_input_hash(p1_inputs) != generate_current_input_hash(
+				p1_buttons, p1.BUTTONCOUNT):
 		create_new_input_set(p1_inputs, p1_buttons)
 		p1_input_index += 1
 	else:
