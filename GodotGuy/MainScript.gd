@@ -747,7 +747,7 @@ func resolve_state_transitions():
 				set_state(new_walk)
 
 func update_character_animation():
-	if current_state in [states.attack_normal, states.attack_command, states.attack_motion, states.attack_grab, states.jump_attack]:
+	if _in_attacking_state():
 		animate.play(current_attack + (animate.anim_right_suf if right_facing else animate.anim_left_suf))
 	else:
 		match current_state:
