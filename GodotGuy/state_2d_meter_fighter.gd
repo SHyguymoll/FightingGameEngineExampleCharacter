@@ -893,7 +893,7 @@ func resolve_state_transitions():
 					set_state(previous_state)
 		States.ATCK_GRAB:
 			if animation_ended:
-				update_attack(grab_return_states[current_attack][attack_connected])
+				update_attack(grab_return_states[current_attack][attack_hurt])
 				set_state(States.ATCK_NRML)
 		States.ATCK_JUMP:
 			if animation_ended:
