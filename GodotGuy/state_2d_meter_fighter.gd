@@ -1,87 +1,15 @@
 class_name State2DMeterFighter
 extends Fighter
 
-# This script defines a FSM-based Fighter with the following features:
-# 2D Movement
-# Dashing
-# Jump-Cancelling
-# The Magic Series (Stronger Attacks Cancel Weaker Attacks)
-# Special Cancelling
-# Super Meter
+## This script defines a FSM-based Fighter with the following features:
+## 2D Movement[br]
+## Dashing[br]
+## Jump-Cancelling[br]
+## The Magic Series (Stronger Attacks Cancel Weaker Attacks)[br]
+## Special Cancelling[br]
+## Super Meter[br]
 
-@export_category("Animation Details")
-@export var animate : FlippingAnimationPlayer
-@export var basic_anim_state_dict := {
-	States.INTRO : "other/intro",
-	States.ROUND_WIN : "other/win",
-	States.SET_WIN : "other/win",
-	States.IDLE : "basic/idle",
-	States.CRCH : "basic/crouch",
-	States.JUMP_R_I : "basic/jump", States.JUMP_L_I : "basic/jump",
-	States.JUMP_N_I : "basic/jump",
-	States.JUMP_R_A_I : "basic/jump", States.JUMP_L_A_I : "basic/jump",
-	States.JUMP_N_A_I : "basic/jump",
-	States.JUMP_R : "basic/jump", States.JUMP_L : "basic/jump",
-	States.JUMP_N : "basic/jump",
-	States.JUMP_R_NO_ACT : "basic/jump", States.JUMP_L_NO_ACT : "basic/jump",
-	States.JUMP_N_NO_ACT : "basic/jump",
-	States.BLCK_HGH : "blocking/high", States.BLCK_LOW : "blocking/low",
-	States.BLCK_AIR : "blocking/air",
-	States.HURT_HGH : "hurting/high", States.HURT_LOW : "hurting/low",
-	States.HURT_CRCH : "hurting/crouch",
-	States.HURT_GRB : "hurting/air",
-	States.HURT_FALL : "hurting/air", States.HURT_BNCE : "hurting/air",
-	States.HURT_LIE : "hurting/lying", States.GET_UP : "hurting/get_up",
-	States.OUTRO_FALL : "hurting/air", States.OUTRO_BNCE : "hurting/air",
-	States.OUTRO_LIE : "hurting/lying",
-}
-@export var animation_ended = true
-@export var move_left_anim : StringName = &"basic/walk_left"
-@export var move_right_anim : StringName = &"basic/walk_right"
-@export var dash_left_anim : StringName = &"basic/dash"
-@export var dash_right_anim : StringName = &"basic/dash"
-
-@export_category("Super Attack Meter")
-@export var meter : float = 0
-@export var METER_MAX : float= 100
-
-@export_category("Damage and Defense")
-@export var damage_mult : float = 1.0
-@export var defense_mult : float = 1.0
-
-@export_category("Movement")
-@export var walk_speed : float = 2
-@export var jump_total : int = 2
-var jump_count : int = 0
-@export var jump_height : float = 11
-@export var gravity : float = -0.5
-@export var min_fall_vel : float = -6.5
-@export var GROUND_SLIDE_FRICTION : float = 0.97
-var record_y : float
-var check_true : bool # Used to remember results of move_and_slide()
-var right_facing : bool
-
-@onready var hitboxes = {
-	"stand_a": preload("res://GodotGuy/scenes/hitboxes/stand/a.tscn"),
-	"stand_b": preload("res://GodotGuy/scenes/hitboxes/stand/b.tscn"),
-	"stand_c": preload("res://GodotGuy/scenes/hitboxes/stand/c.tscn"),
-	"crouch_a": preload("res://GodotGuy/scenes/hitboxes/crouch/a.tscn"),
-	"crouch_b": preload("res://GodotGuy/scenes/hitboxes/crouch/b.tscn"),
-	"crouch_c": preload("res://GodotGuy/scenes/hitboxes/crouch/c.tscn"),
-	"jump_a": preload("res://GodotGuy/scenes/hitboxes/jump/a.tscn"),
-	"jump_b": preload("res://GodotGuy/scenes/hitboxes/jump/b.tscn"),
-	"jump_c": preload("res://GodotGuy/scenes/hitboxes/jump/c.tscn"),
-	"uppercut": preload("res://GodotGuy/scenes/hitboxes/special/uppercut.tscn"),
-	"grab": preload("res://GodotGuy/scenes/hitboxes/stand/grab.tscn"),
-	"grab_followup": preload("res://GodotGuy/scenes/hitboxes/stand/grab_followup.tscn"),
-	"spin_approach": preload("res://GodotGuy/scenes/hitboxes/special/spin_approach.tscn"),
-	"spin_approach_final": preload("res://GodotGuy/scenes/hitboxes/special/spin_approach_final.tscn"),
-}
-@onready var projectiles = {
-	"basic": preload("res://GodotGuy/scenes/ProjectileStraight.tscn")
-}
-
-# State transitions are handled by a FSM implemented as match statements in the input_step
+## State transitions are handled by a FSM implemented as match statements in the input_step.
 enum States {
 	INTRO, ROUND_WIN, SET_WIN, # round stuff
 	IDLE, CRCH, # basic basics
@@ -96,13 +24,10 @@ enum States {
 	HURT_FALL, HURT_LIE, HURT_BNCE, # REALLY not handling getting attacked well
 	OUTRO_FALL, OUTRO_LIE, OUTRO_BNCE # The final stage of not handling it
 }
-var state_start := States.INTRO
-var current_state: States
-var previous_state : States
 
-const INFINITE_STUN := -1
+enum AVEffects {ADD = 0, SET = 1, SET_X = 2, SET_Y = 3, EXPEDIATE = 4}
 
-var current_attack : String
+enum WalkDirections {BACK = -1, NEUTRAL = 0, FORWARD = 1}
 
 # motion inputs, with some leniency
 const QUARTER_CIRCLE_FORWARD = [[2,3,6], [2,6]]
@@ -139,19 +64,153 @@ const GG_INPUT = [
 	[6,2,1,4,5,6],
 ]
 
-enum AVEffects {ADD = 0, SET = 1, SET_X = 2, SET_Y = 3, EXPEDIATE = 4}
+const INFINITE_STUN := -1
 
-enum WalkDirections {BACK = -1, NEUTRAL = 0, FORWARD = 1}
+const GRABBED_OFFSET_X = 0.46
 
-# block rule arrays: [up, down, away, towards]
-# 1 means must hold, 0 means ignored, -1 means must not hold
-@export_category("2D Gameplay Details")
+@export_category("Animation Details")
+@export var _animate : FlippingAnimationPlayer
+@export var basic_anim_state_dict := {
+	States.INTRO : "other/intro",
+	States.ROUND_WIN : "other/win",
+	States.SET_WIN : "other/win",
+	States.IDLE : "basic/idle",
+	States.CRCH : "basic/crouch",
+	States.JUMP_R_I : "basic/jump", States.JUMP_L_I : "basic/jump",
+	States.JUMP_N_I : "basic/jump",
+	States.JUMP_R_A_I : "basic/jump", States.JUMP_L_A_I : "basic/jump",
+	States.JUMP_N_A_I : "basic/jump",
+	States.JUMP_R : "basic/jump", States.JUMP_L : "basic/jump",
+	States.JUMP_N : "basic/jump",
+	States.JUMP_R_NO_ACT : "basic/jump", States.JUMP_L_NO_ACT : "basic/jump",
+	States.JUMP_N_NO_ACT : "basic/jump",
+	States.BLCK_HGH : "blocking/high", States.BLCK_LOW : "blocking/low",
+	States.BLCK_AIR : "blocking/air",
+	States.HURT_HGH : "hurting/high", States.HURT_LOW : "hurting/low",
+	States.HURT_CRCH : "hurting/crouch",
+	States.HURT_GRB : "hurting/air",
+	States.HURT_FALL : "hurting/air", States.HURT_BNCE : "hurting/air",
+	States.HURT_LIE : "hurting/lying", States.GET_UP : "hurting/get_up",
+	States.OUTRO_FALL : "hurting/air", States.OUTRO_BNCE : "hurting/air",
+	States.OUTRO_LIE : "hurting/lying",
+}
+@export var animation_ended = true
+@export var move_left_anim : StringName = &"basic/walk_left"
+@export var move_right_anim : StringName = &"basic/walk_right"
+@export var dash_left_anim : StringName = &"basic/dash"
+@export var dash_right_anim : StringName = &"basic/dash"
+
+@export_category("Gameplay Details")
+@export var walk_speed : float = 2
+@export var jump_total : int = 2
+@export var jump_height : float = 11
+@export var gravity : float = -0.5
+@export var min_fall_vel : float = -6.5
+@export var GROUND_SLIDE_FRICTION : float = 0.97
+@export var meter : float = 0
+@export var METER_MAX : float = 100
+@export var damage_mult : float = 1.0
+@export var defense_mult : float = 1.0
+## block rule arrays: [up, down, away, towards]
+## 1 means must hold, 0 means ignored, -1 means must not hold
 @export var block : Dictionary = {
 	away_any = [0, 0, 1, -1],
 	away_high = [0, -1, 1, -1],
 	away_low = [-1, 1, 1, -1],
 	nope = [-1, -1. -1, -1],
 }
+
+var record_y : float
+var check_true : bool # Used to remember results of move_and_slide()
+var right_facing : bool
+var jump_count : int = 0
+
+@onready var hitboxes = {
+	"stand_a": preload("res://GodotGuy/scenes/hitboxes/stand/a.tscn"),
+	"stand_b": preload("res://GodotGuy/scenes/hitboxes/stand/b.tscn"),
+	"stand_c": preload("res://GodotGuy/scenes/hitboxes/stand/c.tscn"),
+	"crouch_a": preload("res://GodotGuy/scenes/hitboxes/crouch/a.tscn"),
+	"crouch_b": preload("res://GodotGuy/scenes/hitboxes/crouch/b.tscn"),
+	"crouch_c": preload("res://GodotGuy/scenes/hitboxes/crouch/c.tscn"),
+	"jump_a": preload("res://GodotGuy/scenes/hitboxes/jump/a.tscn"),
+	"jump_b": preload("res://GodotGuy/scenes/hitboxes/jump/b.tscn"),
+	"jump_c": preload("res://GodotGuy/scenes/hitboxes/jump/c.tscn"),
+	"uppercut": preload("res://GodotGuy/scenes/hitboxes/special/uppercut.tscn"),
+	"grab": preload("res://GodotGuy/scenes/hitboxes/stand/grab.tscn"),
+	"grab_followup": preload("res://GodotGuy/scenes/hitboxes/stand/grab_followup.tscn"),
+	"spin_approach": preload("res://GodotGuy/scenes/hitboxes/special/spin_approach.tscn"),
+	"spin_approach_final": preload("res://GodotGuy/scenes/hitboxes/special/spin_approach_final.tscn"),
+}
+@onready var projectiles = {
+	"basic": preload("res://GodotGuy/scenes/ProjectileStraight.tscn")
+}
+
+var current_state: States = States.INTRO
+var previous_state : States
+
+var current_attack : String
+
+var attack_return_state := {
+	"attack_normal/a": States.IDLE,
+	"attack_normal/b": States.IDLE,
+	"attack_normal/c": States.IDLE,
+	"attack_command/crouch_a": States.CRCH,
+	"attack_command/crouch_b": States.CRCH,
+	"attack_command/crouch_c": States.CRCH,
+	"attack_motion/projectile": States.IDLE,
+	"attack_motion/uppercut": States.JUMP_N_NO_ACT,
+	"attack_motion/spin_approach": States.JUMP_N_NO_ACT,
+	"attack_motion/spin_approach_air": States.JUMP_N_NO_ACT,
+}
+
+var grab_return_states := {
+	"attack_normal/grab": {
+		true: "attack_normal/grab_followup",
+		false: "attack_normal/grab_whiff"
+	},
+}
+
+# Nothing should modify the fighter's state in _process or _ready, _process is purely for
+# real-time effects, and _ready for initialization.
+func _ready():
+	reset_facing()
+	_animate.play(basic_anim_state_dict[current_state] +
+			(_animate.anim_right_suf if right_facing else _animate.anim_left_suf))
+
+
+func _process(_delta):
+	$DebugData.text = """Right Facing: %s
+State: %s (Prev: %s)
+Attack Finished: %s
+Stun: %s:%s
+Knockback: %s
+Current Animation : %s
+""" % [
+		right_facing,
+		States.keys()[current_state],
+		States.keys()[previous_state],
+		animation_ended,
+		stun_time_current,
+		stun_time_start,
+		kback,
+		_animate.current_animation,
+	]
+	if len(inputs.up) > 0:
+		$DebugData.text += str(inputs_as_numpad()[0])
+
+
+func _input_step(recv_inputs) -> void:
+	inputs = recv_inputs
+
+	if GlobalKnowledge.global_hitstop == 0:
+		resolve_state_transitions()
+	handle_input()
+	if GlobalKnowledge.global_hitstop == 0:
+		update_character_state()
+
+	_animate.speed_scale = float(GlobalKnowledge.global_hitstop == 0)
+	reset_facing()
+
 
 func _initialize_training_mode_elements():
 	if player:
@@ -167,17 +226,20 @@ func _initialize_training_mode_elements():
 
 	(ui_elements_training[0] as HSlider).value_changed.connect(training_mode_set_meter)
 
-# this block of variables isn't required, but generally used by a typical fighter.
-func training_mode_set_meter(val):
-	meter = val
-	(ui_elements[0] as TextureProgressBar).value = meter
+func _return_attackers():
+	return $Hurtbox.get_overlapping_areas() as Array[Hitbox]
 
-# Nothing should modify the fighter's state in _process or _ready, _process is purely for
-# real-time effects, and _ready for initialization.
-func _ready():
-	reset_facing()
-	animate.play(basic_anim_state_dict[current_state] +
-			(animate.anim_right_suf if right_facing else animate.anim_left_suf))
+
+# This is called when a hitbox makes contact with the other fighter,
+# after resolving that the fighter was hit by the attack.
+# An Array is passed for maximum customizability.
+func _on_hit(on_hit_data : Array):
+# For this fighter, the on_hit and on_block arrays stores only the meter_gain, a float.
+	add_meter(on_hit_data[0])
+
+# Ditto, but for after resolving that the opposing fighter blocked the attack.
+func _on_block(on_block_data : Array):
+	add_meter(on_block_data[0])
 
 
 func _post_intro() -> bool:
@@ -185,7 +247,7 @@ func _post_intro() -> bool:
 
 
 func _post_outro() -> bool:
-	return (current_state in [States.ROUND_WIN, States.SET_WIN] and not animate.is_playing())
+	return (current_state in [States.ROUND_WIN, States.SET_WIN] and not _animate.is_playing())
 
 
 func _in_defeated_state() -> bool:
@@ -217,7 +279,12 @@ func _in_grabbed_state() -> bool:
 	return current_state == States.HURT_GRB
 
 
-func in_air_state() -> bool:
+func training_mode_set_meter(val):
+	meter = val
+	(ui_elements[0] as TextureProgressBar).value = meter
+
+
+func airborne() -> bool:
 	return current_state in [
 		States.ATCK_JUMP,
 		States.JUMP_L, States.JUMP_N, States.JUMP_R,
@@ -226,53 +293,12 @@ func in_air_state() -> bool:
 	]
 
 
-func in_crouching_state() -> bool:
+func crouching() -> bool:
 	return current_state in [States.CRCH, States.HURT_CRCH, States.BLCK_LOW]
 
 
-func in_dashing_state() -> bool:
+func dashing() -> bool:
 	return current_state in [States.DASH_B, States.DASH_F]
-
-
-func _process(_delta):
-	$DebugData.text = """Right Facing: %s
-	State: %s (Prev: %s)
-	Attack Finished: %s
-	Stun: %s:%s
-	Knockback: %s
-	Current Animation : %s
-	""" % [
-		right_facing,
-		States.keys()[current_state],
-		States.keys()[previous_state],
-		animation_ended,
-		stun_time_current,
-		stun_time_start,
-		kback,
-		animate.current_animation,
-	]
-	if len(inputs.up) > 0:
-		$DebugData.text += str(inputs_as_numpad()[0])
-
-var attack_return_state := {
-	"attack_normal/a": States.IDLE,
-	"attack_normal/b": States.IDLE,
-	"attack_normal/c": States.IDLE,
-	"attack_command/crouch_a": States.CRCH,
-	"attack_command/crouch_b": States.CRCH,
-	"attack_command/crouch_c": States.CRCH,
-	"attack_motion/projectile": States.IDLE,
-	"attack_motion/uppercut": States.JUMP_N_NO_ACT,
-	"attack_motion/spin_approach": States.JUMP_N_NO_ACT,
-	"attack_motion/spin_approach_air": States.JUMP_N_NO_ACT,
-}
-
-var grab_return_states := {
-	"attack_normal/grab": {
-		true: "attack_normal/grab_followup",
-		false: "attack_normal/grab_whiff"
-	},
-}
 
 # Functions used by the AnimationPlayer to perform actions within animations
 func update_velocity(vel : Vector3, how : AVEffects):
@@ -798,7 +824,7 @@ func resolve_state_transitions():
 			set_state(States.ROUND_WIN)
 			return
 		States.INTRO:
-			if not animate.is_playing():
+			if not _animate.is_playing():
 				set_state(States.IDLE)
 				previous_state = current_state
 		States.ROUND_WIN:
@@ -808,7 +834,7 @@ func resolve_state_transitions():
 			previous_state = current_state
 			set_state(States.SET_WIN)
 		States.GET_UP:
-			if not animate.is_playing():
+			if not _animate.is_playing():
 				set_state(previous_state)
 		States.DASH_B:
 			if animation_ended:
@@ -882,64 +908,36 @@ func resolve_state_transitions():
 
 func update_character_animation():
 	if _in_attacking_state():
-		animate.play(current_attack + (animate.anim_right_suf if right_facing else animate.anim_left_suf))
+		_animate.play(current_attack + (_animate.anim_right_suf if right_facing else _animate.anim_left_suf))
 	else:
 		match current_state:
 			States.WALK_F when right_facing:
-				animate.play(move_right_anim)
+				_animate.play(move_right_anim)
 			States.WALK_F when !right_facing:
-				animate.play(move_left_anim)
+				_animate.play(move_left_anim)
 			States.WALK_B when right_facing:
-				animate.play(move_left_anim)
+				_animate.play(move_left_anim)
 			States.WALK_B when !right_facing:
-				animate.play(move_right_anim)
+				_animate.play(move_right_anim)
 			States.DASH_F when right_facing:
-				animate.play(dash_right_anim)
+				_animate.play(dash_right_anim)
 			States.DASH_F when !right_facing:
-				animate.play(dash_left_anim)
+				_animate.play(dash_left_anim)
 			States.DASH_B when right_facing:
-				animate.play(dash_left_anim)
+				_animate.play(dash_left_anim)
 			States.DASH_B when !right_facing:
-				animate.play(dash_right_anim)
+				_animate.play(dash_right_anim)
 			_:
-				animate.play(basic_anim_state_dict[current_state] + (animate.anim_right_suf if right_facing else animate.anim_left_suf))
+				_animate.play(basic_anim_state_dict[current_state] + (_animate.anim_right_suf if right_facing else _animate.anim_left_suf))
 
 
 func reset_facing():
 	if distance < 0:
 		right_facing = true
-		grabbed_offset.x = -.46
+		grabbed_offset.x = -GRABBED_OFFSET_X
 	else:
 		right_facing = false
-		grabbed_offset.x = .46
-
-# Functions called directly by the game
-func _return_attackers():
-	return $Hurtbox.get_overlapping_areas() as Array[Hitbox]
-
-
-func _input_step(recv_inputs) -> void:
-	inputs = recv_inputs
-
-	if GlobalKnowledge.global_hitstop == 0:
-		resolve_state_transitions()
-	handle_input()
-	if GlobalKnowledge.global_hitstop == 0:
-		update_character_state()
-
-	animate.speed_scale = float(GlobalKnowledge.global_hitstop == 0)
-	reset_facing()
-
-# This is called when a hitbox makes contact with the other fighter,
-# after resolving that the fighter was hit by the attack.
-# An Array is passed for maximum customizability.
-func _on_hit(on_hit_data : Array):
-# For this fighter, the on_hit and on_block arrays stores only the meter_gain, a float.
-	add_meter(on_hit_data[0])
-
-# Ditto, but for after resolving that the opposing fighter blocked the attack.
-func _on_block(on_block_data : Array):
-	add_meter(on_block_data[0])
+		grabbed_offset.x = GRABBED_OFFSET_X
 
 
 func handle_damage(attack : Hitbox, blocked : bool, next_state : States):
@@ -965,9 +963,9 @@ func try_block(attack : Hitbox,
 			ground_block_rules : Array, air_block_rules : Array,
 			fs_stand : States, fs_crouch : States, fs_air : States) -> bool:
 	# still in hitstun or just can't block
-	if _in_hurting_state() or _in_attacking_state() or in_dashing_state():
-		if not in_air_state():
-			if in_crouching_state():
+	if _in_hurting_state() or _in_attacking_state() or dashing():
+		if not airborne():
+			if crouching():
 				handle_damage(attack, false, fs_crouch)
 				return true
 			else:
@@ -987,13 +985,13 @@ func try_block(attack : Hitbox,
 		var temp = directions[2]
 		directions[2] = directions[3]
 		directions[3] = temp
-	if not in_air_state():
+	if not airborne():
 		for check_input in range(len(directions)):
 			if (
 					(directions[check_input] == true and ground_block_rules[check_input] == -1) or
 					(directions[check_input] == false and ground_block_rules[check_input] == 1)
 			):
-				if in_crouching_state():
+				if crouching():
 					handle_damage(attack, false, fs_crouch)
 					return true
 				else:
@@ -1018,9 +1016,9 @@ func try_block(attack : Hitbox,
 
 
 func try_grab(attack_dmg: float, on_ground : bool) -> bool:
-	if in_crouching_state():
+	if crouching():
 		return false
-	if on_ground and in_air_state():
+	if on_ground and airborne():
 		return false
 
 	emit_signal(&"grabbed", player)

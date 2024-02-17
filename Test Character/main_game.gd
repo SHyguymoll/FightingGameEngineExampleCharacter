@@ -294,9 +294,11 @@ func generate_input_hud(buf : Dictionary, input_label : Label):
 		for button in buf:
 			if button in dirs:
 				if buf[button][i][1]:
-					input_label.text += ("| %s, %s " % [str(buf[button][i][0]), directionDictionary[button]])
+					input_label.text += (
+							"| %s, %s " % [str(buf[button][i][0]), directionDictionary[button]])
 				else:
-					input_label.text += ("| %s, x " % [str(buf[button][i][0])])
+					input_label.text += (
+							"| %s, x " % [str(buf[button][i][0])])
 			else:
 				input_label.text += (
 					"| %s, %s " % [buf[button][i][0], ("Ø" if buf[button][i][1] else "0")])
@@ -309,32 +311,32 @@ func build_input_tracker(p1_buf : Dictionary, p2_buf : Dictionary) -> void:
 #convert to hash to simplify comparisons
 func generate_current_input_hash(buttons : Array, button_count : int) -> int:
 	return (
-		(int(buttons[0]) * 1) +
-		(int(buttons[1]) * 2) +
-		(int(buttons[2]) * 4) +
-		(int(buttons[3]) * 8) +
-		((int(button_count > 0 and buttons[4])) * 16) +
-		((int(button_count > 1 and buttons[5])) * 32) +
-		((int(button_count > 2 and buttons[6])) * 64) +
-		((int(button_count > 3 and buttons[7])) * 128) +
-		((int(button_count > 4 and buttons[8])) * 256) +
-		((int(button_count > 5 and buttons[9])) * 512)
+			(int(buttons[0]) * 1) +
+			(int(buttons[1]) * 2) +
+			(int(buttons[2]) * 4) +
+			(int(buttons[3]) * 8) +
+			((int(button_count > 0 and buttons[4])) * 16) +
+			((int(button_count > 1 and buttons[5])) * 32) +
+			((int(button_count > 2 and buttons[6])) * 64) +
+			((int(button_count > 3 and buttons[7])) * 128) +
+			((int(button_count > 4 and buttons[8])) * 256) +
+			((int(button_count > 5 and buttons[9])) * 512)
 	)
 
 #ditto, but for an already completed input
 func generate_prior_input_hash(player_inputs: Dictionary):
 	var fail_case := [[0,false]]
 	return (
-		(int(player_inputs.get("up", fail_case)[-1][1]) * 1) +
-		(int(player_inputs.get("down", fail_case)[-1][1]) * 2) +
-		(int(player_inputs.get("left", fail_case)[-1][1]) * 4) +
-		(int(player_inputs.get("right", fail_case)[-1][1]) * 8) +
-		(int(player_inputs.get("button0", fail_case)[-1][1]) * 16) +
-		(int(player_inputs.get("button1", fail_case)[-1][1]) * 32) +
-		(int(player_inputs.get("button2", fail_case)[-1][1]) * 64) +
-		(int(player_inputs.get("button3", fail_case)[-1][1]) * 128) +
-		(int(player_inputs.get("button4", fail_case)[-1][1]) * 256) +
-		(int(player_inputs.get("button5", fail_case)[-1][1]) * 512)
+			(int(player_inputs.get("up", fail_case)[-1][1]) * 1) +
+			(int(player_inputs.get("down", fail_case)[-1][1]) * 2) +
+			(int(player_inputs.get("left", fail_case)[-1][1]) * 4) +
+			(int(player_inputs.get("right", fail_case)[-1][1]) * 8) +
+			(int(player_inputs.get("button0", fail_case)[-1][1]) * 16) +
+			(int(player_inputs.get("button1", fail_case)[-1][1]) * 32) +
+			(int(player_inputs.get("button2", fail_case)[-1][1]) * 64) +
+			(int(player_inputs.get("button3", fail_case)[-1][1]) * 128) +
+			(int(player_inputs.get("button4", fail_case)[-1][1]) * 256) +
+			(int(player_inputs.get("button5", fail_case)[-1][1]) * 512)
 	)
 
 
@@ -391,13 +393,16 @@ func create_inputs():
 		record_buffer_current = 0
 
 	if not replay:
-		if generate_prior_input_hash(p2_inputs) != generate_current_input_hash(p2_buttons, p2.BUTTONCOUNT):
+		if (generate_prior_input_hash(p2_inputs) != generate_current_input_hash(
+				p2_buttons, p2.BUTTONCOUNT)):
 			create_new_input_set(p2_inputs, p2_buttons)
 			p2_input_index += 1
 		else:
 			increment_inputs(p2_inputs)
 	else:
-		if generate_prior_input_hash(p2_inputs) != generate_current_input_hash(player_record_buffer[record_buffer_current], p2.BUTTONCOUNT):
+		if (generate_prior_input_hash(p2_inputs) !=
+					generate_current_input_hash(
+							player_record_buffer[record_buffer_current], p2.BUTTONCOUNT)):
 			create_new_input_set(p2_inputs, player_record_buffer[record_buffer_current])
 			p2_input_index += 1
 		else:
@@ -423,13 +428,12 @@ func move_inputs_and_iterate(fake_inputs):
 		return
 
 	var p1_buf = slice_input_dictionary(
-		p1_inputs, max(0, p1_input_index - p1.input_buffer_len),
-		p1_input_index + 1
+			p1_inputs, max(0, p1_input_index - p1.input_buffer_len),
+			p1_input_index + 1
 	)
 	var p2_buf = slice_input_dictionary(
-		p2_inputs,
-		max(0, p2_input_index - p2.input_buffer_len),
-		p2_input_index + 1
+			p2_inputs, max(0, p2_input_index - p2.input_buffer_len),
+			p2_input_index + 1
 	)
 	build_input_tracker(p1_buf, p2_buf)
 

@@ -1,7 +1,6 @@
 class_name Hitbox
 extends Area3D
 
-@export var lifetime : int
 @export_category("Damage")
 @export var damage_hit : float
 @export var damage_block : float
@@ -15,6 +14,7 @@ extends Area3D
 @export var on_hit_sound : AudioStream
 @export var on_block_sound : AudioStream
 @export_category("Misc")
+@export var lifetime : int
 @export var hit_priority : int
 @export var hit_type : String
 @export var on_hit : Array
