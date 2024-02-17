@@ -61,25 +61,6 @@ var record_y : float
 var check_true : bool # Used to remember results of move_and_slide()
 var right_facing : bool
 
-func _initialize_training_mode_elements():
-	if player:
-		for scene in ui_elements_packed.player1:
-			ui_elements.append(scene.instantiate())
-		for scene in ui_elements_training_packed.player1:
-			ui_elements_training.append(scene.instantiate())
-	else:
-		for scene in ui_elements_packed.player2:
-			ui_elements.append(scene.instantiate())
-		for scene in ui_elements_training_packed.player2:
-			ui_elements_training.append(scene.instantiate())
-
-	(ui_elements_training[0] as HSlider).value_changed.connect(training_mode_set_meter)
-
-# this block of variables isn't required, but generally used by a typical fighter.
-func training_mode_set_meter(val):
-	meter = val
-	(ui_elements[0] as TextureProgressBar).value = meter
-
 @onready var hitboxes = {
 	"stand_a": preload("res://GodotGuy/scenes/hitboxes/stand/a.tscn"),
 	"stand_b": preload("res://GodotGuy/scenes/hitboxes/stand/b.tscn"),
@@ -119,9 +100,80 @@ var state_start := States.INTRO
 var current_state: States
 var previous_state : States
 
+const INFINITE_STUN := -1
+
+var current_attack : String
+
+# motion inputs, with some leniency
+const QUARTER_CIRCLE_FORWARD = [[2,3,6], [2,6]]
+const QUARTER_CIRCLE_BACK = [[2,1,4], [2,4]]
+# Referencing the Street Fighter 2 input
+const TIGER_KNEE_FORWARD = [[2,3,6,9]]
+const TIGER_KNEE_BACK = [[2,1,4,7]]
+const Z_MOTION_FORWARD = [
+	[6,2,3], #canonical
+	[6,5,2,3], #forward then down
+	[6,2,3,6], #overshot a little
+	[6,3,2,3], #rolling method
+	[6,3,2,1,2,3], #super rolling method
+	[6,5,1,2,3], #forward to two away from a half circle
+	[6,5,4,1,2,3], #forward to one away from a half circle
+	[6,5,4,1,2,3,6], #forward to a half circle, maximumly lenient
+]
+const Z_MOTION_BACK = [
+	[4,2,1],
+	[4,5,2,1],
+	[4,1,2,3],
+	[4,1,2,3,2,1],
+	[4,5,3,2,1],
+	[4,5,6,3,2,1],
+	[4,5,6,3,2,1,4],
+]
+# Name is a reference to the common Guilty Gear Overdrive input of a half circle back to forward
+const GG_INPUT = [
+	[6,3,2,1,4,6],
+	[6,3,2,1,4,5,6],
+	[6,2,1,4,6],
+	[6,2,4,6],
+	[6,2,4,5,6],
+	[6,2,1,4,5,6],
+]
+
+enum AVEffects {ADD = 0, SET = 1, SET_X = 2, SET_Y = 3, EXPEDIATE = 4}
+
+enum WalkDirections {BACK = -1, NEUTRAL = 0, FORWARD = 1}
+
+# block rule arrays: [up, down, away, towards]
+# 1 means must hold, 0 means ignored, -1 means must not hold
+@export_category("2D Gameplay Details")
+@export var block : Dictionary = {
+	away_any = [0, 0, 1, -1],
+	away_high = [0, -1, 1, -1],
+	away_low = [-1, 1, 1, -1],
+	nope = [-1, -1. -1, -1],
+}
+
+func _initialize_training_mode_elements():
+	if player:
+		for scene in ui_elements_packed.player1:
+			ui_elements.append(scene.instantiate())
+		for scene in ui_elements_training_packed.player1:
+			ui_elements_training.append(scene.instantiate())
+	else:
+		for scene in ui_elements_packed.player2:
+			ui_elements.append(scene.instantiate())
+		for scene in ui_elements_training_packed.player2:
+			ui_elements_training.append(scene.instantiate())
+
+	(ui_elements_training[0] as HSlider).value_changed.connect(training_mode_set_meter)
+
+# this block of variables isn't required, but generally used by a typical fighter.
+func training_mode_set_meter(val):
+	meter = val
+	(ui_elements[0] as TextureProgressBar).value = meter
+
 # Nothing should modify the fighter's state in _process or _ready, _process is purely for
 # real-time effects, and _ready for initialization.
-
 func _ready():
 	reset_facing()
 	animate.play(basic_anim_state_dict[current_state] +
@@ -223,9 +275,6 @@ var grab_return_states := {
 }
 
 # Functions used by the AnimationPlayer to perform actions within animations
-
-enum AVEffects {ADD = 0, SET = 1, SET_X = 2, SET_Y = 3, EXPEDIATE = 4}
-
 func update_velocity(vel : Vector3, how : AVEffects):
 	if not right_facing:
 		vel.x *= -1
@@ -303,8 +352,6 @@ func set_state(new_state: States):
 		update_character_animation()
 
 # Functions used only in this script
-const INFINITE_STUN := -1
-
 func set_stun(value):
 	stun_time_start = value
 	GlobalKnowledge.global_hitstop = int(abs(value)/4)
@@ -315,7 +362,6 @@ func reduce_stun():
 	if stun_time_start != INFINITE_STUN:
 		stun_time_current = max(0, stun_time_current - 1)
 
-var current_attack : String
 
 func ground_cancelled_attack_ended() -> bool:
 	return is_on_floor()
@@ -359,41 +405,6 @@ func one_atk_just_pressed():
 			int(btn_just_pressed("button2")) == 1
 	)
 
-# defining the motion inputs, with some leniency
-const QUARTER_CIRCLE_FORWARD = [[2,3,6], [2,6]]
-const QUARTER_CIRCLE_BACK = [[2,1,4], [2,4]]
-# Referencing the Street Fighter 2 input
-const TIGER_KNEE_FORWARD = [[2,3,6,9]]
-const TIGER_KNEE_BACK = [[2,1,4,7]]
-const Z_MOTION_FORWARD = [
-	[6,2,3], #canonical
-	[6,5,2,3], #forward then down
-	[6,2,3,6], #overshot a little
-	[6,3,2,3], #rolling method
-	[6,3,2,1,2,3], #super rolling method
-	[6,5,1,2,3], #forward to two away from a half circle
-	[6,5,4,1,2,3], #forward to one away from a half circle
-	[6,5,4,1,2,3,6], #forward to a half circle, maximumly lenient
-]
-const Z_MOTION_BACK = [
-	[4,2,1],
-	[4,5,2,1],
-	[4,1,2,3],
-	[4,1,2,3,2,1],
-	[4,5,3,2,1],
-	[4,5,6,3,2,1],
-	[4,5,6,3,2,1,4],
-]
-
-# Name is a reference to the common Guilty Gear Overdrive input of a half circle back to forward
-const GG_INPUT = [
-	[6,3,2,1,4,6],
-	[6,3,2,1,4,5,6],
-	[6,2,1,4,6],
-	[6,2,4,6],
-	[6,2,4,5,6],
-	[6,2,1,4,5,6],
-]
 
 func try_super_attack(cur_state: States) -> States:
 	match current_state:
@@ -523,7 +534,6 @@ func walk_value() -> int:
 			)
 	)
 
-enum WalkDirections {BACK = -1, NEUTRAL = 0, FORWARD = 1}
 
 func try_walk(exclude, cur_state: States) -> States:
 	var walk = walk_value()
@@ -949,15 +959,6 @@ func handle_damage(attack : Hitbox, blocked : bool, next_state : States):
 		kback = attack.kback_block
 		set_state(next_state)
 
-# block rule arrays: [up, down, away, towards]
-# 1 means must hold, 0 means ignored, -1 means must not hold
-@export_category("2D Gameplay Details")
-@export var block : Dictionary = {
-	away_any = [0, 0, 1, -1],
-	away_high = [0, -1, 1, -1],
-	away_low = [-1, 1, 1, -1],
-	nope = [-1, -1. -1, -1],
-}
 # If attack is blocked, return false
 # If attack isn't blocked, return true
 func try_block(attack : Hitbox,
