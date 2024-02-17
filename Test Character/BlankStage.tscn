@@ -16,7 +16,7 @@ albedo_color = Color(1, 0.603922, 1, 1)
 
 [sub_resource type="BoxMesh" id="3"]
 material = SubResource("StandardMaterial3D_skvje")
-size = Vector3(16.288, 8, 0.125)
+size = Vector3(31.818, 11.845, 0.125)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_jswp6"]
 plane = Plane(1, 0, 0, 0)
@@ -36,7 +36,7 @@ mesh = SubResource("1")
 shape = SubResource("WorldBoundaryShape3D_qkql2")
 
 [node name="MeshInstance2" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -0.635832)
+transform = Transform3D(1, 0, 0, 0, 0.593981, 0.804479, 0, -0.804479, 0.593981, 0, 1, -4.62878)
 mesh = SubResource("3")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
@@ -52,3 +52,23 @@ collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody2"]
 shape = SubResource("WorldBoundaryShape3D_5xxee")
+
+[node name="Lights" type="Node3D" parent="."]
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 0.7749, 0.632083, 0, -0.632083, 0.7749, 0, 2.59537, 1.95843)
+light_energy = 2.311
+spot_range = 8.1909
+spot_angle = 47.5453
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 0.7749, 0.632083, 0, -0.632083, 0.7749, -6.02847, 2.59537, 1.95843)
+light_energy = 2.311
+spot_range = 8.1909
+spot_angle = 47.5453
+
+[node name="SpotLight3D3" type="SpotLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 0.7749, 0.632083, 0, -0.632083, 0.7749, 6.028, 2.595, 1.958)
+light_energy = 2.311
+spot_range = 8.1909
+spot_angle = 47.5453
