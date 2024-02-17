@@ -225,10 +225,11 @@ var grab_return_states := {
 
 # Functions used by the AnimationPlayer to perform actions within animations
 
-enum av_effects {ADD = 0, SET = 1, SET_X = 2, SET_Y = 3}
+enum av_effects {ADD = 0, SET = 1, SET_X = 2, SET_Y = 3, EXPEDIATE = 4}
 
 func update_velocity(vel : Vector3, how : av_effects):
-	if not right_facing: vel.x *= -1
+	if not right_facing:
+		vel.x *= -1
 	match how:
 		av_effects.ADD:
 			velocity += vel
@@ -238,6 +239,21 @@ func update_velocity(vel : Vector3, how : av_effects):
 			velocity.x = vel.x
 		av_effects.SET_Y:
 			velocity.y = vel.y
+		av_effects.EXPEDIATE:
+			vel.x = abs(vel.x)
+			if velocity.x < 0:
+				velocity.x -= vel.x
+			elif velocity.x > 0:
+				velocity.x += vel.x
+			else:
+				if right_facing:
+					velocity.x += vel.x
+				else:
+					velocity.x -= vel.x
+			if velocity.y < 0:
+				velocity.y -= vel.y
+			else:
+				velocity.y += vel.y
 
 
 func create_hitbox(pos : Vector3, hitbox_name : String):

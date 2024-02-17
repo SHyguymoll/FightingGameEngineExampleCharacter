@@ -4522,10 +4522,10 @@ tracks/1/path = NodePath(".")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.0500001, 0.133334, 0.266667, 0.400001, 0.533334, 0.666668),
+"times": PackedFloat32Array(0, 0.0833335, 0.133334, 0.266667, 0.400001, 0.533334, 0.666668),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "values": [{
-"args": [Vector3(3, 10, 0), 1],
+"args": [Vector3(3, 4, 0), 1],
 "method": &"update_velocity"
 }, {
 "args": [Vector3(0, 0, 0), 3],
@@ -4574,7 +4574,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.133334, 0.266667, 0.400001, 0.533334, 0.666668),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "values": [{
-"args": [Vector3(3, 0, 0), 2],
+"args": [Vector3(3, 0, 0), 4],
 "method": &"update_velocity"
 }, {
 "args": [Vector3(1.28335, 0.49879, 0), "spin_approach"],
