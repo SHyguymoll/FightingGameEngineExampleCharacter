@@ -289,7 +289,7 @@ func create_projectile(pos : Vector3, projectile_name : String, type : int):
 
 
 func release_grab():
-	emit_signal("releasing_grab", player)
+	emit_signal("grab_released", player)
 
 
 func add_meter(add_to_meter : float):

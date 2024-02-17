@@ -2,7 +2,7 @@ class_name Fighter
 extends CharacterBody3D
 
 signal grabbed
-signal releasing_grab
+signal grab_released
 signal hitbox_created
 signal projectile_created
 signal defeated

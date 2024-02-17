@@ -158,7 +158,7 @@ func init_fighters():
 	p1.hitbox_created.connect(register_hitbox)
 	p1.projectile_created.connect(register_projectile)
 	p1.grabbed.connect(grabbed)
-	p1.releasing_grab.connect(releasing_grab)
+	p1.grab_released.connect(grab_released)
 	p1.defeated.connect(player_defeated)
 	p1._initialize_training_mode_elements()
 	for element in p1.ui_elements:
@@ -177,7 +177,7 @@ func init_fighters():
 	p2.hitbox_created.connect(register_hitbox)
 	p2.projectile_created.connect(register_projectile)
 	p2.grabbed.connect(grabbed)
-	p2.releasing_grab.connect(releasing_grab)
+	p2.grab_released.connect(grab_released)
 	p2.defeated.connect(player_defeated)
 	p2._initialize_training_mode_elements()
 	for element in p2.ui_elements:
@@ -215,7 +215,7 @@ const ORTH_DIST = 1.328125
 const CAMERA_PERSPECTIVE = 0
 const CAMERA_ORTH = 1
 
-enum camera_modes {
+enum CameraModes {
 	ORTH_BALANCED = 0,
 	ORTH_PLAYER1,
 	ORTH_PLAYER2,
@@ -225,32 +225,32 @@ enum camera_modes {
 }
 
 func camera_control(mode: int):
-	$Camera3D.projection = CAMERA_ORTH if mode < camera_modes.PERS_BALANCED else CAMERA_PERSPECTIVE
+	$Camera3D.projection = CAMERA_ORTH if mode < CameraModes.PERS_BALANCED else CAMERA_PERSPECTIVE
 	match mode:
 		#2d modes
-		camera_modes.ORTH_BALANCED:
+		CameraModes.ORTH_BALANCED:
 			$Camera3D.position.x = (p1.position.x + p2.position.x)/2
 			$Camera3D.position.y = max(p1.position.y + 1, p2.position.y + 1)
 			$Camera3D.position.z = ORTH_DIST
 			$Camera3D.size = clampf(abs(p1.position.x - p2.position.x)/2, 3.5, 6)
-		camera_modes.ORTH_PLAYER1:
+		CameraModes.ORTH_PLAYER1:
 			$Camera3D.position.x = p1.position.x
 			$Camera3D.position.y = p1.position.y + 1
 			$Camera3D.position.z = ORTH_DIST
-		camera_modes.ORTH_PLAYER2:
+		CameraModes.ORTH_PLAYER2:
 			$Camera3D.position.x = p2.position.x
 			$Camera3D.position.y = p2.position.y + 1
 			$Camera3D.position.z = ORTH_DIST
 		#3d modes
-		camera_modes.PERS_BALANCED:
+		CameraModes.PERS_BALANCED:
 			$Camera3D.position.x = (p1.position.x + p2.position.x)/2
 			$Camera3D.position.y = max(p1.position.y + 1, p2.position.y + 1)
 			$Camera3D.position.z = clampf(abs(p1.position.x - p2.position.x)/2, 1.5, 1.825) + 0.5
-		camera_modes.PERS_PLAYER1:
+		CameraModes.PERS_PLAYER1:
 			$Camera3D.position.x = p1.position.x
 			$Camera3D.position.y = p1.position.y + 1
 			$Camera3D.position.z = 1.5
-		camera_modes.PERS_PLAYER2:
+		CameraModes.PERS_PLAYER2:
 			$Camera3D.position.x = p2.position.x
 			$Camera3D.position.y = p2.position.y + 1
 			$Camera3D.position.z = 1.5
@@ -515,7 +515,7 @@ func grabbed(player):
 	else:
 		p2.grabbed_point.act_on_player = true
 
-func releasing_grab(player):
+func grab_released(player):
 	if player:
 		p2.grabbed_point.act_on_player = false
 	else:
