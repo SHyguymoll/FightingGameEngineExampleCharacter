@@ -12,28 +12,28 @@ extends Fighter
 @export_category("Animation Details")
 @export var animate : FlippingAnimationPlayer
 @export var basic_anim_state_dict := {
-	states.intro : "other/intro",
-	states.round_win : "other/win",
-	states.set_win : "other/win",
-	states.idle : "basic/idle",
-	states.crouch : "basic/crouch",
-	states.jump_right_init : "basic/jump", states.jump_left_init : "basic/jump",
-	states.jump_neutral_init : "basic/jump",
-	states.jump_right_air_init : "basic/jump", states.jump_left_air_init : "basic/jump",
-	states.jump_neutral_air_init : "basic/jump",
-	states.jump_right : "basic/jump", states.jump_left : "basic/jump",
-	states.jump_neutral : "basic/jump",
-	states.jump_right_no_act : "basic/jump", states.jump_left_no_act : "basic/jump",
-	states.jump_neutral_no_act : "basic/jump",
-	states.block_high : "blocking/high", states.block_low : "blocking/low",
-	states.block_air : "blocking/air",
-	states.hurt_high : "hurting/high", states.hurt_low : "hurting/low",
-	states.hurt_crouch : "hurting/crouch",
-	states.hurt_grabbed : "hurting/air",
-	states.hurt_fall : "hurting/air", states.hurt_bounce : "hurting/air",
-	states.hurt_lie : "hurting/lying", states.get_up : "hurting/get_up",
-	states.outro_fall : "hurting/air", states.outro_bounce : "hurting/air",
-	states.outro_lie : "hurting/lying",
+	States.INTRO : "other/intro",
+	States.ROUND_WIN : "other/win",
+	States.SET_WIN : "other/win",
+	States.IDLE : "basic/idle",
+	States.CRCH : "basic/crouch",
+	States.JUMP_R_I : "basic/jump", States.JUMP_L_I : "basic/jump",
+	States.JUMP_N_I : "basic/jump",
+	States.JUMP_R_A_I : "basic/jump", States.JUMP_L_A_I : "basic/jump",
+	States.JUMP_N_A_I : "basic/jump",
+	States.JUMP_R : "basic/jump", States.JUMP_L : "basic/jump",
+	States.JUMP_N : "basic/jump",
+	States.JUMP_R_NO_ACT : "basic/jump", States.JUMP_L_NO_ACT : "basic/jump",
+	States.JUMP_N_NO_ACT : "basic/jump",
+	States.BLCK_HGH : "blocking/high", States.BLCK_LOW : "blocking/low",
+	States.BLCK_AIR : "blocking/air",
+	States.HURT_HGH : "hurting/high", States.HURT_LOW : "hurting/low",
+	States.HURT_CRCH : "hurting/crouch",
+	States.HURT_GRB : "hurting/air",
+	States.HURT_FALL : "hurting/air", States.HURT_BNCE : "hurting/air",
+	States.HURT_LIE : "hurting/lying", States.GET_UP : "hurting/get_up",
+	States.OUTRO_FALL : "hurting/air", States.OUTRO_BNCE : "hurting/air",
+	States.OUTRO_LIE : "hurting/lying",
 }
 @export var animation_ended = true
 @export var move_left_anim : StringName = &"basic/walk_left"
@@ -100,24 +100,24 @@ func training_mode_set_meter(val):
 	"basic": preload("res://GodotGuy/scenes/ProjectileStraight.tscn")
 }
 
-#State transitions are handled by a FSM implemented as match statements in the input_step
-enum states {
-	intro, round_win, set_win, #round stuff
-	idle, crouch, #basic basics
-	walk_forward, walk_back, dash_forward, dash_back, #lateral movement
-	jump_right_init, jump_neutral_init, jump_left_init, #jump from ground initial
-	jump_right_air_init, jump_neutral_air_init, jump_left_air_init, #jump from air initial
-	jump_right, jump_neutral, jump_left, #aerial actionable
-	jump_right_no_act, jump_neutral_no_act, jump_left_no_act, #aerial not actionable
-	attack_normal, attack_command, attack_motion, attack_grab, jump_attack, #handling attacks
-	block_high, block_low, block_air, get_up, #handling getting attacked well
-	hurt_high, hurt_low, hurt_crouch, hurt_grabbed, #not handling getting attacked well
-	hurt_fall, hurt_lie, hurt_bounce, #REALLY not handling getting attacked well
-	outro_fall, outro_lie, outro_bounce #The final stage of not handling it
+# State transitions are handled by a FSM implemented as match statements in the input_step
+enum States {
+	INTRO, ROUND_WIN, SET_WIN, # round stuff
+	IDLE, CRCH, # basic basics
+	WALK_F, WALK_B, DASH_F, DASH_B, # lateral movement
+	JUMP_L_I, JUMP_N_I, JUMP_R_I, # jump from ground initial
+	JUMP_L_A_I, JUMP_N_A_I, JUMP_R_A_I, # jump from air initial
+	JUMP_L, JUMP_N, JUMP_R, # aerial actionable
+	JUMP_L_NO_ACT, JUMP_N_NO_ACT, JUMP_R_NO_ACT, # aerial not actionable
+	ATCK_NRML, ATCK_CMND, ATCK_MOTN, ATCK_GRAB, ATCK_JUMP, # handling attacks
+	BLCK_HGH, BLCK_LOW, BLCK_AIR, GET_UP, # handling getting attacked well
+	HURT_HGH, HURT_LOW, HURT_CRCH, HURT_GRB, # not handling getting attacked well
+	HURT_FALL, HURT_LIE, HURT_BNCE, # REALLY not handling getting attacked well
+	OUTRO_FALL, OUTRO_LIE, OUTRO_BNCE # The final stage of not handling it
 }
-var state_start := states.intro
-var current_state: states
-var previous_state : states
+var state_start := States.INTRO
+var current_state: States
+var previous_state : States
 
 # Nothing should modify the fighter's state in _process or _ready, _process is purely for
 # real-time effects, and _ready for initialization.
@@ -129,71 +129,70 @@ func _ready():
 
 
 func _post_intro() -> bool:
-	return current_state != states.intro
+	return current_state != States.INTRO
 
 
 func _post_outro() -> bool:
-	return (current_state in [states.round_win, states.set_win] and not animate.is_playing())
+	return (current_state in [States.ROUND_WIN, States.SET_WIN] and not animate.is_playing())
 
 
 func _in_defeated_state() -> bool:
-	return current_state == states.outro_lie
+	return current_state == States.OUTRO_LIE
 
 
 func _in_outro_state() -> bool:
-	return current_state in [states.outro_fall, states.outro_bounce, states.outro_lie]
+	return current_state in [States.OUTRO_FALL, States.OUTRO_BNCE, States.OUTRO_LIE]
 
 
 func _in_attacking_state() -> bool:
 	return current_state in [
-		states.attack_normal,
-		states.attack_command,
-		states.attack_motion,
-		states.attack_grab,
-		states.jump_attack,
+		States.ATCK_NRML,
+		States.ATCK_CMND,
+		States.ATCK_MOTN,
+		States.ATCK_GRAB,
+		States.ATCK_JUMP,
 	]
 
 
 func _in_hurting_state() -> bool:
 	return current_state in [
-		states.hurt_high, states.hurt_low, states.hurt_crouch,
-		states.hurt_grabbed, states.hurt_fall, states.hurt_bounce,
+		States.HURT_HGH, States.HURT_LOW, States.HURT_CRCH,
+		States.HURT_GRB, States.HURT_FALL, States.HURT_BNCE,
 	]
 
 
 func _in_grabbed_state() -> bool:
-	return current_state == states.hurt_grabbed
+	return current_state == States.HURT_GRB
 
 
 func in_air_state() -> bool:
 	return current_state in [
-		states.jump_attack,
-		states.jump_left, states.jump_neutral, states.jump_right,
-		states.jump_right_no_act, states.jump_neutral_no_act, states.jump_left_no_act,
-		states.block_air, states.hurt_bounce, states.hurt_fall,
+		States.ATCK_JUMP,
+		States.JUMP_L, States.JUMP_N, States.JUMP_R,
+		States.JUMP_R_NO_ACT, States.JUMP_N_NO_ACT, States.JUMP_L_NO_ACT,
+		States.BLCK_AIR, States.HURT_BNCE, States.HURT_FALL,
 	]
 
 
 func in_crouching_state() -> bool:
-	return current_state in [states.crouch, states.hurt_crouch, states.block_low]
+	return current_state in [States.CRCH, States.HURT_CRCH, States.BLCK_LOW]
 
 
 func in_dashing_state() -> bool:
-	return current_state in [states.dash_back, states.dash_forward]
+	return current_state in [States.DASH_B, States.DASH_F]
 
 
 func _process(_delta):
 	$DebugData.text = """Right Facing: %s
-	Current State: %s
-	Last State: %s
+	State: %s (Prev: %s)
 	Attack Finished: %s
 	Stun: %s:%s
 	Knockback: %s
 	Current Animation : %s
 	""" % [
 		right_facing,
-		states.keys()[current_state],
-		states.keys()[previous_state],
+		States.keys()[current_state],
+		States.keys()[previous_state],
 		animation_ended,
 		stun_time_current,
 		stun_time_start,
@@ -204,16 +203,16 @@ func _process(_delta):
 		$DebugData.text += str(inputs_as_numpad()[0])
 
 var attack_return_state := {
-	"attack_normal/a": states.idle,
-	"attack_normal/b": states.idle,
-	"attack_normal/c": states.idle,
-	"attack_command/crouch_a": states.crouch,
-	"attack_command/crouch_b": states.crouch,
-	"attack_command/crouch_c": states.crouch,
-	"attack_motion/projectile": states.idle,
-	"attack_motion/uppercut": states.jump_neutral_no_act,
-	"attack_motion/spin_approach": states.jump_neutral_no_act,
-	"attack_motion/spin_approach_air": States.jump_neutral,
+	"attack_normal/a": States.IDLE,
+	"attack_normal/b": States.IDLE,
+	"attack_normal/c": States.IDLE,
+	"attack_command/crouch_a": States.CRCH,
+	"attack_command/crouch_b": States.CRCH,
+	"attack_command/crouch_c": States.CRCH,
+	"attack_motion/projectile": States.IDLE,
+	"attack_motion/uppercut": States.JUMP_N_NO_ACT,
+	"attack_motion/spin_approach": States.JUMP_N_NO_ACT,
+	"attack_motion/spin_approach_air": States.JUMP_N,
 }
 
 var grab_return_states := {
@@ -225,21 +224,21 @@ var grab_return_states := {
 
 # Functions used by the AnimationPlayer to perform actions within animations
 
-enum av_effects {ADD = 0, SET = 1, SET_X = 2, SET_Y = 3, EXPEDIATE = 4}
+enum AVEffects {ADD = 0, SET = 1, SET_X = 2, SET_Y = 3, EXPEDIATE = 4}
 
-func update_velocity(vel : Vector3, how : av_effects):
+func update_velocity(vel : Vector3, how : AVEffects):
 	if not right_facing:
 		vel.x *= -1
 	match how:
-		av_effects.ADD:
+		AVEffects.ADD:
 			velocity += vel
-		av_effects.SET:
+		AVEffects.SET:
 			velocity = vel
-		av_effects.SET_X:
+		AVEffects.SET_X:
 			velocity.x = vel.x
-		av_effects.SET_Y:
+		AVEffects.SET_Y:
 			velocity.y = vel.y
-		av_effects.EXPEDIATE:
+		AVEffects.EXPEDIATE:
 			vel.x = abs(vel.x)
 			if velocity.x < 0:
 				velocity.x -= vel.x
@@ -298,7 +297,7 @@ func add_meter(add_to_meter : float):
 	(ui_elements[0] as TextureProgressBar).value = meter
 
 
-func set_state(new_state: states):
+func set_state(new_state: States):
 	if current_state != new_state:
 		current_state = new_state
 		update_character_animation()
@@ -396,56 +395,56 @@ const GG_INPUT = [
 	[6,2,1,4,5,6],
 ]
 
-func try_super_attack(cur_state: states) -> states:
+func try_super_attack(cur_state: States) -> States:
 	match current_state:
-		states.idle, states.walk_back, states.walk_forward:
+		States.IDLE, States.WALK_B, States.WALK_F:
 			if motion_input_check(GG_INPUT) and one_atk_just_pressed() and meter >= 50:
 				meter -= 50
 				update_attack("attack_super/projectile")
-				return states.attack_motion
-		states.jump_neutral, states.jump_left, states.jump_right:
+				return States.ATCK_MOTN
+		States.JUMP_N, States.JUMP_L, States.JUMP_R:
 			if motion_input_check(GG_INPUT) and one_atk_just_pressed() and meter >= 50:
 				meter -= 50
 				update_attack("attack_super/projectile_air")
 				jump_count = 0
-				return states.attack_motion
+				return States.ATCK_MOTN
 
 	return cur_state
 
 
-func try_special_attack(cur_state: states) -> states:
+func try_special_attack(cur_state: States) -> States:
 	match current_state:
-		states.idle, states.walk_back, states.walk_forward, states.attack_normal:
+		States.IDLE, States.WALK_B, States.WALK_F, States.ATCK_NRML:
 			#check z_motion first since there's a lot of overlap with quarter_circle in some cases
 			if motion_input_check(Z_MOTION_FORWARD) and one_atk_just_pressed():
 				update_attack("attack_motion/uppercut")
 				jump_count = 0
-				return states.attack_motion
+				return States.ATCK_MOTN
 			if motion_input_check(QUARTER_CIRCLE_FORWARD) and one_atk_just_pressed():
 				update_attack("attack_motion/projectile")
-				return states.attack_motion
+				return States.ATCK_MOTN
 			if motion_input_check(QUARTER_CIRCLE_BACK) and one_atk_just_pressed():
 				update_attack("attack_motion/spin_approach")
-				return states.attack_motion
-		states.crouch:
+				return States.ATCK_MOTN
+		States.CRCH:
 			if motion_input_check(Z_MOTION_FORWARD) and one_atk_just_pressed():
 				update_attack("attack_motion/uppercut")
 				jump_count = 0
-				return states.attack_motion
-		states.jump_neutral, states.jump_left, states.jump_right:
+				return States.ATCK_MOTN
+		States.JUMP_N, States.JUMP_L, States.JUMP_R:
 			if (motion_input_check(QUARTER_CIRCLE_FORWARD + TIGER_KNEE_FORWARD) and
 					one_atk_just_pressed()):
 				update_attack("attack_motion/projectile_air")
 				jump_count = 0
-				return states.attack_motion
-			if motion_input_check(QUARTER_CIRCLE_BACK) and one_atk_just_pressed():
+				return States.ATCK_MOTN
+			if motion_input_check(QUARTER_CIRCLE_BACK + TIGER_KNEE_BACK) and one_atk_just_pressed():
 				update_attack("attack_motion/spin_approach_air")
-				return states.attack_motion
+				return States.ATCK_MOTN
 
 	return cur_state
 
 
-func try_attack(cur_state: states) -> states:
+func try_attack(cur_state: States) -> States:
 	if (
 			!btn_just_pressed("button0") and
 			!btn_just_pressed("button1") and
@@ -464,42 +463,42 @@ func try_attack(cur_state: states) -> states:
 		return special_attack
 
 	match current_state:
-		states.idle, states.walk_back, states.walk_forward:
+		States.IDLE, States.WALK_B, States.WALK_F:
 			if two_atk_just_pressed():
 				update_attack("attack_normal/grab")
-				return states.attack_grab
+				return States.ATCK_GRAB
 			if btn_just_pressed("button0"):
 				update_attack("attack_normal/a")
-				return states.attack_normal
+				return States.ATCK_NRML
 			if btn_just_pressed("button1"):
 				update_attack("attack_normal/b")
-				return states.attack_normal
+				return States.ATCK_NRML
 			if btn_just_pressed("button2"):
 				update_attack("attack_normal/c")
-				return states.attack_normal
-		states.crouch:
+				return States.ATCK_NRML
+		States.CRCH:
 			if btn_just_pressed("button0"):
 				update_attack("attack_command/crouch_a")
-				return states.attack_command
+				return States.ATCK_CMND
 			if btn_just_pressed("button1"):
 				update_attack("attack_command/crouch_b")
-				return states.attack_command
+				return States.ATCK_CMND
 			if btn_just_pressed("button2"):
 				update_attack("attack_command/crouch_c")
-				return states.attack_command
-		states.jump_neutral, states.jump_left, states.jump_right:
+				return States.ATCK_CMND
+		States.JUMP_N, States.JUMP_L, States.JUMP_R:
 			if btn_just_pressed("button0"):
 				update_attack("attack_jumping/a")
-				return states.jump_attack
+				return States.ATCK_JUMP
 			if btn_just_pressed("button1"):
 				update_attack("attack_jumping/b")
-				return states.jump_attack
+				return States.ATCK_JUMP
 			if btn_just_pressed("button2"):
 				update_attack("attack_jumping/c")
-				return states.jump_attack
+				return States.ATCK_JUMP
 
 	# how did we get here, something has gone terribly wrong
-	return states.intro
+	return States.INTRO
 
 
 func magic_series(level: int):
@@ -524,25 +523,25 @@ func walk_value() -> int:
 			)
 	)
 
-enum walk_directions {back = -1, neutral = 0, forward = 1}
+enum WalkDirections {BACK = -1, NEUTRAL = 0, FORWARD = 1}
 
-func try_walk(exclude, cur_state: states) -> states:
+func try_walk(exclude, cur_state: States) -> States:
 	var walk = walk_value()
 
 	if walk != exclude:
 		match walk:
-			walk_directions.forward:
-				return states.walk_forward
-			walk_directions.neutral:
-				return states.idle
-			walk_directions.back:
+			WalkDirections.FORWARD:
+				return States.WALK_F
+			WalkDirections.NEUTRAL:
+				return States.IDLE
+			WalkDirections.BACK:
 				if distance < 5:
-					return states.walk_back
+					return States.WALK_B
 
 	return cur_state
 
 
-func try_dash(input: String, success_state: states, cur_state: states) -> states:
+func try_dash(input: String, success_state: States, cur_state: States) -> States:
 # we only need the last three inputs
 	var walks = [
 		btn_pressed_ind(input, -3),
@@ -559,7 +558,7 @@ func try_dash(input: String, success_state: states, cur_state: states) -> states
 	return cur_state
 
 
-func try_jump(exclude, cur_state: states, grounded := true) -> states:
+func try_jump(exclude, cur_state: States, grounded := true) -> States:
 	if (
 			(btn_pressed("up") and grounded) or
 			(btn_just_pressed("up") and not grounded) and jump_count > 0
@@ -568,18 +567,18 @@ func try_jump(exclude, cur_state: states, grounded := true) -> states:
 
 		if dir != exclude:
 			match dir:
-				walk_directions.forward:
+				WalkDirections.FORWARD:
 					if right_facing:
-						return states.jump_right_init if grounded else states.jump_right_air_init
+						return States.JUMP_R_I if grounded else States.JUMP_R_A_I
 					else:
-						return states.jump_left_init if grounded else states.jump_left_air_init
-				walk_directions.back:
+						return States.JUMP_L_I if grounded else States.JUMP_L_A_I
+				WalkDirections.BACK:
 					if right_facing:
-						return states.jump_left_init if grounded else states.jump_left_air_init
+						return States.JUMP_L_I if grounded else States.JUMP_L_A_I
 					else:
-						return states.jump_right_init if grounded else states.jump_right_air_init
-				walk_directions.neutral:
-					return states.jump_neutral_init if grounded else states.jump_neutral_air_init
+						return States.JUMP_R_I if grounded else States.JUMP_R_A_I
+				WalkDirections.NEUTRAL:
+					return States.JUMP_N_I if grounded else States.JUMP_N_A_I
 
 	return cur_state
 
@@ -654,43 +653,43 @@ func motion_input_check(motions_to_check) -> bool:
 
 
 func handle_input() -> void:
-	var decision : states = current_state
+	var decision : States = current_state
 	match current_state:
 # Priority order, from least to most:
 # Walk, Backdash, Dash, Crouch, Jump, Attack, Block/Hurt (handled elsewhere)
-		states.idle, states.walk_back, states.walk_forward:
+		States.IDLE, States.WALK_B, States.WALK_F:
 			match current_state:
-				states.idle:
-					decision = try_walk(walk_directions.neutral, decision)
+				States.IDLE:
+					decision = try_walk(WalkDirections.NEUTRAL, decision)
 					if len(inputs.up) > 3:
 						if right_facing:
-							decision = try_dash("left", states.dash_back, decision)
-							decision = try_dash("right", states.dash_forward, decision)
+							decision = try_dash("left", States.DASH_B, decision)
+							decision = try_dash("right", States.DASH_F, decision)
 						else:
-							decision = try_dash("left", states.dash_forward, decision)
-							decision = try_dash("right", states.dash_back, decision)
-				states.walk_back:
-					decision = try_walk(walk_directions.back, decision)
-				states.walk_forward:
-					decision = try_walk(walk_directions.forward, decision)
-			decision = states.crouch if btn_pressed("down") else decision
+							decision = try_dash("left", States.DASH_F, decision)
+							decision = try_dash("right", States.DASH_B, decision)
+				States.WALK_B:
+					decision = try_walk(WalkDirections.BACK, decision)
+				States.WALK_F:
+					decision = try_walk(WalkDirections.FORWARD, decision)
+			decision = States.CRCH if btn_pressed("down") else decision
 			decision = try_jump(null, decision)
 			decision = try_attack(decision)
 # Order: release down, attack, b/h
-		states.crouch:
+		States.CRCH:
 			decision = try_walk(null, decision) if !btn_pressed("down") else decision
 			decision = try_attack(decision)
 # Order: jump, attack, b/h
-		states.jump_neutral, states.jump_left, states.jump_right:
+		States.JUMP_N, States.JUMP_L, States.JUMP_R:
 			decision = try_jump(null, decision, false)
 			decision = try_attack(decision)
 # Special cases for attack canceling
-		states.attack_normal:
+		States.ATCK_NRML:
 			if attack_connected: #if the attack landed at all
 				# jump canceling normals
 				decision = try_jump(null, decision)
 				# magic series
-				if decision == states.attack_normal:
+				if decision == States.ATCK_NRML:
 					match current_attack:
 						"attack_normal/a":
 							magic_series(1)
@@ -721,50 +720,50 @@ func handle_air_stun():
 
 func update_character_state():
 	match current_state:
-		states.idle:
+		States.IDLE:
 			velocity.x = 0
 			jump_count = jump_total
-		states.crouch:
+		States.CRCH:
 			velocity.x = 0
 			jump_count = jump_total
-		states.walk_forward:
+		States.WALK_F:
 			jump_count = jump_total
 			if not $StopPlayerIntersection.has_overlapping_areas():
 				velocity.x = (1 if right_facing else -1) * walk_speed
 			else:
 				velocity.x = 0
-		states.walk_back:
+		States.WALK_B:
 			jump_count = jump_total
 			velocity.x = (-1 if right_facing else 1) * walk_speed
-		states.dash_forward:
+		States.DASH_F:
 			jump_count = jump_total
 			if not $StopPlayerIntersection.has_overlapping_areas():
 				velocity.x = (1 if right_facing else -1) * walk_speed * 1.5
 			else:
 				velocity.x = 0
-		states.dash_back:
+		States.DASH_B:
 			jump_count = jump_total
 			velocity.x = (-1 if right_facing else 1) * walk_speed * 1.5
-		states.jump_right_init, states.jump_left_init, states.jump_neutral_init, states.jump_neutral_air_init, states.jump_left_air_init, states.jump_right_air_init:
+		States.JUMP_R_I, States.JUMP_L_I, States.JUMP_N_I, States.JUMP_N_A_I, States.JUMP_L_A_I, States.JUMP_R_A_I:
 			jump_count -= 1
 			velocity.y = jump_height
-		states.jump_right, states.jump_right_no_act:
+		States.JUMP_R, States.JUMP_R_NO_ACT:
 			velocity.x = walk_speed
-		states.jump_left, states.jump_left_no_act:
+		States.JUMP_L, States.JUMP_L_NO_ACT:
 			velocity.x = -1 * walk_speed
-		states.jump_neutral, states.jump_neutral_no_act:
+		States.JUMP_N, States.JUMP_N_NO_ACT:
 			velocity.x = 0
-		states.hurt_grabbed:
+		States.HURT_GRB:
 			velocity.x = 0
 			velocity.y = -gravity #negative gravity is used here to undo gravity and halt all movement
-		states.hurt_high, states.hurt_low, states.hurt_crouch, states.block_high, states.block_low:
+		States.HURT_HGH, States.HURT_LOW, States.HURT_CRCH, States.BLCK_HGH, States.BLCK_LOW:
 			if stun_time_current == stun_time_start:
 				velocity.x += (-1 if right_facing else 1) * kback.x
-		states.hurt_fall, states.hurt_bounce, states.block_air, states.outro_bounce, states.outro_fall:
+		States.HURT_FALL, States.HURT_BNCE, States.BLCK_AIR, States.OUTRO_BNCE, States.OUTRO_FALL:
 			if stun_time_current == stun_time_start:
 				velocity.x += (-1 if right_facing else 1) * kback.x
 				velocity.y += kback.y
-		states.hurt_lie, states.outro_lie:
+		States.HURT_LIE, States.OUTRO_LIE:
 			velocity.x *= GROUND_SLIDE_FRICTION
 
 	velocity.y += gravity
@@ -778,89 +777,89 @@ func update_character_state():
 func resolve_state_transitions():
 	# complete jump bug fix
 	match previous_state:
-		states.jump_neutral_init, states.jump_neutral_air_init:
-			previous_state = states.jump_neutral
-		states.jump_right_init, states.jump_right_air_init:
-			previous_state = states.jump_right
-		states.jump_left_init, states.jump_left_air_init:
-			previous_state = states.jump_left
+		States.JUMP_N_I, States.JUMP_N_A_I:
+			previous_state = States.JUMP_N
+		States.JUMP_R_I, States.JUMP_R_A_I:
+			previous_state = States.JUMP_R
+		States.JUMP_L_I, States.JUMP_L_A_I:
+			previous_state = States.JUMP_L
 	match current_state:
-		states.idle, states.walk_forward, states.walk_back, states.crouch when game_ended:
-			set_state(states.round_win)
+		States.IDLE, States.WALK_F, States.WALK_B, States.CRCH when game_ended:
+			set_state(States.ROUND_WIN)
 			return
-		states.intro:
+		States.INTRO:
 			if not animate.is_playing():
-				set_state(states.idle)
+				set_state(States.IDLE)
 				previous_state = current_state
-		states.round_win:
+		States.ROUND_WIN:
 			previous_state = current_state
-			set_state(states.round_win)
-		states.set_win:
+			set_state(States.ROUND_WIN)
+		States.SET_WIN:
 			previous_state = current_state
-			set_state(states.set_win)
-		states.get_up:
+			set_state(States.SET_WIN)
+		States.GET_UP:
 			if not animate.is_playing():
 				set_state(previous_state)
-		states.dash_back:
+		States.DASH_B:
 			if animation_ended:
-				set_state(states.walk_back)
-		states.dash_forward:
+				set_state(States.WALK_B)
+		States.DASH_F:
 			if animation_ended:
-				set_state(states.walk_forward)
-		states.jump_right_init, states.jump_right_air_init:
-			if not is_on_floor(): set_state(states.jump_right)
-		states.jump_left_init, states.jump_left_air_init:
-			if not is_on_floor(): set_state(states.jump_left)
-		states.jump_neutral_init, states.jump_neutral_air_init:
-			if not is_on_floor(): set_state(states.jump_neutral)
-		states.jump_right, states.jump_left, states.jump_neutral, states.jump_right_no_act, states.jump_neutral_no_act, states.jump_left_no_act:
+				set_state(States.WALK_F)
+		States.JUMP_R_I, States.JUMP_R_A_I:
+			if not is_on_floor(): set_state(States.JUMP_R)
+		States.JUMP_L_I, States.JUMP_L_A_I:
+			if not is_on_floor(): set_state(States.JUMP_L)
+		States.JUMP_N_I, States.JUMP_N_A_I:
+			if not is_on_floor(): set_state(States.JUMP_N)
+		States.JUMP_R, States.JUMP_L, States.JUMP_N, States.JUMP_R_NO_ACT, States.JUMP_N_NO_ACT, States.JUMP_L_NO_ACT:
 			if is_on_floor():
 				var new_walk = try_walk(null, current_state)
 				set_state(new_walk)
-		states.block_air:
+		States.BLCK_AIR:
 			reduce_stun()
 			if is_on_floor():
 				stun_time_current = 0
 			handle_air_stun()
-		states.hurt_high, states.hurt_low, states.hurt_crouch, states.block_high, states.block_low:
+		States.HURT_HGH, States.HURT_LOW, States.HURT_CRCH, States.BLCK_HGH, States.BLCK_LOW:
 			reduce_stun()
 			handle_stand_stun()
-		states.hurt_fall:
+		States.HURT_FALL:
 			reduce_stun()
 			handle_air_stun()
 			if check_true and stun_time_current < stun_time_start:
-				set_state(states.hurt_lie)
-		states.hurt_bounce:
+				set_state(States.HURT_LIE)
+		States.HURT_BNCE:
 			reduce_stun()
 			if check_true:
-				set_state(states.hurt_fall)
+				set_state(States.HURT_FALL)
 				set_stun(stun_time_start)
 				kback.y *= -1
-		states.outro_bounce:
+		States.OUTRO_BNCE:
 			reduce_stun()
 			if check_true:
-				set_state(states.outro_fall)
+				set_state(States.OUTRO_FALL)
 				set_stun(stun_time_start)
 				kback.y *= -1
-		states.hurt_lie:
+		States.HURT_LIE:
 			reduce_stun()
 			if stun_time_current == 0:
-				set_state(states.get_up)
-		states.outro_fall:
+				set_state(States.GET_UP)
+		States.OUTRO_FALL:
 			reduce_stun()
 			if check_true:
-				set_state(states.outro_lie)
-		states.attack_normal, states.attack_command, states.attack_motion:
+				set_state(States.OUTRO_LIE)
+		States.ATCK_NRML, States.ATCK_CMND, States.ATCK_MOTN:
 			if animation_ended:
 				if attack_return_state.get(current_attack) != null:
 					set_state(attack_return_state[current_attack])
 				else:
 					set_state(previous_state)
-		states.attack_grab:
+		States.ATCK_GRAB:
 			if animation_ended:
 				update_attack(grab_return_states[current_attack][attack_connected])
-				set_state(states.attack_normal)
-		states.jump_attack:
+				set_state(States.ATCK_NRML)
+		States.ATCK_JUMP:
 			if animation_ended:
 				if attack_return_state.get(current_attack) != null:
 					set_state(attack_return_state[current_attack])
@@ -876,21 +875,21 @@ func update_character_animation():
 		animate.play(current_attack + (animate.anim_right_suf if right_facing else animate.anim_left_suf))
 	else:
 		match current_state:
-			states.walk_forward when right_facing:
+			States.WALK_F when right_facing:
 				animate.play(move_right_anim)
-			states.walk_forward when !right_facing:
+			States.WALK_F when !right_facing:
 				animate.play(move_left_anim)
-			states.walk_back when right_facing:
+			States.WALK_B when right_facing:
 				animate.play(move_left_anim)
-			states.walk_back when !right_facing:
+			States.WALK_B when !right_facing:
 				animate.play(move_right_anim)
-			states.dash_forward when right_facing:
+			States.DASH_F when right_facing:
 				animate.play(dash_right_anim)
-			states.dash_forward when !right_facing:
+			States.DASH_F when !right_facing:
 				animate.play(dash_left_anim)
-			states.dash_back when right_facing:
+			States.DASH_B when right_facing:
 				animate.play(dash_left_anim)
-			states.dash_back when !right_facing:
+			States.DASH_B when !right_facing:
 				animate.play(dash_right_anim)
 			_:
 				animate.play(basic_anim_state_dict[current_state] + (animate.anim_right_suf if right_facing else animate.anim_left_suf))
@@ -933,13 +932,13 @@ func _on_block(on_block_data : Array):
 	add_meter(on_block_data[0])
 
 
-func handle_damage(attack : Hitbox, blocked : bool, next_state : states):
+func handle_damage(attack : Hitbox, blocked : bool, next_state : States):
 	if not blocked:
 		health -= attack.damage_hit * defense_mult
 		set_stun(attack.stun_hit)
 		kback = attack.kback_hit
 		if health <= 0:
-			set_state(states.outro_bounce)
+			set_state(States.OUTRO_BNCE)
 			kback.y += 6.5
 			emit_signal(&"defeated")
 		else:
@@ -963,7 +962,7 @@ func handle_damage(attack : Hitbox, blocked : bool, next_state : states):
 # If attack isn't blocked, return true
 func try_block(attack : Hitbox,
 			ground_block_rules : Array, air_block_rules : Array,
-			fs_stand : states, fs_crouch : states, fs_air : states) -> bool:
+			fs_stand : States, fs_crouch : States, fs_air : States) -> bool:
 	# still in hitstun or just can't block
 	if _in_hurting_state() or _in_attacking_state() or in_dashing_state():
 		if not in_air_state():
@@ -1000,10 +999,10 @@ func try_block(attack : Hitbox,
 					handle_damage(attack, false, fs_stand)
 					return true
 		if btn_pressed("down"):
-			handle_damage(attack, true, states.block_low)
+			handle_damage(attack, true, States.BLCK_LOW)
 			return false
 		else:
-			handle_damage(attack, true, states.block_high)
+			handle_damage(attack, true, States.BLCK_HGH)
 			return false
 	else:
 		for check_input in range(len(directions)):
@@ -1013,7 +1012,7 @@ func try_block(attack : Hitbox,
 			):
 				handle_damage(attack, false, fs_air)
 				return true
-		handle_damage(attack, true, states.block_air)
+		handle_damage(attack, true, States.BLCK_AIR)
 		return false
 
 
@@ -1027,7 +1026,7 @@ func try_grab(attack_dmg: float, on_ground : bool) -> bool:
 	health = max(health - attack_dmg * defense_mult, 1)
 	set_stun(-1)
 	kback = Vector3.ZERO
-	set_state(states.hurt_grabbed)
+	set_state(States.HURT_GRB)
 	return true
 
 # Only runs when a hitbox is overlapping, return rules explained above
@@ -1035,26 +1034,26 @@ func _damage_step(attack : Hitbox) -> bool:
 	match attack.hit_type:
 		"mid":
 			return try_block(attack, block.away_any, block.away_any,
-					states.hurt_high, states.hurt_crouch, states.hurt_fall)
+					States.HURT_HGH, States.HURT_CRCH, States.HURT_FALL)
 		"high":
 			return try_block(attack, block.away_high, block.away_any,
-					states.hurt_high, states.hurt_crouch, states.hurt_fall)
+					States.HURT_HGH, States.HURT_CRCH, States.HURT_FALL)
 		"low":
 			return try_block(attack, block.away_low, block.away_any,
-					states.hurt_low, states.hurt_crouch, states.hurt_fall)
+					States.HURT_LOW, States.HURT_CRCH, States.HURT_FALL)
 		"launch":
 			return try_block(attack, block.away_any, block.away_any,
-					states.hurt_fall, states.hurt_fall, states.hurt_fall)
+					States.HURT_FALL, States.HURT_FALL, States.HURT_FALL)
 		"sweep":
 			return try_block(attack, block.away_low, block.away_any,
-					states.hurt_lie, states.hurt_lie, states.hurt_fall)
+					States.HURT_LIE, States.HURT_LIE, States.HURT_FALL)
 		"slam":
 			return try_block(attack, block.away_high, block.away_any,
-					states.hurt_bounce, states.hurt_bounce, states.hurt_bounce)
+					States.HURT_BNCE, States.HURT_BNCE, States.HURT_BNCE)
 		"grab_ground":
 			return try_grab(attack.damage_hit, true)
 		"grab_air":
 			return try_grab(attack.damage_hit, false)
 		_: # this will definitely not be a bug in the future
 			return try_block(attack, block.nope, block.nope,
-					states.hurt_high, states.hurt_crouch, states.hurt_fall)
+					States.HURT_HGH, States.HURT_CRCH, States.HURT_FALL)

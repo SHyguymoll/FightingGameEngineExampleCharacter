@@ -72,7 +72,7 @@ func make_hud():
 	$HUD/HealthAndTime/P1Group/NameAndPosVel/Char.text = p1.char_name
 	$HUD/HealthAndTime/P1Group/NameAndPosVel/PosVel.text = (
 			str(p1.position) + "\n" + str(p1.velocity))
-	$HUD/P1Stats/State.text = p1.states.keys()[p1.current_state]
+	$HUD/P1Stats/State.text = p1.States.keys()[p1.current_state]
 
 	# player 2
 	$HUD/HealthAndTime/P2Group/Health.max_value = p2.health
@@ -80,7 +80,7 @@ func make_hud():
 	$HUD/HealthAndTime/P2Group/NameAndPosVel/Char.text = p2.char_name
 	$HUD/HealthAndTime/P2Group/NameAndPosVel/PosVel.text = (
 			str(p2.position) + "\n" + str(p2.velocity))
-	$HUD/P2Stats/State.text = p2.states.keys()[p2.current_state]
+	$HUD/P2Stats/State.text = p2.States.keys()[p2.current_state]
 
 	# set up rounds
 	var p1_round_group = $HUD/HealthAndTime/P1Group/Rounds
@@ -123,7 +123,7 @@ func make_hud():
 func update_hud():
 	# player 1
 	$HUD/HealthAndTime/P1Group/Health.value = p1.health
-	$HUD/P1Stats/State.text = p1.states.keys()[p1.current_state]
+	$HUD/P1Stats/State.text = p1.States.keys()[p1.current_state]
 	if "attack" in $HUD/P1Stats/State.text:
 		$HUD/P1Stats/State.text += " : " + p1.current_attack
 	$HUD/HealthAndTime/P1Group/NameAndPosVel/PosVel.text = (
@@ -132,7 +132,7 @@ func update_hud():
 
 	# player 2
 	$HUD/HealthAndTime/P2Group/Health.value = p2.health
-	$HUD/P2Stats/State.text = p2.states.keys()[p2.current_state]
+	$HUD/P2Stats/State.text = p2.States.keys()[p2.current_state]
 	if "attack" in $HUD/P2Stats/State.text:
 		$HUD/P2Stats/State.text += " : " + p2.current_attack
 	$HUD/HealthAndTime/P2Group/NameAndPosVel/PosVel.text = (

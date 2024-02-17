@@ -4917,26 +4917,9 @@ collision_layer = 0
 axis_lock_linear_z = true
 script = ExtResource("1_5p4re")
 animate = NodePath("AnimationPlayer")
-basic_anim_state_dict = null
-animation_ended = null
-move_left_anim = null
-move_right_anim = null
-dash_left_anim = null
-dash_right_anim = null
-meter = null
-METER_MAX = null
-damage_mult = null
-defense_mult = null
-walk_speed = null
-jump_total = null
-jump_height = null
 gravity = 0.0
-min_fall_vel = null
-GROUND_SLIDE_FRICTION = null
-block = null
 char_name = "Godot Guy"
 health = 100.0
-post_win_quote = null
 ui_elements_packed = {
 "player1": [ExtResource("2_xjhia")],
 "player2": [ExtResource("3_yl6a6")]
@@ -4945,12 +4928,6 @@ ui_elements_training_packed = {
 "player1": [ExtResource("4_m71sm")],
 "player2": [ExtResource("5_fjkep")]
 }
-BUTTONCOUNT = null
-JUST_PRESSED_BUFFER = null
-DASH_INPUT_LENIENCY = null
-MOTION_INPUT_LENIENCY = null
-start_x_offset = null
-grabbed_offset = null
 grab_point = NodePath("Grabbing")
 
 [node name="DebugData" type="Label3D" parent="."]
