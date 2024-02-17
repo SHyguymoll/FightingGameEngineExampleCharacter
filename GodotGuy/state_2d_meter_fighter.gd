@@ -213,7 +213,7 @@ var attack_return_state := {
 	"attack_motion/projectile": states.idle,
 	"attack_motion/uppercut": states.jump_neutral_no_act,
 	"attack_motion/spin_approach": states.jump_neutral_no_act,
-	"attack_motion/spin_approach_air": states.jump_neutral_no_act,
+	"attack_motion/spin_approach_air": States.jump_neutral,
 }
 
 var grab_return_states := {
