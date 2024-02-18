@@ -446,6 +446,14 @@ func try_super_attack(cur_state: States) -> States:
 				update_attack("attack_super/projectile_air")
 				jump_count = 0
 				return States.ATCK_SUPR
+		States.ATCK_MOTN:
+			match current_attack:
+				"attack_motion/uppercut", "attack_motion/spin_approach", "attack_motion/spin_approach_air":
+					if motion_input_check(GG_INPUT) and one_atk_just_pressed() and meter >= 50:
+						meter -= 50
+						update_attack("attack_super/projectile_air")
+						jump_count = 0
+						return States.ATCK_SUPR
 
 	return cur_state
 
@@ -746,6 +754,9 @@ func handle_input() -> void:
 							magic_series(3)
 					# special cancelling
 					decision = try_special_attack(decision)
+		States.ATCK_MOTN:
+			if attack_hurt:
+				decision = try_super_attack(decision)
 	set_state(decision)
 
 
