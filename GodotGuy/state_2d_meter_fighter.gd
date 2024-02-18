@@ -64,8 +64,6 @@ const GG_INPUT = [
 	[6,2,1,4,5,6],
 ]
 
-const INFINITE_STUN := -1
-
 const GRABBED_OFFSET_X = 0.46
 
 @export_category("Animation Details")
@@ -377,17 +375,6 @@ func set_state(new_state: States):
 	if current_state != new_state:
 		current_state = new_state
 		update_character_animation()
-
-# Functions used only in this script
-func set_stun(value):
-	stun_time_start = value
-	GlobalKnowledge.global_hitstop = int(abs(value)/4)
-	stun_time_current = stun_time_start + 1 if stun_time_start != INFINITE_STUN else INFINITE_STUN
-
-
-func reduce_stun():
-	if stun_time_start != INFINITE_STUN:
-		stun_time_current = max(0, stun_time_current - 1)
 
 
 func ground_cancelled_attack_ended() -> bool:

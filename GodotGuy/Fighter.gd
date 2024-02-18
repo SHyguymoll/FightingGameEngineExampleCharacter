@@ -7,6 +7,8 @@ signal hitbox_created
 signal projectile_created
 signal defeated
 
+const INFINITE_STUN := -1
+
 ## This script holds the main components of a Fighter.[br]
 ## A Fighter has several variables and methods which are accessed and called by the game.[br]
 ## input_step() is called with the latest buffer of inputs.[br]
@@ -126,6 +128,17 @@ func _initialize_boxes() -> void:
 	else:
 		$Hurtbox.collision_mask = 4
 		hitbox_layer = 2
+
+
+func set_stun(value):
+	stun_time_start = value
+	GlobalKnowledge.global_hitstop = int(abs(value)/4)
+	stun_time_current = stun_time_start + 1 if stun_time_start != INFINITE_STUN else INFINITE_STUN
+
+
+func reduce_stun():
+	if stun_time_start != INFINITE_STUN:
+		stun_time_current = max(0, stun_time_current - 1)
 
 # useful button handling functions
 func btn_state(input: String, ind: int):
