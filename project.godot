@@ -16,7 +16,7 @@ config/features=PackedStringArray("4.2")
 
 [autoload]
 
-GlobalKnowledge="*res://Test Character/global_knowledge.gd"
+GameGlobal="*res://Test Character/game_global.gd"
 
 [display]
 

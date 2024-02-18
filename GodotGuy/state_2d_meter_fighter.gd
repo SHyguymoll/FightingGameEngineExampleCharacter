@@ -200,13 +200,13 @@ Current Animation : %s
 func _input_step(recv_inputs) -> void:
 	inputs = recv_inputs
 
-	if GlobalKnowledge.global_hitstop == 0:
+	if GameGlobal.global_hitstop == 0:
 		resolve_state_transitions()
 	handle_input()
-	if GlobalKnowledge.global_hitstop == 0:
+	if GameGlobal.global_hitstop == 0:
 		update_character_state()
 
-	_animate.speed_scale = float(GlobalKnowledge.global_hitstop == 0)
+	_animate.speed_scale = float(GameGlobal.global_hitstop == 0)
 	reset_facing()
 
 

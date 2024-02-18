@@ -132,7 +132,7 @@ func _initialize_boxes() -> void:
 
 func set_stun(value):
 	stun_time_start = value
-	GlobalKnowledge.global_hitstop = int(abs(value)/4)
+	GameGlobal.global_hitstop = int(abs(value)/4)
 	stun_time_current = stun_time_start + 1 if stun_time_start != INFINITE_STUN else INFINITE_STUN
 
 
