@@ -2123,6 +2123,13 @@ tracks/12/keys = {
 "update": 1,
 "values": [-0.5]
 }
+tracks/13/type = "position_3d"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("../Grabbing")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = PackedFloat32Array(0, 1, 1.04053, 0.718174, 0)
 
 [sub_resource type="Animation" id="Animation_rk4iq"]
 resource_name = "grab_whiff_right"
@@ -4917,7 +4924,6 @@ collision_layer = 0
 axis_lock_linear_z = true
 script = ExtResource("1_5p4re")
 _animate = NodePath("AnimationPlayer")
-gravity = 0.0
 grab_point = NodePath("Grabbing")
 char_name = "Godot Guy"
 health = 100.0
@@ -4995,6 +5001,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.642, 0)
 shape = ExtResource("3_8q5n8")
 
 [node name="Grabbing" parent="." instance=ExtResource("7_eysur")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.04053, 0.718174, 0)
 
 [node name="SpriteMain" type="Sprite3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67, 0)
@@ -5003,8 +5010,7 @@ no_depth_test = true
 texture = ExtResource("14_03fpi")
 
 [node name="SpriteAttack" type="Sprite3D" parent="."]
-transform = Transform3D(0.961072, 0, 0, 0, 0.318777, 0, 0, 0, 1, 1.30213, 0.50057, 0.0399915)
-modulate = Color(1, 0, 0, 1)
+transform = Transform3D(0.322331, 0, 0, 0, 0.322331, 0, 0, 0, 1, -0.616, 0.417, 0.04)
 no_depth_test = true
 texture = ExtResource("14_03fpi")
 
