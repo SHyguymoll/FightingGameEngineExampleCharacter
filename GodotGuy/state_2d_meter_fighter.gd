@@ -6,7 +6,7 @@ extends Fighter
 ## Dashing[br]
 ## Jump-Cancelling[br]
 ## The Magic Series (Stronger Attacks Cancel Weaker Attacks)[br]
-## Special Cancelling[br]
+## Special Cancelling (and Super Cancelling)[br]
 ## Super Meter[br]
 
 ## State transitions are handled by a FSM implemented as match statements in the input_step.
@@ -18,7 +18,7 @@ enum States {
 	JUMP_L_A_I, JUMP_N_A_I, JUMP_R_A_I, # jump from air initial
 	JUMP_L, JUMP_N, JUMP_R, # aerial actionable
 	JUMP_L_NO_ACT, JUMP_N_NO_ACT, JUMP_R_NO_ACT, # aerial not actionable
-	ATCK_NRML, ATCK_CMND, ATCK_MOTN, ATCK_GRAB, ATCK_JUMP, # handling attacks
+	ATCK_NRML, ATCK_CMND, ATCK_MOTN, ATCK_GRAB, ATCK_JUMP, ATCK_SUPR, # attacking
 	BLCK_HGH, BLCK_LOW, BLCK_AIR, GET_UP, # handling getting attacked well
 	HURT_HGH, HURT_LOW, HURT_CRCH, HURT_GRB, # not handling getting attacked well
 	HURT_FALL, HURT_LIE, HURT_BNCE, # REALLY not handling getting attacked well
@@ -263,6 +263,7 @@ func _in_attacking_state() -> bool:
 		States.ATCK_NRML,
 		States.ATCK_CMND,
 		States.ATCK_MOTN,
+		States.ATCK_SUPR,
 		States.ATCK_GRAB,
 		States.ATCK_JUMP,
 	]
@@ -438,13 +439,13 @@ func try_super_attack(cur_state: States) -> States:
 			if motion_input_check(GG_INPUT) and one_atk_just_pressed() and meter >= 50:
 				meter -= 50
 				update_attack("attack_super/projectile")
-				return States.ATCK_MOTN
+				return States.ATCK_SUPR
 		States.JUMP_N, States.JUMP_L, States.JUMP_R:
 			if motion_input_check(GG_INPUT) and one_atk_just_pressed() and meter >= 50:
 				meter -= 50
 				update_attack("attack_super/projectile_air")
 				jump_count = 0
-				return States.ATCK_MOTN
+				return States.ATCK_SUPR
 
 	return cur_state
 
@@ -885,7 +886,7 @@ func resolve_state_transitions():
 			reduce_stun()
 			if check_true:
 				set_state(States.OUTRO_LIE)
-		States.ATCK_NRML, States.ATCK_CMND, States.ATCK_MOTN:
+		States.ATCK_NRML, States.ATCK_CMND, States.ATCK_MOTN, States.ATCK_SUPR:
 			if animation_ended:
 				if attack_return_state.get(current_attack) != null:
 					set_state(attack_return_state[current_attack])
