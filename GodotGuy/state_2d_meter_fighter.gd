@@ -478,6 +478,16 @@ func try_special_attack(cur_state: States) -> States:
 			if motion_input_check(QUARTER_CIRCLE_BACK + TIGER_KNEE_BACK) and one_atk_just_pressed():
 				update_attack("attack_motion/spin_approach_air")
 				return States.ATCK_MOTN
+		States.ATCK_NRML:
+			match current_attack:
+				"attack_normal/c", "attack_command/crouch_c":
+					if motion_input_check(Z_MOTION_FORWARD) and one_atk_just_pressed():
+						update_attack("attack_motion/uppercut")
+						jump_count = 0
+						return States.ATCK_MOTN
+					if motion_input_check(QUARTER_CIRCLE_BACK) and one_atk_just_pressed():
+						update_attack("attack_motion/spin_approach")
+						return States.ATCK_MOTN
 
 	return cur_state
 
