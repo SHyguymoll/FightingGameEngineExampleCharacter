@@ -421,8 +421,18 @@ func create_dummy_buffer(button_count : int):
 	return dummy_buffer
 
 func handle_hitbox_collisions():
-	for hitbox in $Hitboxes.get_children():
-		pass
+	var hitbox_area_pairs = {}
+	var to_remove = []
+	for hitbox in ($Hitboxes.get_children() as Array[Hitbox]):
+		hitbox_area_pairs[hitbox] = hitbox.get_overlapping_areas()
+	for candidate in hitbox_area_pairs:
+		if len(hitbox_area_pairs[candidate]) > 0:
+			for check in hitbox_area_pairs[candidate]:
+				if (candidate as Hitbox).hit_priority <= (check as Hitbox).hit_priority:
+					to_remove.append(candidate)
+					break
+	for remove in (to_remove as Array[Hitbox]):
+		remove.free()
 
 func move_inputs_and_iterate(fake_inputs):
 	if fake_inputs:

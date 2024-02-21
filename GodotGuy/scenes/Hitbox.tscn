@@ -5,7 +5,6 @@
 [node name="Hitboxes" type="Area3D"]
 collision_layer = 0
 collision_mask = 0
-monitoring = false
 script = ExtResource("1_a3bkx")
 
 [node name="READ ME" type="Label" parent="."]

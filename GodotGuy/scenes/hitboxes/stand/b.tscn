@@ -8,9 +8,8 @@
 size = Vector3(0.943949, 0.585163, 1)
 
 [node name="Hitboxes" type="Area3D"]
-collision_layer = 0
-collision_mask = 0
-monitoring = false
+collision_layer = 32
+collision_mask = 32
 script = ExtResource("1_jp6mn")
 damage_hit = 4.0
 stun_hit = 12
