@@ -150,9 +150,9 @@ collision_layer = 0
 collision_mask = 0
 monitoring = false
 script = ExtResource("3_08xxv")
-lifetime = -1
 on_hit_sound = ExtResource("4_rix0r")
 on_block_sound = ExtResource("5_6t4oa")
+lifetime = -1
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
 shape = SubResource("BoxShape3D_qatpa")

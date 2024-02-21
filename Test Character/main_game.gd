@@ -4,7 +4,6 @@ extends Node3D
 var p1 : Fighter
 var p2 : Fighter
 var stage : Stage
-var projectiles : Array[Projectile]
 
 #required variables from InputHandle.gd
 var p1_buttons = [false, false, false, false, false, false, false, false, false, false]
@@ -421,6 +420,10 @@ func create_dummy_buffer(button_count : int):
 
 	return dummy_buffer
 
+func handle_hitbox_collisions():
+	for hitbox in $Hitboxes.get_children():
+		pass
+
 func move_inputs_and_iterate(fake_inputs):
 	if fake_inputs:
 		p1._input_step(create_dummy_buffer(p1.BUTTONCOUNT))
@@ -438,6 +441,7 @@ func move_inputs_and_iterate(fake_inputs):
 	build_input_tracker(p1_buf, p2_buf)
 
 	if not fake_inputs:
+		handle_hitbox_collisions()
 		var p1_attackers = (p1._return_attackers() as Array[Hitbox])
 		for p1_attacker in p1_attackers:
 			var hit = p1._damage_step(p1_attacker)
@@ -500,18 +504,17 @@ func spawn_audio(sound: AudioStream):
 	new_audio.stream = sound
 	new_audio.finished.connect(func(): new_audio.queue_free())
 	new_audio.autoplay = true
-	add_child(new_audio)
+	$Audio.add_child(new_audio)
 
 func register_hitbox(hitbox):
-	add_child(hitbox, true)
+	$Hitboxes.add_child(hitbox, true)
 
 func register_projectile(projectile):
 	projectile.projectile_ended.connect(delete_projectile)
-	add_child(projectile, true)
-	projectiles.append(projectile)
+	$Projectiles.add_child(projectile, true)
 
 func delete_projectile(projectile):
-	projectiles.erase(projectile)
+	projectile.queue_free()
 
 func grabbed(player):
 	if player:
@@ -529,7 +532,7 @@ func player_defeated():
 	moment = moments.ROUND_END
 	p1.game_ended = true
 	p2.game_ended = true
-	for projectile in projectiles:
+	for projectile in ($Projectiles.get_children() as Array[Projectile]):
 		projectile.destroy()
 
 func training_mode_settings():
@@ -551,7 +554,7 @@ func _physics_process(_delta):
 			update_hud()
 		moments.GAME:
 			# handle projectiles
-			for proj in projectiles:
+			for proj in ($Projectiles.get_children() as Array[Projectile]):
 				proj.tick()
 			create_inputs()
 			move_inputs_and_iterate(false)
