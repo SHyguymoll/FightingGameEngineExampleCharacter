@@ -420,19 +420,20 @@ func create_dummy_buffer(button_count : int):
 
 	return dummy_buffer
 
-func handle_hitbox_collisions():
-	var hitbox_area_pairs = {}
-	var to_remove = []
+func hitbox_hitbox_collisions():
 	for hitbox in ($Hitboxes.get_children() as Array[Hitbox]):
-		hitbox_area_pairs[hitbox] = hitbox.get_overlapping_areas()
-	for candidate in hitbox_area_pairs:
-		if len(hitbox_area_pairs[candidate]) > 0:
-			for check in hitbox_area_pairs[candidate]:
-				if (candidate as Hitbox).hit_priority <= (check as Hitbox).hit_priority:
-					to_remove.append(candidate)
-					break
-	for remove in (to_remove as Array[Hitbox]):
-		remove.free()
+		if hitbox.invalid:
+			continue
+		for check in hitbox.get_overlapping_areas():
+			if hitbox.collision_layer == check.collision_layer:
+				continue
+			if (hitbox as Hitbox).hit_priority <= (check as Hitbox).hit_priority:
+				print("%s collided with %s and is now neutralized" % [hitbox, check])
+				hitbox.invalid = true
+				break
+			else:
+				print("%s collided with %s and is now neutralized" % [check, hitbox])
+				hitbox.invalid = true
 
 func move_inputs_and_iterate(fake_inputs):
 	if fake_inputs:
@@ -451,9 +452,11 @@ func move_inputs_and_iterate(fake_inputs):
 	build_input_tracker(p1_buf, p2_buf)
 
 	if not fake_inputs:
-		handle_hitbox_collisions()
+		hitbox_hitbox_collisions()
 		var p1_attackers = (p1._return_attackers() as Array[Hitbox])
 		for p1_attacker in p1_attackers:
+			if p1_attacker.invalid:
+				continue
 			var hit = p1._damage_step(p1_attacker)
 			if hit:
 				spawn_audio(p1_attacker.on_hit_sound)
@@ -470,6 +473,8 @@ func move_inputs_and_iterate(fake_inputs):
 
 		var p2_attackers = (p2._return_attackers() as Array[Hitbox])
 		for p2_attacker in p2_attackers:
+			if p2_attacker.invalid:
+				continue
 			var hit = p2._damage_step(p2_attacker)
 			if hit:
 				spawn_audio(p2_attacker.on_hit_sound)
