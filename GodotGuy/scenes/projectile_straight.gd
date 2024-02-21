@@ -7,6 +7,7 @@ signal projectile_ended(proj)
 @export var loop_anim_left : StringName
 @export var loop_anim_right : StringName
 @export var end_anim : StringName
+@export var hitbox : Hitbox
 var right_facing : bool
 var type : int
 var source : int
@@ -31,35 +32,37 @@ func _ready():
 	velocity.x *= 1 if right_facing else -1
 	match type:
 		types.STRAIGHT, types.DIAGONAL_DOWN:
-			($Hitbox as Hitbox).damage_hit = 5
-			($Hitbox as Hitbox).damage_block = 1
-			($Hitbox as Hitbox).stun_hit = 10
-			($Hitbox as Hitbox).stun_block = 5
-			($Hitbox as Hitbox).kback_hit = Vector3(4, 3, 0)
-			($Hitbox as Hitbox).kback_block = Vector3(2, -2, 0)
-			($Hitbox as Hitbox).hit_type = "mid"
-			($Hitbox as Hitbox).on_hit = [8]
-			($Hitbox as Hitbox).on_block = [4]
+			hitbox.damage_hit = 5
+			hitbox.damage_block = 1
+			hitbox.stun_hit = 10
+			hitbox.stun_block = 5
+			hitbox.kback_hit = Vector3(4, 3, 0)
+			hitbox.kback_block = Vector3(2, -2, 0)
+			hitbox.hit_type = "mid"
+			hitbox.on_hit = [8]
+			hitbox.on_block = [4]
 		types.SUPER:
-			($Hitbox as Hitbox).damage_hit = 20
-			($Hitbox as Hitbox).damage_block = 10
-			($Hitbox as Hitbox).stun_hit = 10
-			($Hitbox as Hitbox).stun_block = 5
-			($Hitbox as Hitbox).kback_hit = Vector3(4, 7, 0)
-			($Hitbox as Hitbox).kback_block = Vector3(2, -2, 0)
-			($Hitbox as Hitbox).hit_type = "launch"
-			($Hitbox as Hitbox).on_hit = [0]
-			($Hitbox as Hitbox).on_block = [0]
+			hitbox.damage_hit = 20
+			hitbox.damage_block = 10
+			hitbox.stun_hit = 10
+			hitbox.stun_block = 5
+			hitbox.kback_hit = Vector3(4, 7, 0)
+			hitbox.kback_block = Vector3(2, -2, 0)
+			hitbox.hit_type = "launch"
+			hitbox.hit_priority = 10
+			hitbox.on_hit = [0]
+			hitbox.on_block = [0]
 		types.DIAGONAL_DOWN_SUPER:
-			($Hitbox as Hitbox).damage_hit = 2
-			($Hitbox as Hitbox).damage_block = 1
-			($Hitbox as Hitbox).stun_hit = 10
-			($Hitbox as Hitbox).stun_block = 5
-			($Hitbox as Hitbox).kback_hit = Vector3(-2, 2, 0)
-			($Hitbox as Hitbox).kback_block = Vector3(2, -2, 0)
-			($Hitbox as Hitbox).hit_type = "launch"
-			($Hitbox as Hitbox).on_hit = [0]
-			($Hitbox as Hitbox).on_block = [0]
+			hitbox.damage_hit = 2
+			hitbox.damage_block = 1
+			hitbox.stun_hit = 10
+			hitbox.stun_block = 5
+			hitbox.kback_hit = Vector3(-2, 2, 0)
+			hitbox.kback_block = Vector3(2, -2, 0)
+			hitbox.hit_type = "launch"
+			hitbox.hit_priority = 10
+			hitbox.on_hit = [0]
+			hitbox.on_block = [0]
 	$AnimationPlayer.play(start_anim)
 
 func tick():
@@ -89,9 +92,13 @@ func _on_animation_player_animation_finished(anim_name):
 			emit_signal(&"projectile_ended", self)
 
 func _on_projectile_contact(other):
+	if hitbox == null:
+		return
 	var o_par = other.get_parent()
 	if other is Stage or o_par is Stage:
 		destroy()
 	if o_par is Projectile:
-		if source != other.get_parent().source:
+		if o_par.hitbox == null:
+			return
+		if source != o_par.source and hitbox.hit_priority <= o_par.hitbox.hit_priority:
 			destroy()

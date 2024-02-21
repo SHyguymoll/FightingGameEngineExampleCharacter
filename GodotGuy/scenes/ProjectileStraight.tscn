@@ -130,7 +130,7 @@ _data = {
 [sub_resource type="BoxShape3D" id="BoxShape3D_3mt4j"]
 size = Vector3(0.823242, 0.738281, 1)
 
-[node name="ProjectileStraight" type="CharacterBody3D"]
+[node name="ProjectileStraight" type="CharacterBody3D" node_paths=PackedStringArray("hitbox")]
 collision_layer = 0
 collision_mask = 0
 motion_mode = 1
@@ -139,6 +139,7 @@ start_anim = &"start"
 loop_anim_left = &"loop_left"
 loop_anim_right = &"loop_right"
 end_anim = &"end"
+hitbox = NodePath("Hitbox")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
 rotation_edit_mode = 1
