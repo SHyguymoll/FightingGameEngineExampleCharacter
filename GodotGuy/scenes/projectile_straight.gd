@@ -1,16 +1,11 @@
-class_name Projectile
-extends CharacterBody3D
-
-signal projectile_ended(proj)
+class_name ProjectileStraight
+extends Projectile
 
 @export var start_anim : StringName
 @export var loop_anim_left : StringName
 @export var loop_anim_right : StringName
 @export var end_anim : StringName
-@export var hitbox : Hitbox
-var right_facing : bool
-var type : int
-var source : int
+
 
 enum types {
 	STRAIGHT = 0,
@@ -90,15 +85,3 @@ func _on_animation_player_animation_finished(anim_name):
 		end_anim:
 			queue_free()
 			emit_signal(&"projectile_ended", self)
-
-func _on_projectile_contact(other):
-	if hitbox == null:
-		return
-	var o_par = other.get_parent()
-	if other is Stage or o_par is Stage:
-		destroy()
-	if o_par is Projectile:
-		if o_par.hitbox == null:
-			return
-		if source != o_par.source and hitbox.hit_priority <= o_par.hitbox.hit_priority:
-			destroy()
