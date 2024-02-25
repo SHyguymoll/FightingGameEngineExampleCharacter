@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://Test Character/main_game.gd" id="1_a16kr"]
 [ext_resource type="FontFile" uid="uid://b3yiy4ulnirtc" path="res://Test Character/TestHUD/PlayerFont.ttf" id="2_jjmwk"]
-[ext_resource type="PackedScene" uid="uid://kquoyj34deus" path="res://GodotGuy/scenes/GodotGuy.tscn" id="2_qa73f"]
-[ext_resource type="PackedScene" uid="uid://cx7pdgv0mhddt" path="res://Test Character/BlankStage.tscn" id="3_21y52"]
+[ext_resource type="PackedScene" uid="uid://kquoyj34deus" path="res://Characters/GodotGuy/scenes/GodotGuy.tscn" id="2_qa73f"]
+[ext_resource type="PackedScene" uid="uid://cx7pdgv0mhddt" path="res://Stages/BlankStage/BlankStage.tscn" id="3_21y52"]
 [ext_resource type="Texture2D" uid="uid://d2v6nobn25dof" path="res://Test Character/TestHUD/Player1Background.png" id="3_fnmsh"]
 [ext_resource type="Texture2D" uid="uid://bxt6h5ot7vf65" path="res://Test Character/TestHUD/Player1Bar.png" id="4_7ll10"]
 [ext_resource type="Texture2D" uid="uid://c2t6vti0ip1cs" path="res://Test Character/TestHUD/Player2Background.png" id="5_6q5w6"]

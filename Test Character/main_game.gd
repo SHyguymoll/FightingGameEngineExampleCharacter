@@ -1,6 +1,5 @@
 extends Node3D
 
-#required variables from Content.gd
 var p1 : Fighter
 var p2 : Fighter
 var stage : Stage
@@ -151,7 +150,7 @@ func init_fighters():
 	for i in range(p1.BUTTONCOUNT):
 		p1_inputs["button" + str(i)] = [[0, false]]
 	p1.player = true
-	p1.position = Vector3(p1.start_x_offset * -1,0,0)
+	p1.position = Vector3(abs(p1.start_x_offset) * -1, 0, 0)
 	p1._initialize_boxes()
 	p1.char_name += " p1"
 	p1.hitbox_created.connect(register_hitbox)
@@ -170,7 +169,7 @@ func init_fighters():
 	for i in range(p2.BUTTONCOUNT):
 		p2_inputs["button" + str(i)] = [[0, false]]
 	p2.player = false
-	p2.position = Vector3(p2.start_x_offset,0,0)
+	p2.position = Vector3(abs(p2.start_x_offset), 0, 0)
 	p2._initialize_boxes()
 	p2.char_name += " p2"
 	p2.hitbox_created.connect(register_hitbox)

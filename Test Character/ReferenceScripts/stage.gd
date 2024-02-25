@@ -1,8 +1,9 @@
 class_name Stage
 extends StaticBody3D
 
-var stage_name : String = "Blank 2D Stage"
 enum modes {
-	two_d, three_d, other
+	TWO_D, THREE_D, OTHER
 }
-var mode : modes = modes.two_d
+
+@export var stage_name : String
+@export var mode : modes

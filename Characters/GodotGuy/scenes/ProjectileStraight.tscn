@@ -1,0 +1,175 @@
+[gd_scene load_steps=13 format=3 uid="uid://56a0waewlr2t"]
+
+[ext_resource type="Script" path="res://Characters/GodotGuy/scenes/projectile_straight.gd" id="1_5ue6b"]
+[ext_resource type="Texture2D" uid="uid://dnp3cp2qqpsg1" path="res://Characters/GodotGuy/icon.svg" id="2_eqkp1"]
+[ext_resource type="Script" path="res://Test Character/ReferenceScripts/hitbox.gd" id="3_1aylb"]
+[ext_resource type="AudioStream" uid="uid://7arkj6kc7el8" path="res://Characters/GodotGuy/sounds/atk_projectile.wav" id="4_3v5ch"]
+[ext_resource type="AudioStream" uid="uid://5hk5x5uxbevg" path="res://Characters/GodotGuy/sounds/atk_blocked.wav" id="5_73rkj"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qatpa"]
+size = Vector3(1.18335, 1.0791, 1)
+
+[sub_resource type="Animation" id="Animation_k5wla"]
+resource_name = "end"
+length = 0.266669
+step = 0.0166667
+tracks/0/type = "scale_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite3D")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 1, 1, 1, 0.266667, 1, 1.44575, 1.44575, 1.003)
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite3D:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 1, 1, 1), Color(0, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_74a68"]
+resource_name = "loop_left"
+length = 0.266669
+step = 0.0166667
+tracks/0/type = "rotation_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite3D")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.0666668, 1, 0, 0, 0.707107, 0.707107, 0.133334, 1, 0, 0, -1, 0, 0.2, 1, 0, 0, -0.707, 0.707, 0.266667, 1, 0, 0, 0, 1)
+tracks/1/type = "scale_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite3D")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, 1, 1, 1, 0.133334, 1, 0.719086, 0.719085, 1, 0.266667, 1, 1, 1, 1)
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite3D:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.133334, 0.266667),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(0, 1, 1, 1), Color(0, 1, 1, 0.431373), Color(0, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_f425l"]
+resource_name = "loop_right"
+length = 0.266669
+step = 0.0166667
+tracks/0/type = "rotation_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite3D")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.0666668, 1, 0, 0, -0.707107, 0.707107, 0.133334, 1, 0, 0, 1, -4.37114e-08, 0.2, 1, 0, 0, 0.707107, 0.707106, 0.266667, 1, 0, 0, 0, 1)
+tracks/1/type = "scale_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite3D")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, 1, 1, 1, 0.133334, 1, 0.719086, 0.719085, 1, 0.266667, 1, 1, 1, 1)
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite3D:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.133334, 0.266667),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(0, 1, 1, 1), Color(0, 1, 1, 0.431373), Color(0, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_33uao"]
+resource_name = "start"
+length = 0.266669
+step = 0.0166667
+tracks/0/type = "scale_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite3D")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 1.44575, 1.44575, 1.003, 0.266667, 1, 1, 1, 1)
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite3D:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 1, 1, 0), Color(0, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_vwb2q"]
+_data = {
+"end": SubResource("Animation_k5wla"),
+"loop_left": SubResource("Animation_74a68"),
+"loop_right": SubResource("Animation_f425l"),
+"start": SubResource("Animation_33uao")
+}
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3mt4j"]
+size = Vector3(0.823242, 0.738281, 1)
+
+[node name="ProjectileStraight" type="CharacterBody3D" node_paths=PackedStringArray("hitbox")]
+collision_layer = 0
+collision_mask = 0
+motion_mode = 1
+script = ExtResource("1_5ue6b")
+start_anim = &"start"
+loop_anim_left = &"loop_left"
+loop_anim_right = &"loop_right"
+end_anim = &"end"
+hitbox = NodePath("Hitbox")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+rotation_edit_mode = 1
+modulate = Color(0, 1, 1, 1)
+texture = ExtResource("2_eqkp1")
+
+[node name="Hitbox" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+script = ExtResource("3_1aylb")
+on_hit_sound = ExtResource("4_3v5ch")
+on_block_sound = ExtResource("5_73rkj")
+lifetime = -1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
+shape = SubResource("BoxShape3D_qatpa")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_vwb2q")
+}
+
+[node name="ProjectileContact" type="Area3D" parent="."]
+collision_layer = 16
+collision_mask = 17
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="ProjectileContact"]
+shape = SubResource("BoxShape3D_3mt4j")
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
+[connection signal="area_entered" from="ProjectileContact" to="." method="_on_projectile_contact"]
+[connection signal="body_entered" from="ProjectileContact" to="." method="_on_projectile_contact"]
